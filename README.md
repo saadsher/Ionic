@@ -1,6 +1,4 @@
-<snippet>
-  <content><![CDATA[
-# ${1:SPASEY}
+# SPASEY
 
 Street Parking Map
 
@@ -39,6 +37,3 @@ Saad Sher
 ## License
 
 TODO: Write license
-]]></content>
-  <tabTrigger>readme</tabTrigger>
-</snippet>
