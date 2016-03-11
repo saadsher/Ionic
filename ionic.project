@@ -1,0 +1,14 @@
+{
+  "name": "Spasey",
+  "app_id": "a839f0c4",
+  "gulpStartupTasks": [
+    "sass",
+    "watch"
+  ],
+  "watchPatterns": [
+    "server/*.php",
+    "www/js/*",
+    "www/**/*.html",
+    "!www/css/**/*"
+  ]
+}
