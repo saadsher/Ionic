@@ -15,7 +15,8 @@ $royal:                           #886aea !default;
 $dark:                            #444 !default;
 */
 .bar.bar-stable .title {
-  line-height: 55px; }
+  line-height: 55px;
+  text-align: center; }
 
 .curtLoc {
   bottom: 2%;
@@ -76,14 +77,38 @@ $dark:                            #444 !default;
 .scroll {
   height: 100%; }
 
-.button-royal {
+.btn-add.button.button-block {
   position: absolute;
-  top: 50px;
-  right: 5%;
-  z-index: 2;
-  opacity: .5;
-  border-radius: 50%;
-  padding: 5px; }
+  transform: translateX(-50%);
+  left: 50%;
+  bottom: 0;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  opacity: .8; }
+
+.modal {
+  background-color: rgba(255, 255, 255, 0.8); }
+  @media (min-width: 680px) {
+    .modal {
+      min-height: 655px;
+      top: 50%; } }
+
+@media (min-width: 680px) {
+  .slide-in-up.ng-enter-active {
+    transform: translate3d(0, -50%, 0); } }
+
+.modal-backdrop-bg {
+  background-color: rgba(255, 255, 255, 0.8); }
+
+.active .modal-backdrop-bg {
+  opacity: 1;
+  background-color: rgba(255, 255, 255, 0.8); }
 
 .modal-data {
-  background-color: white; }
+  padding: 15px; }
+  .modal-data .item {
+    border: 0; }
+
+.bar-footer {
+  padding: 0; }
