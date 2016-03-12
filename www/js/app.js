@@ -75,7 +75,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
       console.log("isOnline");
 
-      if(ionic.Platform.isWebView){
+      if(ionic.Platform.isWebView()){
         return $cordovaNetwork.isOnline();
         console.log("web online");
       } else {
@@ -88,7 +88,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
       console.log("isOffline");
 
-      if(ionic.Platform.isWebView){
+      if(ionic.Platform.isWebView()){
         return !$cordovaNetwork.isOnline();
         console.log("web offline");
       } else {
@@ -163,7 +163,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
   function enableMap(){
     console.log("enableMap");
-    $ionicLoading.hide;
+    $ionicLoading.hide();
   }
 
   function disableMap(){
