@@ -31,8 +31,9 @@ TODO: Write history
 
 ## Credits
 
-Artur Małecki
-Saad Sher
+@Artur Małecki
+
+@Saad Sher
 
 ## License
 
