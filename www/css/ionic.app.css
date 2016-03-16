@@ -77,10 +77,22 @@ $dark:                            #444 !default;
 .scroll {
   height: 100%; }
 
+.btn-close-modal.button.button-light {
+  font-size: 25px; }
+
 .btn-add.button.button-block {
   position: absolute;
-  transform: translateX(-50%);
-  left: 50%;
+  transform: translateX(-100%);
+  left: 49%;
+  bottom: 0;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  opacity: .8; }
+
+.btn-list.button.button-block {
+  position: absolute;
+  left: 51%;
   bottom: 0;
   width: 20px;
   height: 20px;
@@ -91,7 +103,7 @@ $dark:                            #444 !default;
   background-color: rgba(255, 255, 255, 0.8); }
   @media (min-width: 680px) {
     .modal {
-      min-height: 655px;
+      min-height: 662px;
       top: 50%; } }
 
 @media (min-width: 680px) {
@@ -109,6 +121,3 @@ $dark:                            #444 !default;
   padding: 15px; }
   .modal-data .item {
     border: 0; }
-
-.bar-footer {
-  padding: 0; }

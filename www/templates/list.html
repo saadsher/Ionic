@@ -1,0 +1,28 @@
+<ion-modal-view>
+	<ion-header-bar>
+		<a class="button button-light ion-ios-refresh-outline btn-close-modal" ng-click="listMarkers()"></a>
+		<h1 class="title">Markers</h1>
+		<a class="button button-light pull-right ion-ios-close-outline btn-close-modal" ng-click="modalRUD.hide()"></a>
+	</ion-header-bar>
+	<ion-content>
+    <div class="modal-data" data-tap-disabled="true">
+			<ion-list>
+
+        <ion-item ng-repeat="marker in loadCache"
+                  item="marker"
+                  href="#/loadCache/{{loadCache.lat}}" class="item-remove-animate">
+          {{ marker.road }}: {{ marker.point }}, {{ marker.dict }}
+          <ion-option-button class="button-dark"
+                             ng-click="edit(marker)">
+            Edit
+          </ion-option-button>
+          <ion-option-button class="button-energized"
+                             ng-click="delete(marker)">
+						Delete
+          </ion-option-button>
+        </ion-item>
+
+      </ion-list>
+    </div>
+	</ion-content>
+</ion-modal-view>

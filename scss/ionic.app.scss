@@ -1,3 +1,5 @@
+// Variables
+
 /*
 To customize the look and feel of Ionic, you can override the variables
 in ionic's _variables.scss file.
@@ -15,10 +17,10 @@ $royal:                           #886aea !default;
 $dark:                            #444 !default;
 */
 
-// Variables
-
 // The path for our ionicons font files, relative to the built CSS in www/css
 $ionicons-font-path: "../lib/ionic/fonts" !default;
+
+$mapicons-font-path: "../lib/map-icons-master/dist/fonts";
 
 // Include all of Ionic
 // @import "www/lib/ionic/scss/ionic.scss";
@@ -105,10 +107,22 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 .scroll {
   height: 100%;
 }
+.btn-close-modal.button.button-light {
+  font-size: 25px;
+}
 .btn-add.button.button-block {
   position: absolute;
-  transform: translateX(-50%);
-  left: 50%;
+  transform: translateX(-100%);
+  left: 49%;
+  bottom: 0;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  opacity: .8;
+}
+.btn-list.button.button-block {
+  position: absolute;
+  left: 51%;
   bottom: 0;
   width: 20px;
   height: 20px;
@@ -119,7 +133,7 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
   background-color: rgba(255,255,255,0.8);
 
   @media (min-width: 680px) {
-    min-height: 655px;
+    min-height: 662px;
     top: 50%;
   }
 }
@@ -141,7 +155,4 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
   .item {
     border: 0;
   }
-}
-.bar-footer {
-  padding: 0;
 }

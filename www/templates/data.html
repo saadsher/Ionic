@@ -1,42 +1,44 @@
 <ion-modal-view>
 	<ion-content>
-    <div class="modal-data" id="data" data-tap-disabled="true">
-			<div class="list">
-			  <label class="item item-input item-floating-label">
-			    <ion-label>Longitude</ion-label>
-			    <input type="text" placeholder="Longitude">
-			  </label>
-			  <label class="item item-input item-floating-label">
-					<ion-label>Latitude</ion-label>
-			    <input type="text" placeholder="Latitude">
-			  </label>
-			  <label class="item item-input item-floating-label">
-					<ion-label>Capacity</ion-label>
-			    <input type="text" placeholder="Capacity">
-			  </label>
-			  <label class="item item-input item-floating-label">
-					<ion-label>Counter</ion-label>
-			    <input type="text" placeholder="Counter">
-			  </label>
-			  <label class="item item-input item-floating-label">
-					<ion-label>Dictionary</ion-label>
-			    <input type="text" placeholder="Dictionary">
-			  </label>
-			  <label class="item item-input item-floating-label">
-					<ion-label>Road</ion-label>
-			    <input type="text" placeholder="Road">
-			  </label>
-			  <label class="item item-input item-floating-label">
-					<ion-label>Point</ion-label>
-			    <input type="text" placeholder="Point">
-			  </label>
-				<button class="button button-block button-outline button-dark" ng-click="modal.hide()">
-				  CANCEL
+    <div class="modal-data" data-tap-disabled="true">
+			<form name="formA">
+				<div class="list">
+				  <label class="item item-input item-floating-label">
+				    <ion-label>Longitude</ion-label>
+				    <input name="lng" type="text" placeholder="Longitude" ng-model="lng" required ng-minlength="3">
+				  </label>
+				  <label class="item item-input item-floating-label">
+						<ion-label>Latitude</ion-label>
+				    <input name="lat" type="text" placeholder="Latitude" ng-model="lat">
+				  </label>
+				  <label class="item item-input item-floating-label">
+						<ion-label>Capacity</ion-label>
+				    <input name="cap" type="text" placeholder="Capacity" ng-model="cap">
+				  </label>
+				  <label class="item item-input item-floating-label">
+						<ion-label>Counter</ion-label>
+				    <input name="ctr" type="text" placeholder="Counter" ng-model="ctr">
+				  </label>
+				  <label class="item item-input item-floating-label">
+						<ion-label>Dictionary</ion-label>
+				    <input name="dic" type="text" placeholder="Dictionary" ng-model="dic">
+				  </label>
+				  <label class="item item-input item-floating-label">
+						<ion-label>Road</ion-label>
+				    <input name="rd" type="text" placeholder="Road" ng-model="rd">
+				  </label>
+				  <label class="item item-input item-floating-label">
+						<ion-label>Point</ion-label>
+				    <input name="pt" type="text" placeholder="Point" ng-model="pt">
+				  </label>
+				</div>
+				<a class="button button-block button-outline button-dark" ng-click="modalC.hide()">
+					CANCEL
+				</a>
+				<button type="submit" class="button button-block button-energized" ng-disabled="formA.$invalid" ng-click="addMarker()">
+					ADD
 				</button>
-				<button class="button button-block button-energized">
-				  ADD
-				</button>
-			</div>
+			</form>
     </div>
 	</ion-content>
 </ion-modal-view>

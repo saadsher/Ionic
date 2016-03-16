@@ -3,8 +3,6 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
 
-    console.log("--run");
-
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if(window.cordova && window.cordova.plugins.Keyboard) {
@@ -18,23 +16,11 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
 .config(function($stateProvider, $urlRouterProvider) {
 
-  console.log("--config");
-
   $stateProvider.state('map', {
     url: '/',
     templateUrl: 'templates/map.html',
     controller: 'MapCtrl'
   });
-
-  console.log("cMap");
-
-  // $stateProvider.state('data', {
-  //   url: '/data',
-  //   templateUrl: 'templates/data.html',
-  //   controller: 'DataCtrl'
-  // });
-  //
-  // console.log("cData");
 
   $urlRouterProvider.otherwise("/");
 
@@ -42,75 +28,196 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
 .factory('Markers', function($http) {
 
-  console.log("--factory");
-  console.log("Markers");
-
-  var markers = [];
-
   return {
     getMarkers: function(params) {
 
       return $http.get("http://localhost:8000/markers.php",{params:params}).then(function(response){
-          markers = response;
+          var markers = response;
+          // console.info(markers);
           return markers;
       });
 
     },
-    sendMarkers: function(params) {
+    postMarkers: function(newMarkers) {
 
-      // return $http.post().then(function(response){
-      //
-      // });
+      console.info(newMarkers);
     }
   }
 
 })
 
-.factory('ConnectivityMonitor', function($rootScope, $cordovaNetwork){
+.factory('MapIcons', function() {
 
-  console.log("ConnectivityMonitor");
+  /**
+   * Map Icons created by Scott de Jonge
+   *
+   * @version 3.0.0
+   * @url http://map-icons.com
+   *
+   */
+
+  // Define Marker Shapes
+  var MAP_PIN = 'M0-48c-9.8 0-17.7 7.8-17.7 17.4 0 15.5 17.7 30.6 17.7 30.6s17.7-15.4 17.7-30.6c0-9.6-7.9-17.4-17.7-17.4z';
+  var SQUARE_PIN = 'M22-48h-44v43h16l6 5 6-5h16z';
+  var SHIELD = 'M18.8-31.8c.3-3.4 1.3-6.6 3.2-9.5l-7-6.7c-2.2 1.8-4.8 2.8-7.6 3-2.6.2-5.1-.2-7.5-1.4-2.4 1.1-4.9 1.6-7.5 1.4-2.7-.2-5.1-1.1-7.3-2.7l-7.1 6.7c1.7 2.9 2.7 6 2.9 9.2.1 1.5-.3 3.5-1.3 6.1-.5 1.5-.9 2.7-1.2 3.8-.2 1-.4 1.9-.5 2.5 0 2.8.8 5.3 2.5 7.5 1.3 1.6 3.5 3.4 6.5 5.4 3.3 1.6 5.8 2.6 7.6 3.1.5.2 1 .4 1.5.7l1.5.6c1.2.7 2 1.4 2.4 2.1.5-.8 1.3-1.5 2.4-2.1.7-.3 1.3-.5 1.9-.8.5-.2.9-.4 1.1-.5.4-.1.9-.3 1.5-.6.6-.2 1.3-.5 2.2-.8 1.7-.6 3-1.1 3.8-1.6 2.9-2 5.1-3.8 6.4-5.3 1.7-2.2 2.6-4.8 2.5-7.6-.1-1.3-.7-3.3-1.7-6.1-.9-2.8-1.3-4.9-1.2-6.4z';
+  var ROUTE = 'M24-28.3c-.2-13.3-7.9-18.5-8.3-18.7l-1.2-.8-1.2.8c-2 1.4-4.1 2-6.1 2-3.4 0-5.8-1.9-5.9-1.9l-1.3-1.1-1.3 1.1c-.1.1-2.5 1.9-5.9 1.9-2.1 0-4.1-.7-6.1-2l-1.2-.8-1.2.8c-.8.6-8 5.9-8.2 18.7-.2 1.1 2.9 22.2 23.9 28.3 22.9-6.7 24.1-26.9 24-28.3z';
+  var SQUARE = 'M-24-48h48v48h-48z';
+  var SQUARE_ROUNDED = 'M24-8c0 4.4-3.6 8-8 8h-32c-4.4 0-8-3.6-8-8v-32c0-4.4 3.6-8 8-8h32c4.4 0 8 3.6 8 8v32z';
+
+  function Marker(options) {
+
+    var sbj = this;
+
+    google.maps.Marker.apply(sbj, arguments);
+
+    if (options.map_icon_label) {
+      sbj.MarkerLabel = new MarkerLabel({
+        map: sbj.map,
+        marker: sbj,
+        text: options.map_icon_label
+      });
+      sbj.MarkerLabel.bindTo('position', sbj, 'position');
+    }
+  }
+
+  return {
+
+    pin: function() {
+      return MAP_PIN; // return your choice
+    },
+    Marker: function(options) {
+      return Marker(options);
+    },
+    init: function() {
+
+      // Function to do the inheritance properly
+      // Inspired by: http://stackoverflow.com/questions/9812783/cannot-inherit-google-maps-map-v3-in-my-custom-class-javascript
+      var inherits = function(childCtor, parentCtor) {
+        /** @constructor */
+        function tempCtor() {};
+        tempCtor.prototype = parentCtor.prototype;
+        childCtor.superClass_ = parentCtor.prototype;
+        childCtor.prototype = new tempCtor();
+        childCtor.prototype.constructor = childCtor;
+      };
+
+      // function Marker(options){
+      //   google.maps.Marker.apply(this, arguments);
+      //
+      //   if (options.map_icon_label) {
+      //     this.MarkerLabel = new MarkerLabel({
+      //       map: this.map,
+      //       marker: this,
+      //       text: options.map_icon_label
+      //     });
+      //     this.MarkerLabel.bindTo('position', this, 'position');
+      //   }
+      // }
+
+      // Apply the inheritance
+      inherits(Marker, google.maps.Marker);
+
+      // Custom Marker SetMap
+      Marker.prototype.setMap = function() {
+      	google.maps.Marker.prototype.setMap.apply(this, arguments);
+      	(this.MarkerLabel) && this.MarkerLabel.setMap.apply(this.MarkerLabel, arguments);
+      };
+
+      // // Marker Label Overlay
+      var MarkerLabel = function(options) {
+      	var self = this;
+      	this.setValues(options);
+
+      	// Create the label container
+      	this.div = document.createElement('div');
+      	this.div.className = 'map-icon-label';
+
+      	// Trigger the marker click handler if clicking on the label
+      	google.maps.event.addDomListener(this.div, 'click', function(e){
+      		(e.stopPropagation) && e.stopPropagation();
+      		google.maps.event.trigger(self.marker, 'click');
+      	});
+      };
+
+      // Create MarkerLabel Object
+      MarkerLabel.prototype = new google.maps.OverlayView;
+
+      // Marker Label onAdd
+      MarkerLabel.prototype.onAdd = function() {
+      	var pane = this.getPanes().overlayImage.appendChild(this.div);
+      	var self = this;
+
+      	this.listeners = [
+      		google.maps.event.addListener(this, 'position_changed', function() { self.draw(); }),
+      		google.maps.event.addListener(this, 'text_changed', function() { self.draw(); }),
+      		google.maps.event.addListener(this, 'zindex_changed', function() { self.draw(); })
+      	];
+      };
+
+      // Marker Label onRemove
+      MarkerLabel.prototype.onRemove = function() {
+      	this.div.parentNode.removeChild(this.div);
+
+      	for (var i = 0, I = this.listeners.length; i < I; ++i) {
+      		google.maps.event.removeListener(this.listeners[i]);
+      	}
+      };
+
+      // Implement draw
+      MarkerLabel.prototype.draw = function() {
+      	var projection = this.getProjection();
+      	var position = projection.fromLatLngToDivPixel(this.get('position'));
+      	var div = this.div;
+
+      	this.div.innerHTML = this.get('text').toString();
+
+      	div.style.zIndex = this.get('zIndex'); // Allow label to overlay marker
+      	div.style.position = 'absolute';
+      	div.style.display = 'block';
+      	div.style.left = (position.x - (div.offsetWidth / 2)) + 'px';
+      	div.style.top = (position.y - div.offsetHeight) + 'px';
+
+      };
+    }
+  }
+})
+
+.factory('ConnectivityMonitor', function($rootScope, $cordovaNetwork){
 
   return {
     isOnline: function(){
 
-      console.log("isOnline");
-
       if(ionic.Platform.isWebView()){
         return $cordovaNetwork.isOnline();
-        console.log("web online");
+        console.info("web online");
       } else {
         return navigator.onLine;
-        console.log("device online");
+        console.info("device online");
       }
 
     },
     isOffline: function(){
 
-      console.log("isOffline");
-
       if(ionic.Platform.isWebView()){
         return !$cordovaNetwork.isOnline();
-        console.log("web offline");
+        console.warn("web offline");
       } else {
         return !navigator.onLine;
-        console.log("device offline");
+        console.warn("device offline");
       }
 
     }
   }
 })
 
-.factory('GoogleMaps', function($cordovaGeolocation, $ionicLoading, $rootScope, $cordovaNetwork, Markers, ConnectivityMonitor){
+.factory('GoogleMaps', function($cordovaGeolocation, $ionicLoading, $rootScope, $cordovaNetwork, Markers, MapIcons, ConnectivityMonitor){
 
   var markerCache = [];
+  var loadCache = [];
   var apiKey = false;
   var map = null;
 
-  console.log("GoogleMaps");
-
   function initMap(){
-
-    console.warn("geting into initMap");
 
     var options = {timeout: 10000, enableHighAccuracy: true};
 
@@ -129,31 +236,28 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
       //Wait until the map is loaded
       google.maps.event.addListenerOnce(map, 'idle', function(){
 
-        console.warn("once -- loadMarkers()");
-
         //Load the markers
         loadMarkers();
 
         //Reload markers every time the map moves
         google.maps.event.addListener(map, 'dragend', function(){
-          console.log("moved!");
+          console.log("drag = reload map");
           loadMarkers();
         });
 
         //Reload markers every time the zoom changes
         google.maps.event.addListener(map, 'zoom_changed', function(){
-          console.log("zoomed!");
+          console.log("zoom = reload map");
           loadMarkers();
         });
-
-        console.warn("once -- enableMap()");
 
         enableMap();
 
       });
 
     }, function(error){
-      console.log("Could not get location");
+
+        console.warn("Could not get location");
 
         //Load the markers
         loadMarkers();
@@ -162,20 +266,17 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
   }
 
   function enableMap(){
-    console.log("enableMap");
     $ionicLoading.hide();
   }
 
   function disableMap(){
-    console.log("disableMap");
+    console.warn("map disabled");
     $ionicLoading.show({
       template: 'You must be connected to the Internet to view this map.'
     });
   }
 
   function loadGoogleMaps(){
-
-    console.log("loadGoogleMaps");
 
     $ionicLoading.show({
       template: 'Loading Google Maps'
@@ -196,6 +297,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
       script.src = 'http://maps.google.com/maps/api/js?key=' + apiKey + '&callback=mapInit';
     }
     else {
+      console.warn("no API key found");
       script.src = 'http://maps.google.com/maps/api/js?callback=mapInit';
     }
 
@@ -205,7 +307,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
   function checkLoaded(){
 
-    console.log("checkLoaded");
+    console.log("checking if loaded");
 
     if(typeof google == "undefined" || typeof google.maps == "undefined"){
       loadGoogleMaps();
@@ -216,111 +318,117 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
   function loadMarkers(){
 
-    console.log("loadMarkers");
+    var center = map.getCenter();
+    var bounds = map.getBounds();
+    var zoom = map.getZoom();
 
-      var center = map.getCenter();
-      var bounds = map.getBounds();
-      var zoom = map.getZoom();
+    //Convert objects returned by Google to be more readable
+    var centerNorm = {
+        lat: center.lat(),
+        lng: center.lng()
+    };
 
-      //Convert objects returned by Google to be more readable
-      var centerNorm = {
-          lat: center.lat(),
-          lng: center.lng()
-      };
+    var boundsNorm = {
+        northeast: {
+            lat: bounds.getNorthEast().lat(),
+            lng: bounds.getNorthEast().lng()
+        },
+        southwest: {
+            lat: bounds.getSouthWest().lat(),
+            lng: bounds.getSouthWest().lng()
+        }
+    };
 
-      var boundsNorm = {
-          northeast: {
-              lat: bounds.getNorthEast().lat(),
-              lng: bounds.getNorthEast().lng()
-          },
-          southwest: {
-              lat: bounds.getSouthWest().lat(),
-              lng: bounds.getSouthWest().lng()
-          }
-      };
+    var boundingRadius = getBoundingRadius(centerNorm, boundsNorm);
 
-      var boundingRadius = getBoundingRadius(centerNorm, boundsNorm);
+    var params = {
+      "centre": centerNorm,
+      "bounds": boundsNorm,
+      "zoom": zoom,
+      "boundingRadius": boundingRadius
+    };
 
-      var params = {
-        "centre": centerNorm,
-        "bounds": boundsNorm,
-        "zoom": zoom,
-        "boundingRadius": boundingRadius
-      };
+    var markers = Markers.getMarkers(params).then(function(markers){
 
-      var markers = Markers.getMarkers(params).then(function(markers){
-        console.log("Markers: ", markers);
-        var records = markers.data.markers;
+      var records = markers.data.markers;
 
-        for (var i = 0; i < records.length; i++) {
+      for (var i = 0; i < records.length; i++) {
 
-          var record = records[i];
+        var record = records[i];
 
-          // Check if the marker has already been added
-          if (!markerExists(record.lat, record.lng)) {
+        // Check if the marker has already been added
+        if (!markerExists(record.lat, record.lng)) {
 
-              var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+            // var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
 
-              var markerPos = new google.maps.LatLng(record.lat, record.lng);
-              // add the marker
-              var marker = new google.maps.Marker({
-                  map: map,
-                  animation: google.maps.Animation.DROP,
-                  icon: iconBase + 'schools_maps.png',
-                  position: markerPos
-              });
+            MapIcons.init();
 
-              // Add the marker to the markerCache so we know not to add it again later
-              var markerData = {
-                lat: record.lat,
-                lng: record.lng,
-                marker: marker
-              };
+            var pin = MapIcons.pin();
+            // var maker = MapIcons;
 
+            var markerPos = new google.maps.LatLng(record.lat, record.lng);
+            // add the marker
+            var marker = new google.maps.Marker({ // needs fixing
+                map: map,
+                animation: google.maps.Animation.DROP,
+                // icon: iconBase + 'schools_maps.png',
+                label: record.count,
+                icon: {
+                  path: pin,
+                  fillcolor: '#FFC900',
+                  fillOpacity: 0.5,
+                  strokeColor: '#FFC900',
+                  strokeWeight: 2
+                },
+                map_icon_label: '<span class="map-icon map-icon-point-of-interest"></span>',
+                // map_icon_label: '<span class="map-icon map-icon-point-of-interest">'+record.count+'</span>',
+                // title: 'Hello',
+                position: markerPos
+            });
 
-              markerCache.push(markerData);
+            // Add the marker to the markerCache so we know not to add it again later
+            var markerData = {
+              lat: record.lat,
+              lng: record.lng,
+              marker: marker
+            };
 
-              var infoWindowContent = "<h4><small>Road: </small>" +
-                        record.road + "</h4><p>Point: " +
-                        record.point + "</p><p>Free space: " +
-                        record.count + "</p><p>Road infomation: " +
-                        record.dict + "</p>";
+            markerCache.push(markerData);
 
-              addInfoWindow(marker, infoWindowContent, record);
-          }
+            loadCache.push(record);
 
+            var infoWindowContent =
+                    "<h4><small>Road: </small>" + record.road +
+                    "</h4><p>Point: " + record.point +
+                    "</p><p>Free space: " + record.count +
+                    "</p><p>Road infomation: " + record.dict + "</p>";
+
+            addInfoWindow(marker, infoWindowContent, record);
         }
 
-      });
+      }
+
+    });
   }
 
   function markerExists(lat, lng){
 
-    console.log("markerExists");
-
-      console.log("Not yet");
-      var exists = false;
-      var cache = markerCache;
-      for(var i = 0; i < cache.length; i++){
-        if(cache[i].lat === lat && cache[i].lng === lng){
-          exists = true;
-          console.log("Yes");
-        }
+    var exists = false;
+    var cache = markerCache;
+    for(var i = 0; i < cache.length; i++){
+      if(cache[i].lat === lat && cache[i].lng === lng){
+        exists = true;
       }
+    }
 
-      return exists;
+    return exists;
   }
 
   function getBoundingRadius(center, bounds){
-
-    console.log("getBoundingRadius");
-
     return getDistanceBetweenPoints(center, bounds.northeast, 'miles');
   }
 
   function getDistanceBetweenPoints(pos1, pos2, units){
-
-    console.log("getDistanceBetweenPoints");
 
     var earthRadius = {
         miles: 3958.8,
@@ -347,42 +455,36 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
   }
 
   function toRad(x){
-
-    console.log("toRad");
-
-      return x * Math.PI / 180;
+    return x * Math.PI / 180;
   }
 
   function addInfoWindow(marker, message, record) {
 
-    console.log("addInfoWindow");
+    var infoWindow = new google.maps.InfoWindow({
+        content: message
+    });
 
-      var infoWindow = new google.maps.InfoWindow({
-          content: message
-      });
-
-      google.maps.event.addListener(marker, 'click', function () {
-          infoWindow.open(map, marker);
-      });
-
+    google.maps.event.addListener(marker, 'click', function () {
+        infoWindow.open(map, marker);
+    });
   }
 
   function addConnectivityListeners(){
 
-    console.log("addConnectivityListeners");
+    // console.log("addConnectivityListeners");
 
     if(ionic.Platform.isWebView){
 
       // Check if the map is already loaded when the user comes online, if not, load it
       $rootScope.$on('$cordovaNetwork:online', function(event, networkState){
         checkLoaded();
-        console.log("device online");
+        console.info("device online");
       });
 
       // Disable the map when the user goes offline
       $rootScope.$on('$cordovaNetwork:offline', function(event, networkState){
         disableMap();
-        console.log("device offline");
+        console.warn("device offline");
       });
 
     }
@@ -402,26 +504,38 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
   }
 
+  function addMarker() {
+
+    var newMarkers = {
+      "roads": formA.rd.value,
+      "points": formA.pt.value,
+      "latitude": formA.lat.value,
+      "longitude": formA.lng.value,
+      "capactiy": formA.cap.value,
+      "counter": formA.ctr.value,
+      "dictionary": formA.dic.value
+    };
+
+    Markers.postMarkers(newMarkers);
+  }
+
   return {
     init: function(key){
 
-      console.log("init");
-
       if(typeof key != "undefined"){
         apiKey = key;
-        console.log(apiKey);
+        // console.log(apiKey);
       }
 
       if(typeof google == "undefined" || typeof google.maps == "undefined"){
 
-        console.warn("google undefined");
-
-        console.warn("Google Maps SDK needs to be loaded");
-
-        disableMap();
-
         if(ConnectivityMonitor.isOnline()){
           loadGoogleMaps();
+        } else {
+          disableMap();
+
+          console.warn("google is undefined");
+          console.warn("Google Maps SDK needs to be loaded");
         }
       }
       else {
@@ -435,23 +549,69 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
       }
 
       addConnectivityListeners();
-
+    },
+    listMarkers: function(){
+      $rootScope.loadCache = loadCache;
+    },
+    addMarker: function(){
+      addMarker();
     }
   }
 
 })
 
+// .factory('AddMarker', function($rootScope){
+//
+//   return {
+//
+//     add: function addMarker(){
+//
+//       console.log("addMarker");
+//
+//       // var center = map.getCenter();
+//       //
+//       // //Convert objects returned by Google to be more readable
+//       // var centerNorm = {
+//       //     lat: center.lat(),
+//       //     lng: center.lng()
+//       // };
+//
+//       var params = {
+//         // "lat": centerNorm.lat,
+//         // "lng": centerNorm.lng
+//         "lat": $rootScope.lat,
+//         "lng": $rootScope.lng
+//       };
+//
+//       console.info(params);
+//
+//       // Markers.postMarkers(params);
+//     }
+//   }
+// })
+
 .controller('MapCtrl', function($scope, $state, $ionicModal, GoogleMaps) {
-  console.log("--controller");
-  console.log("Map");
+
   GoogleMaps.init("AIzaSyDt1Hn4Nag4LRzZY-b6Jn0leKDc2ZMwXns");
+
   $ionicModal.fromTemplateUrl('templates/data.html', {
     scope: $scope
   }).then(function(modal) {
-    $scope.modal = modal;
+    $scope.modalC = modal;
   });
-})
 
-.controller('DataCtrl', function($scope, $state) {
-  console.log("Data");
+  $ionicModal.fromTemplateUrl('templates/list.html', {
+    scope: $scope
+  }).then(function(modal) {
+    $scope.modalRUD = modal;
+    GoogleMaps.listMarkers();
+  });
+
+  $scope.listMarkers = function() {
+    GoogleMaps.listMarkers();
+  }
+
+  $scope.addMarker = function() {
+    GoogleMaps.addMarker();
+  };
 });

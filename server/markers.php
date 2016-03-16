@@ -20,6 +20,10 @@
 	$mysqli->real_escape_string($centre['lng']),
 	$mysqli->real_escape_string($centre['lat']));
 
+  //Insert a new marker into the table
+  // $insert = sprintf('INSERT INTO markers (roads,points,latitude,longitude,capacity,counter,dictionary) VALUES ("%s","%s","%s","%s","%s","%s","%s")',
+  // $);
+
 	//Restrict query to those within bounding radius
 	$maxDistance = $mysqli->real_escape_string($boundingRadius);
 
