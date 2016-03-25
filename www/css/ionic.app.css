@@ -103,6 +103,19 @@
   opacity: .8;
   font-size: 33px; }
 
+.btn-edit.button.button-block {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  opacity: .8;
+  font-size: 33px; }
+  .btn-edit.button.button-block:before {
+    position: relative;
+    left: 3px; }
+
 .button.clr-form {
   font-size: 12px; }
 
@@ -126,8 +139,30 @@
 
 .modal-data {
   padding: 15px; }
-  .modal-data .item {
+  .modal-data .list .item {
     border: 0; }
+    .modal-data .list .item .disco {
+      padding: 2px 8px 3px 10px;
+      background-color: #f8f8f8;
+      color: #AAAAAA;
+      width: auto;
+      display: block;
+      border: 0; }
+    .modal-data .list .item.item-stacked-label {
+      float: left; }
+      .modal-data .list .item.item-stacked-label input {
+        padding: 2px 8px 3px 10px;
+        border-bottom: 1px solid #AAAAAA;
+        border-radius: 0; }
+  .modal-data .list p {
+    float: left;
+    padding-top: 10px;
+    padding-left: 16px;
+    width: 35%;
+    color: #444;
+    font-size: 16px; }
+    .modal-data .list p.ion-ios-locked:before {
+      padding-right: 5px; }
 
 .formA label {
   display: table;

@@ -30,7 +30,6 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
   return {
     getMarkers: function(params) {
-
       return $http.get("http://localhost:8000/markers.php",{params:params}).then(function(response){
           var markers = response;
           // console.info(markers);
@@ -39,16 +38,16 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
     },
     createMarker: function(newMarker) {
-
-      console.info(newMarker);
+      console.info("<<NEW MARKER ADDED>>");
+      console.log(newMarker);
     },
     updateMarker: function(thisMarker) {
-
-      console.info(thisMarker);
+      console.info("<<MARKER UPDATED>>");
+      console.log(thisMarker);
     },
     deleteMarker: function(thisMarker) {
-
-      console.info(thisMarker);
+      console.info("<<MARKER DELETED>>");
+      console.log(thisMarker);
     }
 
   };
@@ -86,7 +85,10 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 .factory('GoogleMaps', function($cordovaGeolocation, $ionicLoading, $rootScope, $cordovaNetwork, Markers, ConnectivityMonitor){
 
   var markerCache = [];
-  var loadCache = [];
+  var listCache = [];
+  var editCache = [];
+  var newCache = [];
+  var tempCache = {};
   var apiKey = false;
   var map = null;
   var gLoc;
@@ -123,10 +125,10 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
         loadMarkers();
 
         //Show infowindow on every click/tap
-        google.maps.event.addListener(map, 'click', function(){
+        // google.maps.event.addListener(map, 'click', function(){
           // console.log("click = info pop");
-          infoPop();
-        });
+          infoPop(); // This sets up the Event Listener
+        // });
 
         //Reload markers every time the map moves
         google.maps.event.addListener(map, 'dragend', function(){
@@ -241,6 +243,118 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
     var markers = Markers.getMarkers(params).then(function(markers){
 
+      /**
+       * Map Icons created by Scott de Jonge
+       *
+       * @version 3.0.0
+       * @url http://map-icons.com
+       *
+       */
+
+      // Define Marker Shapes
+      var MAP_PIN = 'M0-48c-9.8 0-17.7 7.8-17.7 17.4 0 15.5 17.7 30.6 17.7 30.6s17.7-15.4 17.7-30.6c0-9.6-7.9-17.4-17.7-17.4z';
+      var SQUARE_PIN = 'M22-48h-44v43h16l6 5 6-5h16z';
+      var SHIELD = 'M18.8-31.8c.3-3.4 1.3-6.6 3.2-9.5l-7-6.7c-2.2 1.8-4.8 2.8-7.6 3-2.6.2-5.1-.2-7.5-1.4-2.4 1.1-4.9 1.6-7.5 1.4-2.7-.2-5.1-1.1-7.3-2.7l-7.1 6.7c1.7 2.9 2.7 6 2.9 9.2.1 1.5-.3 3.5-1.3 6.1-.5 1.5-.9 2.7-1.2 3.8-.2 1-.4 1.9-.5 2.5 0 2.8.8 5.3 2.5 7.5 1.3 1.6 3.5 3.4 6.5 5.4 3.3 1.6 5.8 2.6 7.6 3.1.5.2 1 .4 1.5.7l1.5.6c1.2.7 2 1.4 2.4 2.1.5-.8 1.3-1.5 2.4-2.1.7-.3 1.3-.5 1.9-.8.5-.2.9-.4 1.1-.5.4-.1.9-.3 1.5-.6.6-.2 1.3-.5 2.2-.8 1.7-.6 3-1.1 3.8-1.6 2.9-2 5.1-3.8 6.4-5.3 1.7-2.2 2.6-4.8 2.5-7.6-.1-1.3-.7-3.3-1.7-6.1-.9-2.8-1.3-4.9-1.2-6.4z';
+      var ROUTE = 'M24-28.3c-.2-13.3-7.9-18.5-8.3-18.7l-1.2-.8-1.2.8c-2 1.4-4.1 2-6.1 2-3.4 0-5.8-1.9-5.9-1.9l-1.3-1.1-1.3 1.1c-.1.1-2.5 1.9-5.9 1.9-2.1 0-4.1-.7-6.1-2l-1.2-.8-1.2.8c-.8.6-8 5.9-8.2 18.7-.2 1.1 2.9 22.2 23.9 28.3 22.9-6.7 24.1-26.9 24-28.3z';
+      var SQUARE = 'M-24-48h48v48h-48z';
+      var SQUARE_ROUNDED = 'M24-8c0 4.4-3.6 8-8 8h-32c-4.4 0-8-3.6-8-8v-32c0-4.4 3.6-8 8-8h32c4.4 0 8 3.6 8 8v32z';
+
+
+      // Function to do the inheritance properly
+      // Inspired by: http://stackoverflow.com/questions/9812783/cannot-inherit-google-maps-map-v3-in-my-custom-class-javascript
+      var inherits = function(childCtor, parentCtor) {
+        /** @constructor */
+        function tempCtor() {};
+        tempCtor.prototype = parentCtor.prototype;
+        childCtor.superClass_ = parentCtor.prototype;
+        childCtor.prototype = new tempCtor();
+        childCtor.prototype.constructor = childCtor;
+      };
+
+      function Marker(options){
+        google.maps.Marker.apply(this, arguments);
+
+        if (options.map_icon_label) {
+          this.MarkerLabel = new MarkerLabel({
+            map: this.map,
+            marker: this,
+            text: options.map_icon_label
+          });
+          this.MarkerLabel.bindTo('position', this, 'position');
+        }
+      }
+
+      // Apply the inheritance
+      inherits(Marker, google.maps.Marker);
+
+      // Custom Marker SetMap
+      Marker.prototype.setMap = function() {
+        google.maps.Marker.prototype.setMap.apply(this, arguments);
+        (this.MarkerLabel) && this.MarkerLabel.setMap.apply(this.MarkerLabel, arguments);
+      };
+
+      // // Marker Label Overlay
+      var MarkerLabel = function(options) {
+        var self = this;
+        this.setValues(options);
+
+        // Create the label container
+        this.div = document.createElement('div');
+        this.div.className = 'map-icon-label';
+
+        // Trigger the marker click handler if clicking on the label
+        google.maps.event.addDomListener(this.div, 'click', function(e){
+          (e.stopPropagation) && e.stopPropagation();
+          google.maps.event.trigger(self.marker, 'click');
+        });
+      };
+
+      // Create MarkerLabel Object
+      MarkerLabel.prototype = new google.maps.OverlayView;
+
+      // Marker Label onAdd
+      MarkerLabel.prototype.onAdd = function() {
+        var pane = this.getPanes().overlayImage.appendChild(this.div);
+        var self = this;
+
+        this.listeners = [
+          google.maps.event.addListener(this, 'position_changed', function() { self.draw(); }),
+          google.maps.event.addListener(this, 'text_changed', function() { self.draw(); }),
+          google.maps.event.addListener(this, 'zindex_changed', function() { self.draw(); })
+        ];
+      };
+
+      // Marker Label onRemove
+      MarkerLabel.prototype.onRemove = function() {
+        this.div.parentNode.removeChild(this.div);
+
+        for (var i = 0, I = this.listeners.length; i < I; ++i) {
+          google.maps.event.removeListener(this.listeners[i]);
+        }
+      };
+
+      // Implement draw
+      MarkerLabel.prototype.draw = function() {
+        var projection = this.getProjection();
+        var position = projection.fromLatLngToDivPixel(this.get('position'));
+        var div = this.div;
+
+        this.div.innerHTML = this.get('text').toString();
+
+        div.style.zIndex = this.get('zIndex'); // Allow label to overlay marker
+        div.style.position = 'absolute';
+        div.style.display = 'block';
+        div.style.left = (position.x - (div.offsetWidth / 2)) + 'px';
+        div.style.top = (position.y - div.offsetHeight) + 'px';
+
+      };
+
+      /**
+       * Map Icons End
+       */
+
+
+
       var records = markers.data.markers;
 
       for (var i = 0; i < records.length; i++) {
@@ -248,119 +362,9 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
         var record = records[i];
 
         // Check if the marker has already been added
-        if (!markerExists(record.lat, record.lng)) {
+        if (!markerExists(record.latitude, record.longitude)) {
 
-            /**
-             * Map Icons created by Scott de Jonge
-             *
-             * @version 3.0.0
-             * @url http://map-icons.com
-             *
-             */
-
-            // Define Marker Shapes
-            var MAP_PIN = 'M0-48c-9.8 0-17.7 7.8-17.7 17.4 0 15.5 17.7 30.6 17.7 30.6s17.7-15.4 17.7-30.6c0-9.6-7.9-17.4-17.7-17.4z';
-            var SQUARE_PIN = 'M22-48h-44v43h16l6 5 6-5h16z';
-            var SHIELD = 'M18.8-31.8c.3-3.4 1.3-6.6 3.2-9.5l-7-6.7c-2.2 1.8-4.8 2.8-7.6 3-2.6.2-5.1-.2-7.5-1.4-2.4 1.1-4.9 1.6-7.5 1.4-2.7-.2-5.1-1.1-7.3-2.7l-7.1 6.7c1.7 2.9 2.7 6 2.9 9.2.1 1.5-.3 3.5-1.3 6.1-.5 1.5-.9 2.7-1.2 3.8-.2 1-.4 1.9-.5 2.5 0 2.8.8 5.3 2.5 7.5 1.3 1.6 3.5 3.4 6.5 5.4 3.3 1.6 5.8 2.6 7.6 3.1.5.2 1 .4 1.5.7l1.5.6c1.2.7 2 1.4 2.4 2.1.5-.8 1.3-1.5 2.4-2.1.7-.3 1.3-.5 1.9-.8.5-.2.9-.4 1.1-.5.4-.1.9-.3 1.5-.6.6-.2 1.3-.5 2.2-.8 1.7-.6 3-1.1 3.8-1.6 2.9-2 5.1-3.8 6.4-5.3 1.7-2.2 2.6-4.8 2.5-7.6-.1-1.3-.7-3.3-1.7-6.1-.9-2.8-1.3-4.9-1.2-6.4z';
-            var ROUTE = 'M24-28.3c-.2-13.3-7.9-18.5-8.3-18.7l-1.2-.8-1.2.8c-2 1.4-4.1 2-6.1 2-3.4 0-5.8-1.9-5.9-1.9l-1.3-1.1-1.3 1.1c-.1.1-2.5 1.9-5.9 1.9-2.1 0-4.1-.7-6.1-2l-1.2-.8-1.2.8c-.8.6-8 5.9-8.2 18.7-.2 1.1 2.9 22.2 23.9 28.3 22.9-6.7 24.1-26.9 24-28.3z';
-            var SQUARE = 'M-24-48h48v48h-48z';
-            var SQUARE_ROUNDED = 'M24-8c0 4.4-3.6 8-8 8h-32c-4.4 0-8-3.6-8-8v-32c0-4.4 3.6-8 8-8h32c4.4 0 8 3.6 8 8v32z';
-
-
-            // Function to do the inheritance properly
-            // Inspired by: http://stackoverflow.com/questions/9812783/cannot-inherit-google-maps-map-v3-in-my-custom-class-javascript
-            var inherits = function(childCtor, parentCtor) {
-              /** @constructor */
-              function tempCtor() {};
-              tempCtor.prototype = parentCtor.prototype;
-              childCtor.superClass_ = parentCtor.prototype;
-              childCtor.prototype = new tempCtor();
-              childCtor.prototype.constructor = childCtor;
-            };
-
-            function Marker(options){
-              google.maps.Marker.apply(this, arguments);
-
-              if (options.map_icon_label) {
-                this.MarkerLabel = new MarkerLabel({
-                  map: this.map,
-                  marker: this,
-                  text: options.map_icon_label
-                });
-                this.MarkerLabel.bindTo('position', this, 'position');
-              }
-            }
-
-            // Apply the inheritance
-            inherits(Marker, google.maps.Marker);
-
-            // Custom Marker SetMap
-            Marker.prototype.setMap = function() {
-            	google.maps.Marker.prototype.setMap.apply(this, arguments);
-            	(this.MarkerLabel) && this.MarkerLabel.setMap.apply(this.MarkerLabel, arguments);
-            };
-
-            // // Marker Label Overlay
-            var MarkerLabel = function(options) {
-            	var self = this;
-            	this.setValues(options);
-
-            	// Create the label container
-            	this.div = document.createElement('div');
-            	this.div.className = 'map-icon-label';
-
-            	// Trigger the marker click handler if clicking on the label
-            	google.maps.event.addDomListener(this.div, 'click', function(e){
-            		(e.stopPropagation) && e.stopPropagation();
-            		google.maps.event.trigger(self.marker, 'click');
-            	});
-            };
-
-            // Create MarkerLabel Object
-            MarkerLabel.prototype = new google.maps.OverlayView;
-
-            // Marker Label onAdd
-            MarkerLabel.prototype.onAdd = function() {
-            	var pane = this.getPanes().overlayImage.appendChild(this.div);
-            	var self = this;
-
-            	this.listeners = [
-            		google.maps.event.addListener(this, 'position_changed', function() { self.draw(); }),
-            		google.maps.event.addListener(this, 'text_changed', function() { self.draw(); }),
-            		google.maps.event.addListener(this, 'zindex_changed', function() { self.draw(); })
-            	];
-            };
-
-            // Marker Label onRemove
-            MarkerLabel.prototype.onRemove = function() {
-            	this.div.parentNode.removeChild(this.div);
-
-            	for (var i = 0, I = this.listeners.length; i < I; ++i) {
-            		google.maps.event.removeListener(this.listeners[i]);
-            	}
-            };
-
-            // Implement draw
-            MarkerLabel.prototype.draw = function() {
-            	var projection = this.getProjection();
-            	var position = projection.fromLatLngToDivPixel(this.get('position'));
-            	var div = this.div;
-
-            	this.div.innerHTML = this.get('text').toString();
-
-            	div.style.zIndex = this.get('zIndex'); // Allow label to overlay marker
-            	div.style.position = 'absolute';
-            	div.style.display = 'block';
-            	div.style.left = (position.x - (div.offsetWidth / 2)) + 'px';
-            	div.style.top = (position.y - div.offsetHeight) + 'px';
-
-            };
-
-            /**
-             * Map Icons End
-             */
-
-            var markerPos = new google.maps.LatLng(record.lat, record.lng);
+            var markerPos = new google.maps.LatLng(record.latitude, record.longitude);
 
             // add the marker
             var marker = new Marker({
@@ -373,32 +377,37 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
                   strokeColor: '#FFC900',
                   strokeWeight: 2
                 },
-                map_icon_label: '<span class="map-icon map-icon-parking"></span><span class="map-icon-label-ticker">'+record.count+'</span>',
+                map_icon_label: '<span class="map-icon map-icon-parking"></span><span class="map-icon-label-ticker">'+record.counter+'</span>',
                 position: markerPos
             });
 
             // Add the marker to the markerCache so we know not to add it again later
             var markerData = {
-              lat: record.lat,
-              lng: record.lng,
+              lat: record.latitude,
+              lng: record.longitude,
               marker: marker
             };
 
             markerCache.push(markerData);
 
-            loadCache.push(record);
+            listCache.push(record);
 
             var infoWindowContent =
-                    "<h4><small>Road: </small>" + record.road +
-                    "</h4><p>Point: " + record.point +
-                    "</p><p>Free space: " + record.count +
-                    "</p><p>Road infomation: " + record.dict + "</p>";
+                    "<h4><small>Road: </small>" + record.roads +
+                    "</h4><p>Point: " + record.points +
+                    "</p><p>Free space: " + record.counter +
+                    "</p><p>Road infomation: " + record.dictionary +
+                    "</p><button class='button button-dark' ng-click='editMarker()'>Edit" +
+                    "</button><button class='button button-energized'>Delete</button>";
 
             addInfoWindow(marker, infoWindowContent, record);
+
         }
 
       }
 
+    }).then(function() {
+        return cacheLoad();
     });
   }
 
@@ -406,6 +415,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
     var exists = false;
     var cache = markerCache;
+
     for(var i = 0; i < cache.length; i++){
       if(cache[i].lat === lat && cache[i].lng === lng){
         exists = true;
@@ -449,25 +459,34 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
     return x * Math.PI / 180;
   }
 
-  function addInfoWindow(marker, message, record) {
+  function addInfoWindow(marker, message, record) { // FIXTHIS: the button click does nothing in infoWindow
 
     var infoWindow = new google.maps.InfoWindow({
-        content: message
+      content: " "
     });
 
-    google.maps.event.addListener(marker, 'click', function () {
-        infoWindow.open(map, marker);
+    google.maps.event.addListener(marker, 'click', function (event) {
+      infoWindow.setContent(message);
+      console.info(event);
+      cacheEdit(event);
+      infoWindow.open(map, marker);
     });
   }
 
-  function infoPop() {
-    console.log('INFOPOP');
-    // var infoWindowContent =
-    //         "<h4><small>Road: </small>" + record.road +
-    //         "</h4><p>Point: " + record.point +
-    //         "</p><p>Free space: " + record.count +
-    //         "</p><p>Road infomation: " + record.dict + "</p>";
-    //
+  function infoPop() { // FIXTHIS: center & make appear at clicked point.
+
+    // console.log('INFOPOP');
+
+    var iwindow= new google.maps.InfoWindow;
+    google.maps.event.addListener(map,'click',function(event){
+      cacheNew(event);
+      iwindow.setContent(event.latLng.lat()+","+event.latLng.lng());
+      iwindow.open(map,this);
+      // iwindow.open(map,this);
+    });
+
+    // var infoWindowContent = "<button class='button button-dark btn-mapAdder'>Add</button>";
+
     // addInfoWindow(marker, infoWindowContent, record);
   }
 
@@ -506,28 +525,117 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
   }
 
-  function setCenter() {
-    map.setCenter(gLoc);
+  function cacheLoad() {
+    $rootScope.listCache = listCache;
+    // console.table(listCache);
   }
 
-  function addMarker() { // TODO: Yet to complete
+  function cacheNew(event) { // This stores LOAD NEW data
+    if (event) {
+      var eLat = event.latLng.lat().toString();
+      var eLng  = event.latLng.lng().toString();
+      // console.log(eLat,eLng);
+      newCache = [{
+        capacity: "",
+        counter: "",
+        dictionary: "",
+        latitude: eLat,
+        longitude: eLng,
+        points: "",
+        roads: ""
+      }];
+    } else {
+      newCache = [{
+        capacity: "",
+        counter: "",
+        dictionary: "",
+        latitude: "",
+        longitude: "",
+        points: "",
+        roads: ""
+      }];
+    }
+    $rootScope.newCache = newCache;
+    // console.table($rootScope.newCache);
+  }
 
-    var newMarkers = {
-      "roads": formA.rd.value,
-      "points": formA.pt.value,
-      "latitude": formA.lat.value,
-      "longitude": formA.lng.value,
-      "capactiy": formA.cap.value,
-      "counter": formA.ctr.value,
-      "dictionary": formA.dic.value
+// TODO: Grab the item details on edit click and fill editCache
+// TODO: Sanitize for data coming from EDIT
+  function cacheTemp(ne) { // This stores SENT NEW / EDIT data
+    tempCache = {
+      capacity: ne.capacity,
+      counter: ne.counter,
+      dictionary: ne.dictionary,
+      latitude: ne.latitude,
+      longitude: ne.longitude,
+      points: ne.points,
+      roads: ne.roads
     };
-
-    Markers.postMarkers(newMarkers);
+    $rootScope.tempCache = tempCache;
+    // console.info("------------------------cache temp-------------------------");
+    // console.table($rootScope.tempCache);
   }
 
-  function editMarker() { // TODO: Yet to complete
-    // console.log();
+// TODO: Complete the read of values from infoWindow
+  function cacheEdit(event) { // This stores LOAD EDIT data
+    if (event) {
+      // var eLat = event.latLng.lat().toString();
+      // var eLng  = event.latLng.lng().toString();
+      editCache = [{
+        _capacity: event.capacity,
+        capacity: event.capacity,
+        _counter: event.counter,
+        counter: event.counter,
+        _dictionary: event.dictionary,
+        dictionary: event.dictionary,
+        // latitude: eLat,
+        // longitude: eLng,
+        latitude: event.latitude,
+        longitude: event.longitude,
+        _points: event.points,
+        points: event.points,
+        _roads: event.roads,
+        roads: event.roads
+      }];
+    } else {
+      editCache = [{
+        capacity: "",
+        counter: "",
+        dictionary: "",
+        latitude: "",
+        longitude: "",
+        points: "",
+        roads: ""
+      }];
+    }
+    $rootScope.editCache = editCache;
+    // console.info("------------------------cache edit-------------------------");
+    // console.table($rootScope.editCache);
   }
+
+  function setCenter() {
+    map.panTo(gLoc);
+  }
+
+  // function addMarker() { // TODO: Yet to complete
+  //
+  //   var newMarkers = {
+  //     "roads": formA.rd.value,
+  //     "points": formA.pt.value,
+  //     "latitude": formA.lat.value,
+  //     "longitude": formA.lng.value,
+  //     "capactiy": formA.cap.value,
+  //     "counter": formA.ctr.value,
+  //     "dictionary": formA.dic.value
+  //   };
+  //
+  //   Markers.postMarkers(newMarkers);
+  // }
+
+  // function editMarker(marker) { // TODO: Yet to complete
+  //   console.info(editCache);
+  //   // Markers.updateMarker();
+  // }
 
   function dropMarker() { // TODO: Yet to complete
     // console.log();
@@ -568,16 +676,30 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
       setCenter();
     },
     listMarkers: function(){
-      $rootScope.loadCache = loadCache;
+      cacheLoad();
     },
-    addMarker: function(){
-      Markers.createMarker();
+    newMarker: function(n){ // n = SENT NEW data
+      if (n) {
+        cacheTemp(n);
+        Markers.createMarker(tempCache);
+      }
+      cacheNew();
     },
-    editMarker: function() {
-      Markers.updateMarker();
+    editMarker: function(e){ // e = SENT EDIT data on Click
+      // console.log(e);
+      if (e) {
+        cacheEdit(e);
+      }
     },
-    delMarker: function() {
-      Markers.deleteMarker();
+    updateMarker: function(u){
+      if(u) {
+        cacheTemp(u);
+        Markers.updateMarker(tempCache);
+        cacheEdit();
+      }
+    },
+    delMarker: function(del) {
+      Markers.deleteMarker(del);
     }
   }
 
@@ -613,32 +735,32 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 //   }
 // })
 
-.controller('MapCtrl', function($scope, $state, $ionicModal, GoogleMaps) {
+.controller('MapCtrl', function($scope, $state, $ionicModal, $ionicListDelegate, GoogleMaps) {
 
   GoogleMaps.init("AIzaSyDt1Hn4Nag4LRzZY-b6Jn0leKDc2ZMwXns");
 
-  $ionicModal.fromTemplateUrl('templates/data.html', {
+  $ionicModal.fromTemplateUrl('templates/new.html', {
     scope: $scope,
   }).then(function(modal) {
     $scope.modalC = modal;
-
-    $scope.mkr = {
-      lng: "",
-      lat: "",
-      cap: "",
-      ctr: "",
-      dic: "",
-      rd: "",
-      pt: ""
-    };
+    GoogleMaps.newMarker();
   });
 
   $ionicModal.fromTemplateUrl('templates/list.html', {
     scope: $scope
   }).then(function(modal) {
-    $scope.modalRUD = modal;
-    GoogleMaps.listMarkers();
+    $scope.modalR = modal;
   });
+
+  $ionicModal.fromTemplateUrl('templates/edit.html', {
+    scope: $scope
+  }).then(function(modal) {
+    $scope.modalUD = modal;
+  });
+
+  $scope.selectMarker = function(edit) {
+    $scope.editCache.push(this.edit);
+  }
 
   $scope.setCenter = function() {
     GoogleMaps.setCenter();
@@ -648,13 +770,23 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
     GoogleMaps.listMarkers();
   }
 
-  $scope.addMarker = function() {
-    GoogleMaps.addMarker();
-  };
+  $scope.addMarker = function(add) {
+    // console.log(add);
+    GoogleMaps.newMarker(add);
+  }
 
-  $scope.editMarker = function() {
-    GoogleMaps.editMarker();
-  };
+  $scope.editMarker = function(edit) {
+    // console.log(edit);
+    GoogleMaps.editMarker(edit);
+    $ionicListDelegate.closeOptionButtons();
+    $scope.modalUD.show();
+    $scope.modalR.hide();
+  }
+
+  $scope.updateMarker = function(update) {
+    // console.log(update);
+    GoogleMaps.updateMarker(update);
+  }
 
   $scope.deleteMarker = function() {
     GoogleMaps.delMarker();

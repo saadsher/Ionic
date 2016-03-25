@@ -2,6 +2,16 @@
 
 Street Parking Map
 
+## Specs
+
+- Create markers freely
+- Edit existing markers
+- Delete existing markers
+- Restrict user to just append counter
+- Load markers relative to scroll-position on map
+- Marker detail info page
+- Custom google map style
+
 ## Installation
 
 ionic add platform ios
@@ -9,13 +19,13 @@ ionic add platform android
 
 ## Usage
 
-ionic serve
+- ionic serve
 
-ionic build ios
-ionic emulate ios   
+- ionic build ios
+- ionic emulate ios   
 
-ionic build android
-ionic emulate android
+- ionic build android
+- ionic emulate android
 
 ## Contributing
 
@@ -40,10 +50,13 @@ TODO: Write history
 TODO: Write license
 
 # To do
-- [ ] Add a new infoWindow popup to map on tap that shows:
+- [ ] Add a new infoWindow popup to map on tap that:
+  - [ ] Detail maker.
   - [ ] Add marker.
   - [ ] Else edit / delete a marker if tapped on an existing one.
+- [ ] Style the map.
 - [ ] Add authentication.
+- [ ] Marker creator only allowed to delete marker
 
 ## Next
 - [ ] Test new API.

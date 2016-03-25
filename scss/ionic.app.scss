@@ -138,8 +138,26 @@ $mapicons-font-path: '../lib/map-icons-master/dist/fonts';
   opacity: .8;
   font-size: 33px;
 }
+.btn-edit.button.button-block {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  opacity: .8;
+  font-size: 33px;
+
+  &:before {
+    position: relative;
+    left: 3px;
+  }
+}
 .button.clr-form {
   font-size: 12px;
+}
+.btn-mapAdder {
+
 }
 
 .modal {
@@ -165,8 +183,45 @@ $mapicons-font-path: '../lib/map-icons-master/dist/fonts';
 .modal-data {
   padding: 15px;
 
-  .item {
-    border: 0;
+  .list {
+
+    .item {
+      border: 0;
+
+      .disco {
+        padding: 2px 8px 3px 10px;
+        background-color: #f8f8f8;
+        color: #AAAAAA;
+        width: auto;
+        display: block;
+        border: 0;
+      }
+
+      &.item-stacked-label {
+        float: left;
+
+        input {
+          padding: 2px 8px 3px 10px;
+          border-bottom: 1px solid #AAAAAA;
+          border-radius: 0;
+        }
+      }
+    }
+
+    p {
+      float: left;
+      padding-top: 10px;
+      padding-left: 16px;
+      width: 35%;
+      color: #444;
+      font-size: 16px;
+
+      &.ion-ios-locked {
+        &:before {
+          padding-right: 5px;
+        }
+      }
+    }
   }
 }
 

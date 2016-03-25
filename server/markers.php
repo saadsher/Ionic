@@ -41,13 +41,13 @@
 
 		$markers[] = array(
 			'id' => $row['id'],
-			'road' => $row['roads'],
-			'point' => $row['points'],
-			'lat' => $row['latitude'],
-			'lng' => $row['longitude'],
-			'cap' => $row['capacity'],
-			'count' => $row['counter'],
-			'dict' => $row['dictionary'],
+			'roads' => $row['roads'],
+			'points' => $row['points'],
+			'latitude' => $row['latitude'],
+			'longitude' => $row['longitude'],
+			'capacity' => $row['capacity'],
+			'counter' => $row['counter'],
+			'dictionary' => $row['dictionary'],
 		);
 	}
 

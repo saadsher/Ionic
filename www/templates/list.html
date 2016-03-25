@@ -2,22 +2,18 @@
 	<ion-header-bar>
 		<a class="button button-light ion-ios-refresh-outline" ng-click="listMarkers()"></a>
 		<h1 class="title">Markers</h1>
-		<a class="button button-light pull-right ion-ios-close-outline btn-close-modal" ng-click="modalRUD.hide()"></a>
+		<a class="button button-light pull-right ion-ios-close-outline btn-close-modal" ng-click="modalR.hide()"></a>
 	</ion-header-bar>
 	<ion-content>
     <div class="modal-data" data-tap-disabled="true">
 			<ion-list>
 
-        <ion-item ng-repeat="marker in loadCache"
-                  item="marker"
-                  href="#/loadCache/{{loadCache.lat}}" class="item-remove-animate">
-          {{ marker.road }}: {{ marker.point }}, {{ marker.dict }}
-          <ion-option-button class="button-dark"
-                             ng-click="edit(marker)">
+        <ion-item ng-repeat="marker in listCache" item="marker" href="#/listCache/{{listCache.point}}" class="item-remove-animate">
+          {{ marker.roads }}: {{ marker.points }}, {{ marker.dictionary }}
+          <ion-option-button class="button-dark" ng-click="editMarker(marker)">
             Edit
           </ion-option-button>
-          <ion-option-button class="button-energized"
-                             ng-click="delete(marker)">
+          <ion-option-button class="button-energized" ng-click="deleteMarker(marker)">
 						Delete
           </ion-option-button>
         </ion-item>

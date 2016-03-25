@@ -1,0 +1,61 @@
+<ion-modal-view>
+	<div ng-repeat="ed in editCache" item="ed" href="#/editCache/{{editCache}}">
+	<ion-header-bar>
+		<a class="button button-light clr-form" ng-click="ed.capacity = null; ed.center = null; ed.dictionary = null; ed.roads = null; ed.points = null;">Clear</a>
+		<h1 class="title">* Marker</h1>
+		<a class="button button-light pull-right ion-ios-close-outline btn-close-modal" ng-click="modalUD.hide()"></a>
+	</ion-header-bar>
+	<ion-content>
+    <div class="modal-data" data-tap-disabled="true">
+			<form name="formU" id="formU" class="formU">
+				<div class="list">
+					<p class="ion-ios-locked">Longitude</p>
+				  <label class="item item-input item-stacked-label">
+				    <input name="lng" type="text" placeholder="" ng-model="ed.longitude"  ng-minlength="3" disabled class="disco">
+				  </label><br />
+					<p class="ion-ios-locked">Latitude</p>
+				  <label class="item item-input item-stacked-label">
+				    <input name="lat" type="text" placeholder="" ng-model="ed.latitude"  ng-minlength="3" disabled class="disco">
+				  </label><br />
+					<p>Capacity</p>
+				  <label class="item item-input item-stacked-label">
+						<ion-label class="disco">{{ed._capacity}}</ion-label>
+				    <input name="cap" type="text" placeholder="" ng-model="ed.capacity">
+						<a class="button button-light clr-input ion-ios-close-empty" ng-show="ed.capacity.length" ng-click="ed.capacity = null"></a>
+				  </label><br />
+					<p>Counter</p>
+				  <label class="item item-input item-stacked-label">
+						<ion-label class="disco">{{ed._counter}}</ion-label>
+				    <input name="ctr" type="text" placeholder="" ng-model="ed.counter">
+						<a class="button button-light clr-input ion-ios-close-empty" ng-show="ed.counter.length" ng-click="ed.counter = null"></a>
+				  </label><br />
+					<p>Dictionary</p>
+				  <label class="item item-input item-stacked-label">
+						<ion-label class="disco">{{ed._dictionary}}</ion-label>
+				    <input name="dic" type="text" placeholder="" ng-model="ed.dictionary">
+						<a class="button button-light clr-input ion-ios-close-empty" ng-show="ed.dictionary.length" ng-click="ed.dictionary = null"></a>
+				  </label><br />
+					<p>Road</p>
+				  <label class="item item-input item-stacked-label">
+						<ion-label class="disco">{{ed._roads}}</ion-label>
+				    <input name="rd" type="text" placeholder="" ng-model="ed.roads">
+						<a class="button button-light clr-input ion-ios-close-empty" ng-show="ed.roads.length" ng-click="ed.roads = null"></a>
+				  </label><br />
+					<p>Point</p>
+				  <label class="item item-input item-stacked-label">
+						<ion-label class="disco">{{ed._points}}</ion-label>
+				    <input name="pt" type="text" placeholder="" ng-model="ed.points">
+						<a class="button button-light clr-input ion-ios-close-empty" ng-show="ed.points.length" ng-click="ed.points = null"></a>
+				  </label>
+				</div>
+				<a class="button button-block button-outline button-dark" ng-click="modalUD.hide()">
+					CANCEL
+				</a>
+				<button type="submit" class="button button-block button-energized" ng-disabled="formU.$invalid" ng-click="updateMarker(ed)">
+					UPDATE
+				</button>
+			</form>
+    </div>
+	</ion-content>
+	</div>
+</ion-modal-view>
