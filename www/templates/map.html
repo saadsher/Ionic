@@ -1,9 +1,57 @@
 <ion-view>
 	<ion-content>
-    <div id="map" data-tap-disabled="true"></div>
+    <div id="map" data-tap-disabled="true" ng-click="clickMap()"></div>
+		<div class="actibox-new">
+			<div ng-repeat="newer in newCache" item="newer" href="#/newCache/{{newCache}}">
+				<a class="button button-energized ion-ios-close-outline" ng-click="clickNewHide(hide)"></a>
+				<span>
+					latitude: &nbsp;&nbsp;&nbsp;{{newer.latitude}}<br />
+					longitude: {{newer.longitude}}
+				</span>
+				<button class="button button-energized button-block button-outline" ng-click="modalC.show()">
+					ADD
+				</button>
+			</div>
+		</div>
+		<div class="actibox-edit">
+			<div ng-repeat="editor in editCache" item="editor" href="#/editCache/{{editCache}}">
+				<a class="button button-energized ion-ios-close-outline" ng-click="clickEditHide(hide)"></a>
+				<span>
+					latitude: &nbsp;&nbsp;&nbsp;{{editor.latitude}}<br />
+					longitude: {{editor.longitude}}<br />
+					road: {{editor.roads}}<br />
+					point: {{editor.points}}<br />
+					counter: {{editor.counter}}<br />
+					information: {{editor.dictionary}}
+				</span>
+				<button class="button button-energized button-block button-outline" ng-click="modalUD.show()">
+					EDIT
+				</button>
+				<button class="button button-assertive button-block button-outline" ng-click="deleteMarker(editor)">
+					DELETE
+				</button>
+			</div>
+		</div>
+		<div class="actibox-counter">
+			<div ng-repeat="counter in editCache" item="counter" href="#/editCache/{{editCache}}">
+				<a class="button button-energized ion-ios-close-outline" ng-click="clickCounterHide(hide)"></a>
+				<span>
+					<form name="formC" id="formC" class="formC">
+						<label class="item item-input item-stacked-label">
+							<ion-label>Counter<br />{{counter._counter}}</ion-label>
+					    <input name="counter" type="text" ng-model="counter.counter" disabled>
+					  </label>
+						<button type="button" name="button" class="button button-energized ion-ios-minus" ng-click="counterDown(counter)"></button>
+						<button type="submit" name="button" class="button button-energized ion-happy" ng-click="updateCounter(counter)"></button>
+						<button type="button" name="button" class="button button-energized ion-ios-plus" ng-click="counterUp(counter)"></button>
+					</form>
+				</span>
+			</div>
+		</div>
 		<button class="button button-block button-energized btn-ctr ion-ios-navigate-outline" ng-click="setCenter()"></button>
-		<button class="button button-block button-dark btn-add ion-ios-plus-outline" ng-click="modalC.show()"></button>
-		<button class="button button-block button-dark btn-list ion-ios-paper-outline" ng-click="modalR.show()"></button>
-		<button class="button button-block button-dark btn-edit ion-ios-compose-outline" ng-click="modalUD.show()"></button>
+		<button class="button button-block button-dark btn-add ion-ios-plus-outline" ng-click="modalC.show()" ng-hide=basic></button>
+		<button class="button button-block button-dark btn-list ion-ios-paper-outline basic" ng-click="modalR.show()"></button>
+		<button class="button button-block button-dark btn-edit ion-ios-compose-outline" ng-click="modalUD.show()" ng-hide="basic || empty"></button>
+		<button class="button button-block button-assertive ion-ios-locked-outline set-admin" toggle-class="ion-ios-unlocked-outline" ng-click="toggleAdmin(true)"></button>
 	</ion-content>
 </ion-view>

@@ -91,21 +91,37 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
   var tempCache = {};
   var apiKey = false;
   var map = null;
+  var markerClick;
   var gLoc;
+  // MVP
+  var npw = {lat: 51.5060752, lng: -0.0047033};
+
+  // actionable content boxes
+  var actiboxNew = angular.element(document.querySelector('.actibox-new'));
+  var actiboxEdit = angular.element(document.querySelector('.actibox-edit'));
+  var actiboxCounter = angular.element(document.querySelector('.actibox-counter'));
+
+  // togglers for map interaction
+  var markerClickToggle = false;
+  var accBasic = true;
+  var accAdmin = false;
+  var full = false;
 
   function initMap(){
 
     var options = {timeout: 10000, enableHighAccuracy: true};
 
-      // console.info(gLoc);
     $cordovaGeolocation.getCurrentPosition(options).then(function(position){
 
-      var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+      // var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
       gLoc = {
           lat: position.coords.latitude,
           lng: position.coords.longitude
       };
+      // console.info(gLoc);
+
+      var latLng = new google.maps.LatLng(npw.lat, npw.lng);
 
       var mapOptions = {
         center: latLng,
@@ -124,12 +140,6 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
         //Load the markers
         loadMarkers();
 
-        //Show infowindow on every click/tap
-        // google.maps.event.addListener(map, 'click', function(){
-          // console.log("click = info pop");
-          infoPop(); // This sets up the Event Listener
-        // });
-
         //Reload markers every time the map moves
         google.maps.event.addListener(map, 'dragend', function(){
           // console.log("drag = reload map");
@@ -145,6 +155,8 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
         enableMap();
 
       });
+
+      addListeners();
 
     }, function(error){
 
@@ -250,7 +262,6 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
        * @url http://map-icons.com
        *
        */
-
       // Define Marker Shapes
       var MAP_PIN = 'M0-48c-9.8 0-17.7 7.8-17.7 17.4 0 15.5 17.7 30.6 17.7 30.6s17.7-15.4 17.7-30.6c0-9.6-7.9-17.4-17.7-17.4z';
       var SQUARE_PIN = 'M22-48h-44v43h16l6 5 6-5h16z';
@@ -377,7 +388,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
                   strokeColor: '#FFC900',
                   strokeWeight: 2
                 },
-                map_icon_label: '<span class="map-icon map-icon-parking"></span><span class="map-icon-label-ticker">'+record.counter+'</span>',
+                map_icon_label: '<span class="map-icon-label-ticker">'+record.counter+'</span>',
                 position: markerPos
             });
 
@@ -392,22 +403,14 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
             listCache.push(record);
 
-            var infoWindowContent =
-                    "<h4><small>Road: </small>" + record.roads +
-                    "</h4><p>Point: " + record.points +
-                    "</p><p>Free space: " + record.counter +
-                    "</p><p>Road infomation: " + record.dictionary +
-                    "</p><button class='button button-dark' ng-click='editMarker()'>Edit" +
-                    "</button><button class='button button-energized'>Delete</button>";
-
-            addInfoWindow(marker, infoWindowContent, record);
+            cacheEditActibox(marker, record);
 
         }
 
       }
 
     }).then(function() {
-        return cacheLoad();
+        return cacheLoad(); //Prepare the list cache
     });
   }
 
@@ -459,35 +462,43 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
     return x * Math.PI / 180;
   }
 
-  function addInfoWindow(marker, message, record) { // FIXTHIS: the button click does nothing in infoWindow
-
-    var infoWindow = new google.maps.InfoWindow({
-      content: " "
-    });
-
-    google.maps.event.addListener(marker, 'click', function (event) {
-      infoWindow.setContent(message);
-      console.info(event);
-      cacheEdit(event);
-      infoWindow.open(map, marker);
-    });
+  function clickNew() {
+    if (accAdmin) {
+      markerClickToggle = false;
+      actiboxEdit.removeClass('active');
+      actiboxCounter.removeClass('active');
+      actiboxNew.addClass('active');
+    }
+  }
+  function clickNewHide() {
+    actiboxNew.removeClass('active');
   }
 
-  function infoPop() { // FIXTHIS: center & make appear at clicked point.
+  function clickEdit() {
+    full = true;
+    if (accAdmin) {
+      markerClickToggle = true;
+      actiboxNew.removeClass('active');
+      actiboxCounter.removeClass('active');
+      actiboxEdit.addClass('active');
+    }
+  }
+  function clickEditHide() {
+    angular.element(document.querySelector('.map-icon-label-ticker.active')).removeClass('active');
+    actiboxEdit.removeClass('active');
+  }
 
-    // console.log('INFOPOP');
-
-    var iwindow= new google.maps.InfoWindow;
-    google.maps.event.addListener(map,'click',function(event){
-      cacheNew(event);
-      iwindow.setContent(event.latLng.lat()+","+event.latLng.lng());
-      iwindow.open(map,this);
-      // iwindow.open(map,this);
-    });
-
-    // var infoWindowContent = "<button class='button button-dark btn-mapAdder'>Add</button>";
-
-    // addInfoWindow(marker, infoWindowContent, record);
+  function clickCounter() {
+    if (accBasic) {
+      markerClickToggle = true;
+      actiboxNew.removeClass('active');
+      actiboxEdit.removeClass('active');
+      actiboxCounter.addClass('active');
+    }
+  }
+  function clickCounterHide() {
+    angular.element(document.querySelector('.map-icon-label-ticker.active')).removeClass('active');
+    actiboxCounter.removeClass('active');
   }
 
   function addConnectivityListeners(){
@@ -525,12 +536,25 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
   }
 
+  function addListeners(){
+    if (accAdmin) {
+      console.log("ADMIN");
+      google.maps.event.addListener(map, 'click', function(event){
+        cacheNew(event);
+        clickNew();
+      });
+    } else if (accBasic) {
+      cacheNew();
+      console.log("BASIC");
+    }
+  }
+
   function cacheLoad() {
     $rootScope.listCache = listCache;
     // console.table(listCache);
   }
 
-  function cacheNew(event) { // This stores LOAD NEW data
+  function cacheNew(event) {
     if (event) {
       var eLat = event.latLng.lat().toString();
       var eLng  = event.latLng.lng().toString();
@@ -559,9 +583,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
     // console.table($rootScope.newCache);
   }
 
-// TODO: Grab the item details on edit click and fill editCache
-// TODO: Sanitize for data coming from EDIT
-  function cacheTemp(ne) { // This stores SENT NEW / EDIT data
+  function cacheTemp(ne) {
     tempCache = {
       capacity: ne.capacity,
       counter: ne.counter,
@@ -572,15 +594,14 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
       roads: ne.roads
     };
     $rootScope.tempCache = tempCache;
-    // console.info("------------------------cache temp-------------------------");
     // console.table($rootScope.tempCache);
   }
 
-// TODO: Complete the read of values from infoWindow
-  function cacheEdit(event) { // This stores LOAD EDIT data
+  function cacheEdit(event) {
     if (event) {
       // var eLat = event.latLng.lat().toString();
       // var eLng  = event.latLng.lng().toString();
+      full = true;
       editCache = [{
         _capacity: event.capacity,
         capacity: event.capacity,
@@ -609,36 +630,63 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
       }];
     }
     $rootScope.editCache = editCache;
-    // console.info("------------------------cache edit-------------------------");
     // console.table($rootScope.editCache);
+  }
+
+  function cacheEditPlus(event) {
+    if (event.counter < 9) {
+      editCache = [{
+        _capacity: event.capacity,
+        capacity: event.capacity,
+        _counter: event.counter,
+        counter: event.counter++,
+        _dictionary: event.dictionary,
+        dictionary: event.dictionary,
+        latitude: event.latitude,
+        longitude: event.longitude,
+        _points: event.points,
+        points: event.points,
+        _roads: event.roads,
+        roads: event.roads
+      }];
+    }
+  }
+
+  function cacheEditMinus(event) {
+    if (event.counter > 0) {
+      editCache = [{
+        _capacity: event.capacity,
+        capacity: event.capacity,
+        _counter: event.counter,
+        counter: event.counter--,
+        _dictionary: event.dictionary,
+        dictionary: event.dictionary,
+        latitude: event.latitude,
+        longitude: event.longitude,
+        _points: event.points,
+        points: event.points,
+        _roads: event.roads,
+        roads: event.roads
+      }];
+    }
+  }
+
+  function cacheEditActibox(marker, record) {
+    google.maps.event.addListener(marker, 'click', function() {
+      cacheEdit(record);
+      angular.element(document.querySelector('.map-icon-label-ticker.active')).removeClass('active');
+      markerClick = angular.element(this.MarkerLabel.div.children[0]);
+      markerClick.addClass('active');
+      if (accAdmin) {
+        clickEdit();
+      } else {
+        clickCounter();
+      }
+    });
   }
 
   function setCenter() {
     map.panTo(gLoc);
-  }
-
-  // function addMarker() { // TODO: Yet to complete
-  //
-  //   var newMarkers = {
-  //     "roads": formA.rd.value,
-  //     "points": formA.pt.value,
-  //     "latitude": formA.lat.value,
-  //     "longitude": formA.lng.value,
-  //     "capactiy": formA.cap.value,
-  //     "counter": formA.ctr.value,
-  //     "dictionary": formA.dic.value
-  //   };
-  //
-  //   Markers.postMarkers(newMarkers);
-  // }
-
-  // function editMarker(marker) { // TODO: Yet to complete
-  //   console.info(editCache);
-  //   // Markers.updateMarker();
-  // }
-
-  function dropMarker() { // TODO: Yet to complete
-    // console.log();
   }
 
   return {
@@ -655,12 +703,11 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
           loadGoogleMaps();
         } else {
           disableMap();
-
           console.warn("google is undefined");
           console.warn("Google Maps SDK needs to be loaded");
         }
-      }
-      else {
+      } else {
+
         if(ConnectivityMonitor.isOnline()){
           markerCache = [];
           initMap();
@@ -672,68 +719,106 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
       addConnectivityListeners();
     },
+    clickMap: function() {
+      if (accBasic && markerClickToggle) {
+        clickCounter();
+        markerClickToggle = false;
+      } else if (accAdmin && markerClickToggle) {
+        clickEdit();
+        markerClickToggle = false;
+      } else if (accAdmin && !markerClickToggle) {
+        clickNew();
+        markerClickToggle = false;
+      }
+    },
+    clickNewClose: function() {
+      clickNewHide();
+    },
+    clickEditClose: function() {
+      clickEditHide();
+    },
+    clickCounterClose: function() {
+      clickCounterHide();
+    },
+    clickCounterUp: function(c) {
+      cacheEditPlus(c);
+    },
+    clickCounterDown: function(c) {
+      cacheEditMinus(c);
+    },
     setCenter: function() {
       setCenter();
     },
     listMarkers: function(){
       cacheLoad();
     },
-    newMarker: function(n){ // n = SENT NEW data
-      if (n) {
-        cacheTemp(n);
-        Markers.createMarker(tempCache);
+    newMarker: function(n){
+      if (accAdmin) {
+        if (n) {
+          cacheTemp(n);
+          Markers.createMarker(tempCache);
+        }
+        cacheNew();
       }
-      cacheNew();
     },
-    editMarker: function(e){ // e = SENT EDIT data on Click
-      // console.log(e);
-      if (e) {
-        cacheEdit(e);
+    editMarker: function(e){
+      if (accAdmin) {
+        // console.log(e);
+        if (e) {
+          cacheEdit(e);
+        }
       }
+    },
+    editOnce: function() {
+      return full;
     },
     updateMarker: function(u){
+      if (accAdmin) {
+        if(u) {
+          cacheTemp(u);
+          Markers.updateMarker(tempCache);
+          cacheEdit();
+        }
+      }
+    },
+    updateCounter: function(u){
       if(u) {
         cacheTemp(u);
         Markers.updateMarker(tempCache);
-        cacheEdit();
       }
     },
-    delMarker: function(del) {
-      Markers.deleteMarker(del);
+    deleteMarker: function(d) {
+      if (accAdmin) {
+        if(d) {
+          cacheTemp(d);
+          Markers.deleteMarker(tempCache);
+        }
+      }
+    },
+    setAdmin: function(o) {
+      if (o) {
+        accBasic = false;
+        accAdmin = true;
+      } else {
+        accBasic = true;
+        accAdmin = false;
+      }
+      addListeners();
     }
   }
 
 })
 
-// .factory('AddMarker', function($rootScope){
-//
-//   return {
-//
-//     add: function addMarker(){
-//
-//       console.log("addMarker");
-//
-//       // var center = map.getCenter();
-//       //
-//       // //Convert objects returned by Google to be more readable
-//       // var centerNorm = {
-//       //     lat: center.lat(),
-//       //     lng: center.lng()
-//       // };
-//
-//       var params = {
-//         // "lat": centerNorm.lat,
-//         // "lng": centerNorm.lng
-//         "lat": $rootScope.lat,
-//         "lng": $rootScope.lng
-//       };
-//
-//       console.info(params);
-//
-//       // Markers.postMarkers(params);
-//     }
-//   }
-// })
+.directive('toggleClass',function(){
+  return{
+    restrict:'A',
+    link:function(scope, element, attrs){
+      element.bind('click',function(){
+        element.toggleClass(attrs.toggleClass);
+      });
+    }
+  };
+})
 
 .controller('MapCtrl', function($scope, $state, $ionicModal, $ionicListDelegate, GoogleMaps) {
 
@@ -758,8 +843,21 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
     $scope.modalUD = modal;
   });
 
-  $scope.selectMarker = function(edit) {
-    $scope.editCache.push(this.edit);
+  $scope.clickMap = function() {
+    GoogleMaps.clickMap();
+    if (GoogleMaps.editOnce()) {
+      $scope.empty = false;
+    }
+  }
+
+  $scope.clickNewHide = function() {
+    GoogleMaps.clickNewClose();
+  }
+  $scope.clickEditHide = function() {
+    GoogleMaps.clickEditClose();
+  }
+  $scope.clickCounterHide = function() {
+    GoogleMaps.clickCounterClose();
   }
 
   $scope.setCenter = function() {
@@ -777,6 +875,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
   $scope.editMarker = function(edit) {
     // console.log(edit);
+    $scope.empty = false;
     GoogleMaps.editMarker(edit);
     $ionicListDelegate.closeOptionButtons();
     $scope.modalUD.show();
@@ -785,10 +884,51 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
   $scope.updateMarker = function(update) {
     // console.log(update);
+    $scope.empty = true;
     GoogleMaps.updateMarker(update);
   }
 
-  $scope.deleteMarker = function() {
-    GoogleMaps.delMarker();
+  $scope.updateCounter = function(update) {
+    $scope.empty = true;
+    GoogleMaps.updateCounter(update);
+  }
+
+  $scope.counterUp = function(num) {
+    GoogleMaps.clickCounterUp(num);
+  };
+  $scope.counterDown = function(num) {
+    GoogleMaps.clickCounterDown(num);
+  };
+
+  $scope.deleteMarker = function(del) {
+    GoogleMaps.deleteMarker(del);
+  };
+
+  $scope.setAdmin = function(option) {
+    if (option == true) {
+      GoogleMaps.setAdmin(option);
+    } else {
+      GoogleMaps.setAdmin();
+    }
+  };
+
+  var toggle = false;
+  $scope.empty = true;
+  $scope.basic = true;
+  $scope.toggleAdmin = function(option) {
+    if(toggle) {
+      toggle = false;
+      $scope.basic = true;
+      angular.element(document.querySelector('.btn-list')).addClass('basic');
+      return $scope.setAdmin();
+    }
+    $scope.setAdmin(option);
+    toggle = true;
+    angular.element(document.querySelector('.btn-list')).removeClass('basic');
+    $scope.basic = false;
   };
 });
+
+// Add new option page before map to load data once in admin / basic mode
+// Add a toggle-able list page for content
+// Complete user journeys by adding confirmation content

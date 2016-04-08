@@ -37,6 +37,123 @@ $mapicons-font-path: '../lib/map-icons-master/dist/fonts';
   width: 100%;
 }
 
+.actibox-new,
+.actibox-edit,
+.actibox-counter {
+  display: block;
+  position: absolute;
+  padding: 15px;
+  top: 0;
+  width: 100%;
+  background: rgba(68, 68, 68, .7);
+  opacity: 0;
+  z-index: -1;
+  transition: .3s all;
+
+  &.active {
+    opacity: 1;
+    z-index: 1;
+  }
+
+  span {
+    display: block;
+    font-size: 18px;
+    color: #ffc900;
+    padding-right: 25px;
+    padding-bottom: 15px;
+  }
+
+  .ion-ios-close-outline {
+    background: transparent;
+    color: #ffc900;
+    font-size: 27px;
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    &.activated {
+      background: transparent;
+      border-color: #e6b500;
+    }
+  }
+
+  @media(min-width: 680px) {
+    width: 60%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+.actibox-counter {
+
+  span {
+    padding: 0;
+    margin-top: 25px;
+
+    label {
+      border: 0;
+      padding: 0;
+
+      .input-label {
+        font-size: 26px;
+        color: #ffc900;
+        text-align: center;
+        display: block;
+        max-width: none;
+        width: auto;
+        margin-bottom: 30px;
+      }
+
+      input {
+        font-size: 36px;
+        border-radius: 50px;
+        width: 100px;
+        height: 100px;
+        padding: 40px;
+        color: #ffc900;
+        transform: translateX(-50%);
+        margin-left: 50%;
+        background-color: #333;
+      }
+    }
+
+    .button.ion-ios-plus {
+      border-radius: 50%;
+      height: 78px;
+      width: 78px;
+      font-size: 56px;
+      padding: 0;
+      line-height: 0;
+      color: #333;
+      position: absolute;
+      bottom: 79px;
+      right: 60px;
+    }
+
+    .button.ion-ios-minus {
+      border-radius: 50%;
+      height: 58px;
+      width: 58px;
+      font-size: 46px;
+      padding: 0;
+      line-height: 0;
+      color: #333;
+      position: absolute;
+      bottom: 90px;
+      left: 85px;
+    }
+
+    .button.ion-happy {
+      border-radius: 50%;
+      color: #333;
+      width: 105px;
+      height: 105px;
+      font-size: 86px;
+      margin-top: 25px;
+      margin-left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+}
 .custom-marker {
   padding: 0px;
   background: #fff;
@@ -96,6 +213,7 @@ $mapicons-font-path: '../lib/map-icons-master/dist/fonts';
 
 .button.button-light {
   font-size: 25px;
+  background-color: transparent;
 }
 .btn-ctr.button.button-block {
   position: absolute;
@@ -137,6 +255,11 @@ $mapicons-font-path: '../lib/map-icons-master/dist/fonts';
   margin: 0;
   opacity: .8;
   font-size: 33px;
+
+  &.basic {
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
 .btn-edit.button.button-block {
   position: absolute;
@@ -156,8 +279,26 @@ $mapicons-font-path: '../lib/map-icons-master/dist/fonts';
 .button.clr-form {
   font-size: 12px;
 }
-.btn-mapAdder {
+.button.set-admin {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  opacity: 0.8;
+  width: 52px;
+  font-size: 27px;
+  min-height: auto;
+  height: 38px;
+  border: 5px solid #333;
+  border-top-right-radius: 25px;
+  border-bottom-right-radius: 25px;
+  transform: translateY(-100%);
 
+  &:before {
+    vertical-align: top;
+    margin-right: 5px;
+  }
 }
 
 .modal {
@@ -184,6 +325,7 @@ $mapicons-font-path: '../lib/map-icons-master/dist/fonts';
   padding: 15px;
 
   .list {
+    overflow: auto;
 
     .item {
       border: 0;
@@ -193,6 +335,7 @@ $mapicons-font-path: '../lib/map-icons-master/dist/fonts';
         background-color: #f8f8f8;
         color: #AAAAAA;
         width: auto;
+        min-height: 27px;
         display: block;
         border: 0;
       }
@@ -204,6 +347,7 @@ $mapicons-font-path: '../lib/map-icons-master/dist/fonts';
           padding: 2px 8px 3px 10px;
           border-bottom: 1px solid #AAAAAA;
           border-radius: 0;
+          background-color: transparent;
         }
       }
     }
@@ -221,6 +365,43 @@ $mapicons-font-path: '../lib/map-icons-master/dist/fonts';
           padding-right: 5px;
         }
       }
+    }
+  }
+
+  .marker-list {
+
+    .list {
+
+      .item {
+        border-top: 1px solid #ffc900;
+        &:first-child {
+          border-top: 0;
+        }
+      }
+    }
+  }
+
+  .edit-list {
+
+    .item {
+
+      &.item-stacked-label {
+        width: 54%;
+        margin-right: 16px;
+
+        input {
+          width: 78%;
+          float: left;
+        }
+      }
+
+      &.full-wid input {
+        width: 100%;
+      }
+    }
+
+    p {
+      width: 40%;
     }
   }
 }
@@ -271,8 +452,16 @@ $mapicons-font-path: '../lib/map-icons-master/dist/fonts';
   color: white;
   font-family: arial;
   font-weight: 700;
-  font-size: 16px;
-  line-height: 16px;
+  font-size: 22px;
   position: relative;
-  top: -5px;
+  top: -15px;
+
+  &.active {
+    background-color: #ffc900;
+    color: #333;
+    border-radius: 50%;
+    padding: 12px;
+    left: -12px;
+    top: -10px;
+  }
 }

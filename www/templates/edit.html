@@ -1,20 +1,20 @@
 <ion-modal-view>
 	<div ng-repeat="ed in editCache" item="ed" href="#/editCache/{{editCache}}">
 	<ion-header-bar>
-		<a class="button button-light clr-form" ng-click="ed.capacity = null; ed.center = null; ed.dictionary = null; ed.roads = null; ed.points = null;">Clear</a>
-		<h1 class="title">* Marker</h1>
+		<a class="button button-light clr-form" ng-click="ed.capacity = null; ed.counter = null; ed.dictionary = null; ed.roads = null; ed.points = null;">Clear</a>
+		<h1 class="title">Edit Marker</h1>
 		<a class="button button-light pull-right ion-ios-close-outline btn-close-modal" ng-click="modalUD.hide()"></a>
 	</ion-header-bar>
 	<ion-content>
     <div class="modal-data" data-tap-disabled="true">
 			<form name="formU" id="formU" class="formU">
-				<div class="list">
+				<div class="list edit-list">
 					<p class="ion-ios-locked">Longitude</p>
-				  <label class="item item-input item-stacked-label">
+				  <label class="item item-input item-stacked-label full-wid">
 				    <input name="lng" type="text" placeholder="" ng-model="ed.longitude"  ng-minlength="3" disabled class="disco">
 				  </label><br />
 					<p class="ion-ios-locked">Latitude</p>
-				  <label class="item item-input item-stacked-label">
+				  <label class="item item-input item-stacked-label full-wid">
 				    <input name="lat" type="text" placeholder="" ng-model="ed.latitude"  ng-minlength="3" disabled class="disco">
 				  </label><br />
 					<p>Capacity</p>
