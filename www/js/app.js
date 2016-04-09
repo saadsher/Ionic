@@ -463,6 +463,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
   }
 
   function clickNew() {
+    full = false;
     if (accAdmin) {
       markerClickToggle = false;
       actiboxEdit.removeClass('active');
