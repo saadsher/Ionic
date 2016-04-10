@@ -26,30 +26,67 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
 })
 
-.factory('Markers', function($http) {
+.factory('Markers', function($q, $http, $ionicLoading, $timeout) {
 
   return {
     getMarkers: function(params) {
       return $http.get("http://localhost:8000/markers.php",{params:params}).then(function(response){
-          var markers = response;
-          // console.info(markers);
-          return markers;
+        var markers = response;
+        // console.info(markers);
+        return markers;
       });
-
     },
     createMarker: function(newMarker) {
-      console.info("<<NEW MARKER ADDED>>");
-      console.log(newMarker);
+
+      var deferred = $q.defer();
+
+      $ionicLoading.show({
+        template: 'Adding a new point'
+      });
+
+      $timeout(function() {
+        $ionicLoading.hide();
+        console.info("<<NEW MARKER ADDED>>");
+        console.log(newMarker);
+        deferred.resolve();
+      }, 3000);
+
+      return deferred.promise;
     },
     updateMarker: function(thisMarker) {
-      console.info("<<MARKER UPDATED>>");
-      console.log(thisMarker);
+
+      var deferred = $q.defer();
+
+      $ionicLoading.show({
+        template: 'Updating'
+      });
+
+      $timeout(function() {
+        $ionicLoading.hide();
+        console.info("<<MARKER UPDATED>>");
+        console.log(thisMarker);
+        deferred.resolve();
+      }, 3000);
+
+      return deferred.promise;
     },
     deleteMarker: function(thisMarker) {
-      console.info("<<MARKER DELETED>>");
-      console.log(thisMarker);
-    }
 
+      var deferred = $q.defer();
+
+      $ionicLoading.show({
+        template: 'Deleting your point'
+      });
+
+      $timeout(function() {
+        $ionicLoading.hide();
+        console.info("<<MARKER DELETED>>");
+        console.log(thisMarker);
+        deferred.resolve();
+      }, 3000);
+
+      return deferred.promise;
+    }
   };
 
 })
@@ -757,9 +794,10 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
       if (accAdmin) {
         if (n) {
           cacheTemp(n);
-          Markers.createMarker(tempCache);
+          return Markers.createMarker(tempCache);
+        } else {
+          cacheNew();
         }
-        cacheNew();
       }
     },
     editMarker: function(e){
@@ -767,6 +805,8 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
         // console.log(e);
         if (e) {
           cacheEdit(e);
+        } else {
+          cacheEdit();
         }
       }
     },
@@ -777,22 +817,21 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
       if (accAdmin) {
         if(u) {
           cacheTemp(u);
-          Markers.updateMarker(tempCache);
-          cacheEdit();
+          return Markers.updateMarker(tempCache);
         }
       }
     },
     updateCounter: function(u){
       if(u) {
         cacheTemp(u);
-        Markers.updateMarker(tempCache);
+        return Markers.updateMarker(tempCache);
       }
     },
     deleteMarker: function(d) {
       if (accAdmin) {
         if(d) {
           cacheTemp(d);
-          Markers.deleteMarker(tempCache);
+          return Markers.deleteMarker(tempCache);
         }
       }
     },
@@ -821,7 +860,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
   };
 })
 
-.controller('MapCtrl', function($scope, $state, $ionicModal, $ionicListDelegate, GoogleMaps) {
+.controller('MapCtrl', function($scope, $state, $ionicModal, $ionicPopup, $ionicListDelegate, GoogleMaps) {
 
   GoogleMaps.init("AIzaSyDt1Hn4Nag4LRzZY-b6Jn0leKDc2ZMwXns");
 
@@ -870,8 +909,21 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
   }
 
   $scope.addMarker = function(add) {
-    // console.log(add);
-    GoogleMaps.newMarker(add);
+    GoogleMaps.newMarker(add).then(function() {
+      var alertAdd = $ionicPopup.alert({
+        title: 'Thank you',
+        template: 'Marker added',
+        okType: 'button-dark'
+      });
+
+      alertAdd.then(function(res) {
+        if(res) {
+          GoogleMaps.clickNewClose();
+          $scope.modalC.hide();
+          GoogleMaps.newMarker();
+        }
+      });
+    });
   }
 
   $scope.editMarker = function(edit) {
@@ -886,12 +938,67 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
   $scope.updateMarker = function(update) {
     // console.log(update);
     $scope.empty = true;
-    GoogleMaps.updateMarker(update);
+    GoogleMaps.updateMarker(update).then(function() {
+      var alertUpdate = $ionicPopup.alert({
+        title: 'Thank you',
+        template: 'Marker updated',
+        okType: 'button-dark'
+      });
+
+      alertUpdate.then(function(res) {
+        if(res) {
+          GoogleMaps.clickEditClose();
+          $scope.modalUD.hide();
+          GoogleMaps.editMarker();
+        }
+      });
+    })
+  }
+
+  $scope.deleteMarker = function(del) {
+    var alertDelete = $ionicPopup.confirm({
+      title: 'Confirm',
+      template: 'Are you sure you want to delete this marker?',
+      okText: 'Delete',
+      okType: 'button-assertive'
+    });
+
+    alertDelete.then(function(res) {
+      if(res) {
+        GoogleMaps.deleteMarker(del).then(function() {
+          var alertDeleted = $ionicPopup.alert({
+            title: 'Thank you',
+            template: 'Marker deleted',
+            okType: 'button-dark'
+          });
+
+          alertDeleted.then(function(res) {
+            if(res) {
+              GoogleMaps.clickEditClose();
+              $ionicListDelegate.closeOptionButtons();
+              $scope.modalR.hide();
+            }
+          });
+        });
+      }
+    });
   }
 
   $scope.updateCounter = function(update) {
     $scope.empty = true;
-    GoogleMaps.updateCounter(update);
+    GoogleMaps.updateCounter(update).then(function() {
+      var confirmPopup = $ionicPopup.alert({
+        title: 'Thank you',
+        template: 'Counter updated',
+        okType: 'button-dark'
+      });
+
+      confirmPopup.then(function(res) {
+        if(res) {
+          GoogleMaps.clickCounterClose();
+        }
+      });
+    });
   }
 
   $scope.counterUp = function(num) {
@@ -899,10 +1006,6 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
   };
   $scope.counterDown = function(num) {
     GoogleMaps.clickCounterDown(num);
-  };
-
-  $scope.deleteMarker = function(del) {
-    GoogleMaps.deleteMarker(del);
   };
 
   $scope.setAdmin = function(option) {
@@ -930,6 +1033,6 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
   };
 });
 
-// Add new option page before map to load data once in admin / basic mode
 // Add a toggle-able list page for content
-// Complete user journeys by adding confirmation content
+// Complete form validations
+// Complete tests with real endpoint
