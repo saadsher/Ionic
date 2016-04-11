@@ -1,3 +1,4 @@
+var host = 'http://spasey-service.herokuapp.com'
 angular.module('Spasey', ['ionic', 'ngCordova'])
 
 .run(function($ionicPlatform) {
@@ -30,28 +31,22 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
   return {
     getMarkers: function(params) {
-      return $http.get("http://localhost:8000/markers.php",{params:params}).then(function(response){
+      return $http.get(host + "/markers",{params:params}).then(function(response){
         var markers = response;
         // console.info(markers);
         return markers;
       });
     },
     createMarker: function(newMarker) {
-
-      var deferred = $q.defer();
-
       $ionicLoading.show({
         template: 'Adding a new point'
       });
 
-      $timeout(function() {
+      return $http.post(host + "/markers", { marker: newMarker }).then(function(resolve) {
         $ionicLoading.hide();
         console.info("<<NEW MARKER ADDED>>");
         console.log(newMarker);
-        deferred.resolve();
-      }, 3000);
-
-      return deferred.promise;
+      });
     },
     updateMarker: function(thisMarker) {
 
