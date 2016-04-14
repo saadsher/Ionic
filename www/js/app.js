@@ -1,4 +1,5 @@
 var host = 'http://spasey-service.herokuapp.com'
+//var host = 'http://localhost:3000'
 angular.module('Spasey', ['ionic', 'ngCordova'])
 
 .run(function($ionicPlatform) {
@@ -33,7 +34,6 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
     getMarkers: function(params) {
       return $http.get(host + "/markers",{params:params}).then(function(response){
         var markers = response;
-        // console.info(markers);
         return markers;
       });
     },
@@ -49,21 +49,15 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
       });
     },
     updateMarker: function(thisMarker) {
-
-      var deferred = $q.defer();
-
       $ionicLoading.show({
         template: 'Updating'
       });
 
-      $timeout(function() {
+      return $http.put(host + "/markers/" + thisMarker.id, { marker: thisMarker }).then(function(resolve) {
         $ionicLoading.hide();
         console.info("<<MARKER UPDATED>>");
         console.log(thisMarker);
-        deferred.resolve();
-      }, 3000);
-
-      return deferred.promise;
+      });
     },
     deleteMarker: function(thisMarker) {
 
@@ -446,6 +440,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
     });
   }
 
+
   function markerExists(lat, lng){
 
     var exists = false;
@@ -624,7 +619,8 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
       latitude: ne.latitude,
       longitude: ne.longitude,
       points: ne.points,
-      roads: ne.roads
+      roads: ne.roads,
+      id: ne.id
     };
     $rootScope.tempCache = tempCache;
     // console.table($rootScope.tempCache);
@@ -649,7 +645,9 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
         _points: event.points,
         points: event.points,
         _roads: event.roads,
-        roads: event.roads
+        roads: event.roads,
+        _id: event.id,
+        id: event.id
       }];
     } else {
       editCache = [{
@@ -926,12 +924,11 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
     $scope.empty = false;
     GoogleMaps.editMarker(edit);
     $ionicListDelegate.closeOptionButtons();
-    $scope.modalUD.show();
+    $scope.kodalUD.show();
     $scope.modalR.hide();
   }
 
   $scope.updateMarker = function(update) {
-    // console.log(update);
     $scope.empty = true;
     GoogleMaps.updateMarker(update).then(function() {
       var alertUpdate = $ionicPopup.alert({
