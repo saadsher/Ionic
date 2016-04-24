@@ -7,16 +7,9 @@
 	<ion-content>
     <div class="modal-data" data-tap-disabled="true">
 			<ion-list class="marker-list">
-        <ion-item ng-repeat="marker in listCache" item="marker" href="#/listCache/{{listCache}}" class="item-remove-animate">
+        <ion-item ng-repeat="marker in listCache" item="marker" href="#/listCache/{{listCache}}">
           R: {{ marker.roads }}<br />P: {{ marker.points }}<br />C: {{ marker.counter }} / {{ marker.capacity }}<br />i &nbsp;&nbsp;{{ marker.dictionary }}
-          <ion-option-button class="button-energized" ng-click="editMarker(marker)" ng-hide=basic>
-            EDIT
-          </ion-option-button>
-          <ion-option-button class="button-assertive" ng-click="deleteMarker(marker)" ng-hide=basic>
-						DELETE
-          </ion-option-button>
         </ion-item>
-
       </ion-list>
     </div>
 	</ion-content>

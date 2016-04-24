@@ -1,5 +1,35 @@
 angular.module('Spasey', ['ionic', 'ngCordova'])
 
+// CONSTANTS
+
+.constant('AUTH_EVENTS', {
+  notAuthenticated: 'auth-not-authenticated',
+  notAuthorized: 'auth-not-authorized'
+})
+
+.constant('USER_ROLES', {
+  dev: 'dev_role',
+  admin: 'admin_role',
+  public: 'public_role',
+  concierge: 'concierge_role',
+  resident: 'resident_role'
+})
+
+// DIRECTIVES
+
+.directive('toggleClass',function(){
+  return{
+    restrict:'A',
+    link:function(scope, element, attrs){
+      element.bind('click',function(){
+        element.toggleClass(attrs.toggleClass);
+      });
+    }
+  };
+})
+
+// RUN
+
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
 
@@ -11,26 +41,304 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
+
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+// ROUTE
 
-  $stateProvider.state('map', {
-    url: '/',
-    templateUrl: 'templates/map.html',
-    controller: 'MapCtrl'
+.config(function($stateProvider, $urlRouterProvider, USER_ROLES) {
+
+  $stateProvider.state('login', {
+    url: '/login',
+    templateUrl: 'templates/login.html',
+    controller: 'LoginCtrl'
+  }).state('register', {
+    url: '/register',
+    templateUrl: 'templates/register.html',
+    controller: 'RegisterCtrl'
+  }).state('dev', {
+    url: '/dev',
+    templateUrl: 'templates/dev-map.html',
+    controller: 'DevCtrl',
+    data: {
+      authorizedRoles: [USER_ROLES.dev]
+    }
+  }).state('admin', {
+    url: '/admin',
+    templateUrl: 'templates/admin-map.html',
+    controller: 'AdminCtrl',
+    data: {
+      authorizedRoles: [USER_ROLES.admin]
+    }
+  }).state('public', {
+    url: '/public',
+    templateUrl: 'templates/base-map.html',
+    controller: 'PublicCtrl',
+    data: {
+      authorizedRoles: [USER_ROLES.public]
+    }
+  }).state('concierge', {
+    url: '/concierge',
+    templateUrl: 'templates/concierge-map.html',
+    controller: 'CncrgCtrl',
+    data: {
+      authorizedRoles: [USER_ROLES.concierge]
+    }
+  }).state('resident', {
+    url: '/resident',
+    templateUrl: 'templates/resident-map.html',
+    controller: 'ResCtrl',
+    data: {
+      authorizedRoles: [USER_ROLES.resident]
+    }
+  }).state('error', {
+    url: '/error',
+    templateUrl: 'templates/error.html',
+    controller: 'ErrCtrl'
   });
 
-  $urlRouterProvider.otherwise("/");
+  // $urlRouterProvider.otherwise("/login");
+  $urlRouterProvider.otherwise(function ($injector, $location) {
+   var $state = $injector.get("$state");
+
+   if ($state.current.name === "login") {
+     $state.go("login");
+   } else if ($state.current.name === "register") {
+     $state.go("register");
+   } else if ($state.current.name === "dev") {
+     $state.go("dev");
+   } else if ($state.current.name === "admin") {
+     $state.go("admin");
+   } else if ($state.current.name === "public") {
+     $state.go("public");
+   } else if ($state.current.name === "concierge") {
+     $state.go("concierge");
+   } else if ($state.current.name === "resident") {
+     $state.go("resident");
+   } else {
+     $state.go("error");
+   }
+
+ });
 
 })
+
+.controller('AppCtrl', function($q, $scope, $state, $ionicSideMenuDelegate, $ionicPopup, $timeout, AuthService, AUTH_EVENTS) {
+  $scope.username = AuthService.username();
+
+  $scope.$on(AUTH_EVENTS.notAuthorized, function(event) {
+    var alertPopup = $ionicPopup.alert({
+      title: 'UNAUTHORISED  ACCESS',
+      template: 'You are not allowed to access this resource.',
+      okType: 'button-assertive'
+    });
+  });
+
+  $scope.$on(AUTH_EVENTS.notAuthenticated, function(event) {
+    AuthService.logout();
+    $state.go('login');
+    var alertPopup = $ionicPopup.alert({
+      title: 'SESSION LOST',
+      template: 'Sorry, Your session has expired, please login again.',
+      okType: 'button-dark'
+    });
+  });
+
+  $scope.setCurrentUsername = function(name) {
+    $scope.username = name;
+  };
+
+  $scope.logout = function() {
+
+    var deferred = $q.defer();
+
+    $ionicSideMenuDelegate.toggleLeft();
+
+    $timeout(function() {
+      AuthService.logout();
+      $state.go('login');
+      deferred.resolve();
+    }, 300);
+
+    return deferred.promise;
+  };
+
+})
+
+// AUTH
+
+.run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
+ $rootScope.$on('$stateChangeStart', function (event, next, nextParams, fromState) {
+
+   if ('data' in next && 'authorizedRoles' in next.data) {
+     var authorizedRoles = next.data.authorizedRoles;
+     if (!AuthService.isAuthorized(authorizedRoles)) {
+       event.preventDefault();
+       $state.go($state.current, {}, {reload: true});
+       $rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
+     }
+   }
+
+   if (!AuthService.isAuthenticated()) {
+     if (next.name === 'error') {
+       event.preventDefault();
+       $state.go('login');
+     }
+   }
+ });
+})
+
+.service('AuthService', function($q, $http, USER_ROLES) {
+  var LOCAL_TOKEN_KEY = 'yourTokenKey';
+  var username = '';
+  var isAuthenticated = false;
+  var role = '';
+  var authToken;
+
+  function loadUserCredentials() {
+    var token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
+    if (token) {
+      useCredentials(token);
+    }
+  }
+
+  function storeUserCredentials(token) {
+    window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
+    useCredentials(token);
+  }
+
+  function useCredentials(token) {
+    username = token.split('.')[0];
+    isAuthenticated = true;
+    authToken = token;
+
+    if (username == 'dev') {
+      role = USER_ROLES.dev
+    }
+    if (username == 'admin') {
+      role = USER_ROLES.admin
+    }
+    if (username == 'public') {
+      role = USER_ROLES.public
+    }
+    if (username == 'concierge') {
+      role = USER_ROLES.concierge
+    }
+    if (username == 'resident') {
+      role = USER_ROLES.resident
+    }
+
+    // Set the token as header for your requests!
+    $http.defaults.headers.common['X-Auth-Token'] = token;
+  }
+
+  function destroyUserCredentials() {
+    authToken = undefined;
+    username = '';
+    isAuthenticated = false;
+    $http.defaults.headers.common['X-Auth-Token'] = undefined;
+    window.localStorage.removeItem(LOCAL_TOKEN_KEY);
+  }
+
+  var login = function(name, pw) {
+    return $q(function(resolve, reject) {
+      if (
+        (name == 'dev' && pw == '1') ||
+        (name == 'admin' && pw == '1') ||
+        (name == 'public' && pw == '1') ||
+        (name == 'concierge' && pw == '1') ||
+        (name == 'resident' && pw == '1'))
+        {
+          // Make a request and receive your auth token from your server
+          storeUserCredentials(name + '.yourServerToken');
+          resolve('Login success.');
+        } else {
+          reject('Login Failed.');
+        }
+    });
+  };
+
+  var logout = function() {
+    destroyUserCredentials();
+  };
+
+  var isAuthorized = function(authorizedRoles) {
+    if (!angular.isArray(authorizedRoles)) {
+      authorizedRoles = [authorizedRoles];
+    }
+    return (isAuthenticated && authorizedRoles.indexOf(role) !== -1);
+  };
+
+  loadUserCredentials();
+
+  return {
+    login: login,
+    logout: logout,
+    isAuthorized: isAuthorized,
+    isAuthenticated: function() {return isAuthenticated;},
+    username: function() {return username;},
+    role: function() {return role;}
+  };
+})
+
+.factory('AuthInterceptor', function ($rootScope, $q, AUTH_EVENTS) {
+  return {
+    responseError: function (response) {
+      $rootScope.$broadcast({
+        401: AUTH_EVENTS.notAuthenticated,
+        403: AUTH_EVENTS.notAuthorized
+      }[response.status], response);
+      return $q.reject(response);
+    }
+  };
+})
+
+.config(function ($httpProvider) {
+  $httpProvider.interceptors.push('AuthInterceptor');
+})
+
+.controller('LoginCtrl', function($scope, $state, $ionicPopup, AuthService) {
+  $scope.data = {};
+
+  $scope.login = function(data) {
+    AuthService.login(data.username, data.password).then(function(authenticated) {
+      $state.go('dev', {}, {reload: true});
+      $scope.setCurrentUsername(data.username);
+    }, function(err) {
+      var alertPopup = $ionicPopup.alert({
+        title: 'LOGIN FAILED',
+        template: 'Please check your credentials',
+        okType: 'button-assertive'
+      });
+    });
+  };
+})
+
+.controller('RegisterCtrl', function($scope, $state, $ionicPopup) {
+  $scope.data = {};
+
+  $scope.register = function(data) {
+    console.log(data)
+  };
+})
+
+// MAP
 
 .factory('Markers', function($q, $http, $ionicLoading, $timeout) {
 
+  var host = 'http://spasey-service.herokuapp.com';
+  // var host = 'http://localhost:8000';
+
   return {
     getMarkers: function(params) {
-      return $http.get("http://localhost:8000/markers.php",{params:params}).then(function(response){
+
+      var loader = angular.element(document.querySelector('.customLoader'));
+
+      loader.addClass("show");
+
+      return $http.get(host + "/markers",{params:params}).then(function(response){
+        loader.removeClass("show");
         var markers = response;
         // console.info(markers);
         return markers;
@@ -38,44 +346,34 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
     },
     createMarker: function(newMarker) {
 
-      var deferred = $q.defer();
-
       $ionicLoading.show({
-        template: 'Adding a new point'
+        template: '<ion-spinner icon="ripple"></ion-spinner>'
       });
 
-      $timeout(function() {
+      return $http.post(host + "/markers", {marker:newMarker}).then(function(resolve) {
         $ionicLoading.hide();
-        console.info("<<NEW MARKER ADDED>>");
-        console.log(newMarker);
-        deferred.resolve();
-      }, 3000);
-
-      return deferred.promise;
+        // console.info("<<NEW MARKER ADDED>>");
+        // console.log(newMarker);
+      });
     },
     updateMarker: function(thisMarker) {
 
-      var deferred = $q.defer();
-
       $ionicLoading.show({
-        template: 'Updating'
+        template: '<ion-spinner icon="ripple"></ion-spinner>'
       });
 
-      $timeout(function() {
+      return $http.put(host + "/markers/" + thisMarker.id,{marker:thisMarker}).then(function(resolve) {
         $ionicLoading.hide();
-        console.info("<<MARKER UPDATED>>");
-        console.log(thisMarker);
-        deferred.resolve();
-      }, 3000);
-
-      return deferred.promise;
+        // console.info("<<MARKER UPDATED>>");
+        // console.log(thismarker);
+      });
     },
     deleteMarker: function(thisMarker) {
 
       var deferred = $q.defer();
 
       $ionicLoading.show({
-        template: 'Deleting your point'
+        template: '<ion-spinner icon="ripple"></ion-spinner>'
       });
 
       $timeout(function() {
@@ -143,6 +441,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
   var accBasic = true;
   var accAdmin = false;
   var full = false;
+  var noAnim = false;
 
   function initMap(){
 
@@ -197,7 +496,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
     }, function(error){
 
-        $('.ion-ios-paper-outline').disable();
+        // angular.element(document.querySelector('.ion-ios-paper-outline')).disable();
 
         console.warn("Could not get location");
 
@@ -264,7 +563,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
     var bounds = map.getBounds();
     var zoom = map.getZoom();
 
-    //Convert objects returned by Google to be more readable
+    // Convert objects returned by Google to be more readable
     var centerNorm = {
         lat: center.lat(),
         lng: center.lng()
@@ -289,6 +588,27 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
       "zoom": zoom,
       "boundingRadius": boundingRadius
     };
+
+    // var params = {
+    //   "centre": {
+    //     lat: 51.5060752,
+    //     lng: -0.0047033
+    //   },
+    //   "bounds": {
+    //     northest: {
+    //       lat: 51.511196912922415,
+    //       lng: -0.00007917165828530415
+    //     },
+    //     southwest: {
+    //       lat: 51.500952911311614,
+    //       lng: -0.009327428341634914
+    //     }
+    //   },
+    //   "zoom": 16,
+    //   "boundingRadius": 0.4059245377416782
+    // };
+
+    // console.log(params)
 
     var markers = Markers.getMarkers(params).then(function(markers){
 
@@ -341,7 +661,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
         (this.MarkerLabel) && this.MarkerLabel.setMap.apply(this.MarkerLabel, arguments);
       };
 
-      // // Marker Label Overlay
+      // Marker Label Overlay
       var MarkerLabel = function(options) {
         var self = this;
         this.setValues(options);
@@ -414,20 +734,36 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
             var markerPos = new google.maps.LatLng(record.latitude, record.longitude);
 
-            // add the marker
-            var marker = new Marker({
-                map: map,
-                animation: google.maps.Animation.DROP,
-                icon: {
-                  path: MAP_PIN,
-                  fillcolor: '#FFC900',
-                  fillOpacity: 0.5,
-                  strokeColor: '#FFC900',
-                  strokeWeight: 2
-                },
-                map_icon_label: '<span class="map-icon-label-ticker">'+record.counter+'</span>',
-                position: markerPos
-            });
+            if(noAnim) {
+              // Don't animate and add the marker
+              var marker = new Marker({
+                  map: map,
+                  icon: {
+                    path: MAP_PIN,
+                    fillcolor: '#FFC900',
+                    fillOpacity: 0.5,
+                    strokeColor: '#FFC900',
+                    strokeWeight: 2
+                  },
+                  map_icon_label: '<span class="map-icon-label-ticker">'+record.counter+'</span>',
+                  position: markerPos
+              });
+            } else {
+              // add the marker with animation drop
+              var marker = new Marker({
+                  map: map,
+                  animation: google.maps.Animation.DROP,
+                  icon: {
+                    path: MAP_PIN,
+                    fillcolor: '#FFC900',
+                    fillOpacity: 0.5,
+                    strokeColor: '#FFC900',
+                    strokeWeight: 2
+                  },
+                  map_icon_label: '<span class="map-icon-label-ticker">'+record.counter+'</span>',
+                  position: markerPos
+              });
+            }
 
             // Add the marker to the markerCache so we know not to add it again later
             var markerData = {
@@ -443,9 +779,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
             cacheEditActibox(marker, record);
 
         }
-
       }
-
     }).then(function() {
         return cacheLoad(); //Prepare the list cache
     });
@@ -576,14 +910,14 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
   function addListeners(){
     if (accAdmin) {
-      console.log("ADMIN");
+      console.warn("ADMIN");
       google.maps.event.addListener(map, 'click', function(event){
         cacheNew(event);
         clickNew();
       });
     } else if (accBasic) {
       cacheNew();
-      console.log("BASIC");
+      console.warn("BASIC");
     }
   }
 
@@ -629,7 +963,8 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
       latitude: ne.latitude,
       longitude: ne.longitude,
       points: ne.points,
-      roads: ne.roads
+      roads: ne.roads,
+      id: ne.id
     };
     $rootScope.tempCache = tempCache;
     // console.table($rootScope.tempCache);
@@ -654,8 +989,11 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
         _points: event.points,
         points: event.points,
         _roads: event.roads,
-        roads: event.roads
+        roads: event.roads,
+        _id: event.id,
+        id: event.id
       }];
+      // console.log(event)
     } else {
       editCache = [{
         capacity: "",
@@ -664,7 +1002,8 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
         latitude: "",
         longitude: "",
         points: "",
-        roads: ""
+        roads: "",
+        id: ""
       }];
     }
     $rootScope.editCache = editCache;
@@ -685,7 +1024,9 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
         _points: event.points,
         points: event.points,
         _roads: event.roads,
-        roads: event.roads
+        roads: event.roads,
+        _id: event.id,
+        id: event.id
       }];
     }
   }
@@ -704,7 +1045,9 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
         _points: event.points,
         points: event.points,
         _roads: event.roads,
-        roads: event.roads
+        roads: event.roads,
+        _id: event.id,
+        id: event.id
       }];
     }
   }
@@ -725,6 +1068,16 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
   function setCenter() {
     map.panTo(gLoc);
+  }
+
+  function refreshData() {
+    for (var i = 0; i < markerCache.length; i++) {
+      markerCache[i].marker.setMap(null);
+    }
+    listCache = [];
+    markerCache = [];
+    noAnim = true;
+    loadMarkers();
   }
 
   return {
@@ -794,7 +1147,9 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
       if (accAdmin) {
         if (n) {
           cacheTemp(n);
-          return Markers.createMarker(tempCache);
+          return Markers.createMarker(tempCache).then(function(){
+            refreshData();
+          });
         } else {
           cacheNew();
         }
@@ -817,14 +1172,18 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
       if (accAdmin) {
         if(u) {
           cacheTemp(u);
-          return Markers.updateMarker(tempCache);
+          return Markers.updateMarker(tempCache).then(function(){
+            refreshData();
+          });
         }
       }
     },
     updateCounter: function(u){
       if(u) {
         cacheTemp(u);
-        return Markers.updateMarker(tempCache);
+        return Markers.updateMarker(tempCache).then(function(){
+          refreshData();
+        });
       }
     },
     deleteMarker: function(d) {
@@ -849,18 +1208,275 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
 })
 
-.directive('toggleClass',function(){
-  return{
-    restrict:'A',
-    link:function(scope, element, attrs){
-      element.bind('click',function(){
-        element.toggleClass(attrs.toggleClass);
-      });
+// CONCIERGE
+
+.factory('Concierge', function($q, $ionicLoading, $timeout) {
+  return {
+    parkVehicle: function() {
+
+    },
+    releaseVehicle: function() {
+
+    },
+    postBox: function() {
+
+    },
+    messageChat: function() {
+
     }
-  };
+  }
 })
 
-.controller('MapCtrl', function($scope, $state, $ionicModal, $ionicPopup, $ionicListDelegate, GoogleMaps) {
+// USER CONTROLLERS
+
+.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicPopup, $ionicListDelegate, GoogleMaps) {
+
+  ionic.Platform.ready(function() {
+
+    // console.warn("Developer CTRL");
+
+    // $scope.toggleLeft = function() {
+    //   $ionicSideMenuDelegate.toggleLeft();
+    // };
+
+    GoogleMaps.init("AIzaSyDt1Hn4Nag4LRzZY-b6Jn0leKDc2ZMwXns");
+
+    $ionicModal.fromTemplateUrl('templates/new.html', {
+      scope: $scope,
+    }).then(function(modal) {
+      $scope.modalC = modal;
+      GoogleMaps.newMarker();
+    });
+
+    $ionicModal.fromTemplateUrl('templates/admin-list.html', {
+      scope: $scope
+    }).then(function(modal) {
+      $scope.modalR = modal;
+    });
+
+    $ionicModal.fromTemplateUrl('templates/edit.html', {
+      scope: $scope
+    }).then(function(modal) {
+      $scope.modalUD = modal;
+    });
+
+    $ionicModal.fromTemplateUrl('templates/profile.html', {
+      scope: $scope,
+      animation: 'slide-in-left'
+    }).then(function(modal) {
+      $scope.modalProfile = modal;
+    });
+
+    $ionicModal.fromTemplateUrl('templates/settings.html', {
+      scope: $scope,
+      animation: 'slide-in-left'
+    }).then(function(modal) {
+      $scope.modalSettings = modal;
+    });
+
+    $ionicModal.fromTemplateUrl('templates/feedback.html', {
+      scope: $scope,
+      animation: 'slide-in-left'
+    }).then(function(modal) {
+      $scope.modalFeedback = modal;
+    });
+
+    $ionicModal.fromTemplateUrl('templates/postbox.html', {
+      scope: $scope,
+      animation: 'slide-in-right'
+    }).then(function(modal) {
+      $scope.modalPostbox = modal;
+    });
+
+    $ionicModal.fromTemplateUrl('templates/messages.html', {
+      scope: $scope,
+      animation: 'slide-in-right'
+    }).then(function(modal) {
+      $scope.modalMessages = modal;
+    });
+
+    $scope.empty = true;
+
+    $scope.clickMap = function() {
+      GoogleMaps.clickMap();
+      if (GoogleMaps.editOnce()) {
+        $scope.empty = false;
+      }
+    }
+
+    $scope.clickNewHide = function() {
+      GoogleMaps.clickNewClose();
+    }
+    $scope.clickEditHide = function() {
+      GoogleMaps.clickEditClose();
+    }
+    $scope.clickCounterHide = function() {
+      GoogleMaps.clickCounterClose();
+    }
+
+    $scope.setCenter = function() {
+      GoogleMaps.setCenter();
+    }
+
+    $scope.listMarkers = function() {
+      GoogleMaps.listMarkers();
+    }
+
+    $scope.listItem = function() { // TODO
+      // Click on list item that shows more info about marker
+    }
+
+    $scope.addMarker = function(add) {
+      GoogleMaps.newMarker(add).then(function() {
+        var alertAdd = $ionicPopup.alert({
+          title: 'Thank you',
+          template: 'Marker added',
+          okType: 'button-dark'
+        });
+
+        alertAdd.then(function(res) {
+          if(res) {
+            GoogleMaps.clickNewClose();
+            $scope.modalC.hide();
+            GoogleMaps.newMarker();
+          }
+        });
+      });
+    }
+
+    $scope.editMarker = function(edit) {
+      // console.log(edit);
+      $scope.empty = false;
+      GoogleMaps.editMarker(edit);
+      $ionicListDelegate.closeOptionButtons();
+      $scope.modalUD.show();
+      $scope.modalR.hide();
+    }
+
+    $scope.updateMarker = function(update) {
+      $scope.empty = true;
+      GoogleMaps.updateMarker(update).then(function() {
+        var alertUpdate = $ionicPopup.alert({
+          title: 'Thank you',
+          template: 'Marker updated',
+          okType: 'button-dark'
+        });
+
+        alertUpdate.then(function(res) {
+          if(res) {
+            GoogleMaps.clickEditClose();
+            $scope.modalUD.hide();
+            GoogleMaps.editMarker();
+          }
+        });
+      })
+    }
+
+    $scope.deleteMarker = function(del) {
+      var alertDelete = $ionicPopup.confirm({
+        title: 'Confirm',
+        template: 'Are you sure you want to delete this marker?',
+        okText: 'Delete',
+        okType: 'button-assertive'
+      });
+
+      alertDelete.then(function(res) {
+        if(res) {
+          GoogleMaps.deleteMarker(del).then(function() {
+            var alertDeleted = $ionicPopup.alert({
+              title: 'Thank you',
+              template: 'Marker deleted',
+              okType: 'button-dark'
+            });
+
+            alertDeleted.then(function(res) {
+              if(res) {
+                GoogleMaps.clickEditClose();
+                $ionicListDelegate.closeOptionButtons();
+                $scope.modalR.hide();
+              }
+            });
+          });
+        }
+      });
+    }
+
+    $scope.updateCounter = function(update) {
+      $scope.empty = true;
+      GoogleMaps.updateCounter(update).then(function() {
+        var confirmPopup = $ionicPopup.alert({
+          title: 'Thank you',
+          template: 'Counter updated',
+          okType: 'button-dark'
+        });
+
+        confirmPopup.then(function(res) {
+          if(res) {
+            GoogleMaps.clickCounterClose();
+          }
+        });
+      });
+    }
+
+    $scope.counterUp = function(num) {
+      GoogleMaps.clickCounterUp(num);
+    };
+    $scope.counterDown = function(num) {
+      GoogleMaps.clickCounterDown(num);
+    };
+
+    $scope.setAdmin = function(option) {
+      GoogleMaps.clickNewClose();
+      GoogleMaps.clickEditClose();
+      GoogleMaps.clickCounterClose();
+      $ionicListDelegate.closeOptionButtons();
+
+      if (option == true) {
+        GoogleMaps.setAdmin(option);
+      } else {
+        GoogleMaps.setAdmin();
+      }
+    };
+
+    var toggle = false;
+    $scope.basic = true;
+    $scope.toggleAdmin = function(option) {
+      if(toggle) {
+        toggle = false;
+        $scope.basic = true;
+        angular.element(document.querySelector('.btn-list')).addClass('basic');
+        return $scope.setAdmin();
+      }
+      $scope.setAdmin(option);
+      toggle = true;
+      angular.element(document.querySelector('.btn-list')).removeClass('basic');
+      $scope.basic = false;
+    };
+
+    // NAV
+    $scope.goProfile = function() {
+      $scope.modalProfile.show();
+    }
+    $scope.goSettings = function() {
+      $scope.modalSettings.show();
+    }
+    $scope.goFeedback = function() {
+      $scope.modalFeedback.show();
+    }
+    $scope.goPostbox = function() {
+      $scope.modalPostbox.show();
+    }
+    $scope.goMessages = function() {
+      $scope.modalMessages.show();
+    }
+
+  });
+})
+
+
+.controller('AdminCtrl', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicPopup, $ionicListDelegate, GoogleMaps) {
+
+  console.warn("Admin");
 
   GoogleMaps.init("AIzaSyDt1Hn4Nag4LRzZY-b6Jn0leKDc2ZMwXns");
 
@@ -871,7 +1487,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
     GoogleMaps.newMarker();
   });
 
-  $ionicModal.fromTemplateUrl('templates/list.html', {
+  $ionicModal.fromTemplateUrl('templates/admin-list.html', {
     scope: $scope
   }).then(function(modal) {
     $scope.modalR = modal;
@@ -882,6 +1498,8 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
   }).then(function(modal) {
     $scope.modalUD = modal;
   });
+
+  $scope.empty = true;
 
   $scope.clickMap = function() {
     GoogleMaps.clickMap();
@@ -1009,6 +1627,10 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
   };
 
   $scope.setAdmin = function(option) {
+    GoogleMaps.clickNewClose();
+    GoogleMaps.clickEditClose();
+    GoogleMaps.clickCounterClose();
+
     if (option == true) {
       GoogleMaps.setAdmin(option);
     } else {
@@ -1017,7 +1639,6 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
   };
 
   var toggle = false;
-  $scope.empty = true;
   $scope.basic = true;
   $scope.toggleAdmin = function(option) {
     if(toggle) {
@@ -1031,8 +1652,251 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
     angular.element(document.querySelector('.btn-list')).removeClass('basic');
     $scope.basic = false;
   };
+})
+
+
+.controller('UserCtrl', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicPopup, $ionicListDelegate, GoogleMaps) {
+
+  console.warn("User");
+
+  GoogleMaps.init("AIzaSyDt1Hn4Nag4LRzZY-b6Jn0leKDc2ZMwXns");
+
+  $ionicModal.fromTemplateUrl('templates/base-list.html', {
+    scope: $scope
+  }).then(function(modal) {
+    $scope.modalR = modal;
+  });
+
+  $scope.clickCounterHide = function() {
+    GoogleMaps.clickCounterClose();
+  }
+
+  $scope.setCenter = function() {
+    GoogleMaps.setCenter();
+  }
+
+  $scope.listMarkers = function() {
+    GoogleMaps.listMarkers();
+  }
+
+  $scope.clickMap = function() {
+    GoogleMaps.clickMap();
+  }
+
+  $scope.updateCounter = function(update) {
+    GoogleMaps.updateCounter(update).then(function() {
+      var confirmPopup = $ionicPopup.alert({
+        title: 'Thank you',
+        template: 'Counter updated',
+        okType: 'button-dark'
+      });
+
+      confirmPopup.then(function(res) {
+        if(res) {
+          GoogleMaps.clickCounterClose();
+        }
+      });
+    });
+  }
+
+  $scope.counterUp = function(num) {
+    GoogleMaps.clickCounterUp(num);
+  };
+  $scope.counterDown = function(num) {
+    GoogleMaps.clickCounterDown(num);
+  };
+})
+
+
+.controller('CncrgCtrl', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicPopup, $ionicListDelegate, GoogleMaps) {
+
+  console.warn("Concierge");
+
+  GoogleMaps.init("AIzaSyDt1Hn4Nag4LRzZY-b6Jn0leKDc2ZMwXns");
+
+  $ionicModal.fromTemplateUrl('templates/base-list.html', {
+    scope: $scope
+  }).then(function(modal) {
+    $scope.modalR = modal;
+  });
+
+  $scope.clickCounterHide = function() {
+    GoogleMaps.clickCounterClose();
+  }
+
+  $scope.setCenter = function() {
+    GoogleMaps.setCenter();
+  }
+
+  $scope.listMarkers = function() {
+    GoogleMaps.listMarkers();
+  }
+
+  $scope.clickMap = function() {
+    GoogleMaps.clickMap();
+  }
+
+  $scope.updateCounter = function(update) {
+    GoogleMaps.updateCounter(update).then(function() {
+      var confirmPopup = $ionicPopup.alert({
+        title: 'Thank you',
+        template: 'Counter updated',
+        okType: 'button-dark'
+      });
+
+      confirmPopup.then(function(res) {
+        if(res) {
+          GoogleMaps.clickCounterClose();
+        }
+      });
+    });
+  }
+
+  $scope.counterUp = function(num) {
+    GoogleMaps.clickCounterUp(num);
+  };
+  $scope.counterDown = function(num) {
+    GoogleMaps.clickCounterDown(num);
+  };
+})
+
+
+.controller('ResCtrl', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicPopup, $ionicListDelegate, GoogleMaps) {
+
+  console.warn("Resident");
+
+  GoogleMaps.init("AIzaSyDt1Hn4Nag4LRzZY-b6Jn0leKDc2ZMwXns");
+
+  $ionicModal.fromTemplateUrl('templates/base-list.html', {
+    scope: $scope
+  }).then(function(modal) {
+    $scope.modalR = modal;
+  });
+
+  $scope.clickCounterHide = function() {
+    GoogleMaps.clickCounterClose();
+  }
+
+  $scope.setCenter = function() {
+    GoogleMaps.setCenter();
+  }
+
+  $scope.listMarkers = function() {
+    GoogleMaps.listMarkers();
+  }
+
+  $scope.clickMap = function() {
+    GoogleMaps.clickMap();
+  }
+
+  $scope.updateCounter = function(update) {
+    GoogleMaps.updateCounter(update).then(function() {
+      var confirmPopup = $ionicPopup.alert({
+        title: 'Thank you',
+        template: 'Counter updated',
+        okType: 'button-dark'
+      });
+
+      confirmPopup.then(function(res) {
+        if(res) {
+          GoogleMaps.clickCounterClose();
+        }
+      });
+    });
+  }
+
+  $scope.counterUp = function(num) {
+    GoogleMaps.clickCounterUp(num);
+  };
+  $scope.counterDown = function(num) {
+    GoogleMaps.clickCounterDown(num);
+  };
+})
+
+// Left Menu Controllers
+
+.controller('ProfileCtrl', function($scope, $state, $ionicHistory) {
+  // console.warn("PROFILE");
+  // $scope.goBack = function() {
+  //   $ionicHistory.goBack();
+  // }
+})
+
+.controller('SettingsCtrl', function($scope) {
+  // console.warn("SETTINGS");
+})
+
+.controller('FeedbackCtrl', function($scope) {
+  // console.warn("FEEDBACK");
+})
+
+// Right Menu Controllers
+
+.controller('ValetCtrl', function($scope, Concierge) {
+  // console.warn("VALET");
+})
+
+.controller('PostboxCtrl', function($scope, Concierge) {
+  // console.warn("POSTBOX");
+})
+
+.controller('MessagesCtrl', function($scope, Concierge) {
+  // console.warn("MESSAGES");
+})
+
+// ERROR HANDLER
+
+.controller('ErrCtrl', function($scope, $ionicHistory) {
+  console.warn("WTF");
+  $scope.goBack = function() {
+    $ionicHistory.goBack();
+  }
 });
 
-// Add a toggle-able list page for content
+
+// -----------------------------------------------------------------------------
+// NOTE
+// -----------------------------------------------------------------------------
+
+// INFO
+
+// User: Counters, Leftside
+// Admin: CRUD, Toggle views, Leftside
+// Concierge: Counters, Leftside, Rightside
+// Resident: Counters, Leftside, Rightside
+// Dev: *
+
+// -----------------------------------------------------------------------------
+// IMPROVE
+
+// Routing of paths
+// Add error popups
+// login loader
 // Complete form validations
-// Complete tests with real endpoint
+// GET call single marker for edits
+
+// -----------------------------------------------------------------------------
+// BACKEND
+
+// Complete tests with real endpoint ... On going [Delete is pending]
+
+// -----------------------------------------------------------------------------
+// TODO
+
+// Scrolling on mobile
+// Complete basic registration
+// Add social login providers
+// Add Push notification
+// Add Dictionary information on list item click / tap
+
+// -----------------------------------------------------------------------------
+// IN PROGRESS
+
+// Profile
+// Settings
+// Feedback
+// Valet park
+// Valet out
+// Postbox
+// Messages
+// -----------------------------------------------------------------------------

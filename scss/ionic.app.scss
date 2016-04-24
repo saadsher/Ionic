@@ -9,13 +9,80 @@ $mapicons-font-path: '../lib/map-icons-master/dist/fonts';
 // Include all of Ionic
 // @import "www/lib/ionic/scss/ionic.scss";
 
+// Helpers
+.text-center {
+  text-align: center;
+}
+
+.slide-in-left {
+  -webkit-transform: translateX(-100%);
+    transform: translateX(-100%); }
+
+.slide-in-left.ng-enter, .slide-in-left > .ng-enter {
+  -webkit-transition: all cubic-bezier(0.1, 0.7, 0.1, 1) 400ms;
+  transition: all cubic-bezier(0.1, 0.7, 0.1, 1) 400ms; }
+
+.slide-in-left.ng-enter-active, .slide-in-left > .ng-enter-active {
+  -webkit-transform: translateX(0);
+    transform: translateX(0); }
+
+.slide-in-left.ng-leave, .slide-in-left > .ng-leave {
+  -webkit-transition: all ease-in-out 250ms;
+  transition: all ease-in-out 250ms; }
+
+  .slide-in-right {
+    -webkit-transform: translateX(100%);
+      transform: translateX(100%); }
+
+  .slide-in-right.ng-enter, .slide-in-right > .ng-enter {
+    -webkit-transition: all cubic-bezier(0.1, 0.7, 0.1, 1) 400ms;
+    transition: all cubic-bezier(0.1, 0.7, 0.1, 1) 400ms; }
+
+  .slide-in-right.ng-enter-active, .slide-in-right > .ng-enter-active {
+    -webkit-transform: translateX(0);
+      transform: translateX(0); }
+
+  .slide-in-right.ng-leave, .slide-in-right > .ng-leave {
+    -webkit-transition: all ease-in-out 250ms;
+    transition: all ease-in-out 250ms; }
+
 // Custom
+ion-nav-view {
+  @media (min-width: 680px) {
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 60%;
+    max-height: 90%;
+    outline: 5px solid;
+    box-shadow: 10px 10px gainsboro;
+  }
+}
+
+.error-wrapper {
+
+  @media(min-width: 370px) {
+    .card,
+    .item,
+    h1,
+    button {
+      margin-top: 150px;
+      margin-bottom: 50px !important;
+    }
+  }
+
+  .item,
+  h1 {
+    margin-top: 50px;
+  }
+}
+
 .bar.bar-stable {
   // display: none;
   // height: 21px;
 
   .title {
-    line-height: 55px;
+    // line-height: 55px;
     text-align: center;
   }
 }
@@ -35,6 +102,15 @@ $mapicons-font-path: '../lib/map-icons-master/dist/fonts';
 #map {
   height: 100%;
   width: 100%;
+}
+
+.ion-ios-arrow-back:before {
+  transition: .3s all;
+}
+.menu-open .ion-ios-arrow-back.reverse {
+  &:before {
+    transform: rotate(180deg);
+  }
 }
 
 .actibox-new,
@@ -78,7 +154,6 @@ $mapicons-font-path: '../lib/map-icons-master/dist/fonts';
   }
 
   @media(min-width: 680px) {
-    width: 60%;
     left: 50%;
     transform: translateX(-50%);
   }
@@ -232,7 +307,7 @@ $mapicons-font-path: '../lib/map-icons-master/dist/fonts';
   transform: translateY(-100%);
 
   &:before {
-    vertical-align: top;
+    // vertical-align: top;
   }
 }
 .btn-add.button.button-block {
@@ -296,8 +371,9 @@ $mapicons-font-path: '../lib/map-icons-master/dist/fonts';
   transform: translateY(-100%);
 
   &:before {
-    vertical-align: top;
-    margin-right: 5px;
+    position: relative;
+    top: -3px;
+    left: -2px;
   }
 }
 
@@ -463,5 +539,31 @@ $mapicons-font-path: '../lib/map-icons-master/dist/fonts';
     padding: 12px;
     left: -12px;
     top: -10px;
+  }
+}
+
+.loading-container .loading {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.spinner-ripple svg {
+  width: 68px;
+  height: 68px;
+  stroke: #ffc900;
+  fill: #ffc900;
+}
+.customLoader {
+  opacity: 0;
+
+  &.show {
+    opacity: .8;
+  }
+
+  svg {
+    stroke: #444;
+    padding: 5px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
