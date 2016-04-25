@@ -1,3 +1,5 @@
+var host = 'http://spasey-service.herokuapp.com'
+//var host = 'http://localhost:3000'
 angular.module('Spasey', ['ionic', 'ngCordova'])
 
 // CONSTANTS
@@ -339,9 +341,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
       return $http.get(host + "/markers",{params:params}).then(function(response){
         loader.removeClass("show");
-        var markers = response;
-        // console.info(markers);
-        return markers;
+        return response;
       });
     },
     createMarker: function(newMarker) {
@@ -1554,7 +1554,6 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
   }
 
   $scope.updateMarker = function(update) {
-    // console.log(update);
     $scope.empty = true;
     GoogleMaps.updateMarker(update).then(function() {
       var alertUpdate = $ionicPopup.alert({
