@@ -104,7 +104,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
   $urlRouterProvider.otherwise(function ($injector, $location) {
    var $state = $injector.get("$state");
 
-   if ($state.current.name === "login") {
+   if (!$state.current.name || $state.current.name === "login") {
      $state.go("login");
    } else if ($state.current.name === "register") {
      $state.go("register");
