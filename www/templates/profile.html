@@ -3,7 +3,23 @@
 	 <h1 class="title">Profile</h1>
 	 <a class="button button-light pull-right ion-ios-close-outline btn-close-modal" ng-click="modalProfile.hide()"></a>
  </ion-header-bar>
- <ion-content ng-controller="ProfileCtrl">
- 	<h3>PROFILE</h3>
+ <ion-content ng-controller="ProfileCtrl" class="padding" scroll="false">
+   <div class="modal-data" data-tap-disabled="true">
+     <form name="formP" id="formP" class="formP">
+       <div class="list">
+         <label class="item item-input item-floating-label">
+           <ion-label>Email</ion-label>
+           <input type="email" placeholder="Email" ng-model="profile.username" required ng-minlength="3">
+           <a class="button button-light clr-input ion-ios-close-empty" ng-show="profile.username.length" ng-click="profile.username = null"></a>
+         </label>
+         <label class="item item-input item-floating-label">
+           <ion-label>Password</ion-label>
+           <input type="password" placeholder="Password" ng-model="profile.password" required ng-minlength="6">
+           <a class="button button-light clr-input ion-ios-close-empty" ng-show="profile.password.length" ng-click="profile.password = null"></a>
+         </label>
+       </div>
+       <button type="submit" class="button button-block button-dark" ng-click="update(profile)" ng-disabled="formP.$invalid">Update</button>
+     </form>
+   </div>
  </ion-content>
 </ion-modal-view>
