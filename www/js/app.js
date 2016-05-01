@@ -1,5 +1,6 @@
 var host = 'http://spasey-service.herokuapp.com'
-//var host = 'http://localhost:3000'
+//var host = 'http://localhost:5000';
+var markerCache = [];
 angular.module('Spasey', ['ionic', 'ngCordova'])
 
 // CONSTANTS
@@ -328,13 +329,8 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 // MAP
 
 .factory('Markers', function($q, $http, $ionicLoading, $timeout) {
-
-  var host = 'http://spasey-service.herokuapp.com';
-  // var host = 'http://localhost:8000';
-
   return {
     getMarkers: function(params) {
-
       var loader = angular.element(document.querySelector('.customLoader'));
 
       loader.addClass("show");
@@ -345,45 +341,37 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
       });
     },
     createMarker: function(newMarker) {
-
       $ionicLoading.show({
         template: '<ion-spinner icon="ripple"></ion-spinner>'
       });
 
       return $http.post(host + "/markers", {marker:newMarker}).then(function(resolve) {
         $ionicLoading.hide();
-        // console.info("<<NEW MARKER ADDED>>");
-        // console.log(newMarker);
       });
     },
     updateMarker: function(thisMarker) {
-
       $ionicLoading.show({
         template: '<ion-spinner icon="ripple"></ion-spinner>'
       });
 
       return $http.put(host + "/markers/" + thisMarker.id,{marker:thisMarker}).then(function(resolve) {
         $ionicLoading.hide();
-        // console.info("<<MARKER UPDATED>>");
-        // console.log(thismarker);
       });
     },
     deleteMarker: function(thisMarker) {
-
-      var deferred = $q.defer();
-
       $ionicLoading.show({
         template: '<ion-spinner icon="ripple"></ion-spinner>'
       });
 
-      $timeout(function() {
+      return $http.delete(host + "/markers/" + thisMarker.id,{marker:thisMarker}).then(function(resolve) {
+        for(var i = 0; i < markerCache.length; i++) {
+          var marker = markerCache[i].marker;
+          if(thisMarker.id === marker.id) {
+            marker.setMap(null);
+          }
+        }
         $ionicLoading.hide();
-        console.info("<<MARKER DELETED>>");
-        console.log(thisMarker);
-        deferred.resolve();
-      }, 3000);
-
-      return deferred.promise;
+      });
     }
   };
 
@@ -419,7 +407,6 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
 .factory('GoogleMaps', function($cordovaGeolocation, $ionicLoading, $rootScope, $cordovaNetwork, Markers, ConnectivityMonitor){
 
-  var markerCache = [];
   var listCache = [];
   var editCache = [];
   var newCache = [];
@@ -764,6 +751,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
                   position: markerPos
               });
             }
+            marker.id = record.id;
 
             // Add the marker to the markerCache so we know not to add it again later
             var markerData = {
