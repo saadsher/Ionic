@@ -997,49 +997,6 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
     $rootScope.editCache = editCache;
     // console.table($rootScope.editCache);
   }
-
-  function cacheEditPlus(event) {
-    if (event.counter < 9) {
-      editCache = [{
-        _capacity: event.capacity,
-        capacity: event.capacity,
-        _counter: event.counter,
-        counter: event.counter++,
-        _dictionary: event.dictionary,
-        dictionary: event.dictionary,
-        latitude: event.latitude,
-        longitude: event.longitude,
-        _points: event.points,
-        points: event.points,
-        _roads: event.roads,
-        roads: event.roads,
-        _id: event.id,
-        id: event.id
-      }];
-    }
-  }
-
-  function cacheEditMinus(event) {
-    if (event.counter > 0) {
-      editCache = [{
-        _capacity: event.capacity,
-        capacity: event.capacity,
-        _counter: event.counter,
-        counter: event.counter--,
-        _dictionary: event.dictionary,
-        dictionary: event.dictionary,
-        latitude: event.latitude,
-        longitude: event.longitude,
-        _points: event.points,
-        points: event.points,
-        _roads: event.roads,
-        roads: event.roads,
-        _id: event.id,
-        id: event.id
-      }];
-    }
-  }
-
   function cacheEditActibox(marker, record) {
     google.maps.event.addListener(marker, 'click', function() {
       cacheEdit(record);
@@ -1120,10 +1077,10 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
       clickCounterHide();
     },
     clickCounterUp: function(c) {
-      cacheEditPlus(c);
+      MarkerCounterService.increase(c, editCache);
     },
     clickCounterDown: function(c) {
-      cacheEditMinus(c);
+      MarkerCounterService.decrease(c, editCache);
     },
     setCenter: function() {
       setCenter();
@@ -1217,7 +1174,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
 // USER CONTROLLERS
 
-.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicPopup, $ionicListDelegate, GoogleMaps) {
+.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicPopup, $ionicListDelegate, GoogleMaps, Markers) {
 
   ionic.Platform.ready(function() {
 
@@ -1390,18 +1347,21 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
     }
 
     $scope.updateCounter = function(update) {
+      var confirmPopup;
       $scope.empty = true;
       GoogleMaps.updateCounter(update).then(function() {
-        var confirmPopup = $ionicPopup.alert({
-          title: 'Thank you',
-          template: 'Counter updated',
-          okType: 'button-dark'
-        });
+        Markers.updateMarker(update).then(function(markers){
+          confirmPopup = $ionicPopup.alert({
+            title: 'Thank you',
+            template: 'Counter updated 1',
+            okType: 'button-dark'
+          });
 
-        confirmPopup.then(function(res) {
-          if(res) {
-            GoogleMaps.clickCounterClose();
-          }
+          confirmPopup.then(function(res) {
+            if(res) {
+              GoogleMaps.clickCounterClose();
+            }
+          });
         });
       });
     }

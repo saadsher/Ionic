@@ -7,7 +7,7 @@
   ],
   "watchPatterns": [
     "server/*.php",
-    "www/js/*",
+    "www/js/**/*.js",
     "www/**/*.html",
     "!www/css/**/*"
   ]
