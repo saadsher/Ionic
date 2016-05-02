@@ -1,5 +1,3 @@
-var host = 'http://spasey-service.herokuapp.com'
-//var host = 'http://localhost:3000'
 angular.module('Spasey', ['ionic', 'ngCordova'])
 
 // CONSTANTS
@@ -327,7 +325,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
 // MAP
 
-.factory('Markers', function($q, $http, $ionicLoading, $timeout) {
+.factory('Markers', function($q, $http, $ionicLoading) {
 
   var host = 'http://spasey-service.herokuapp.com';
   // var host = 'http://localhost:8000';
@@ -370,20 +368,15 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
     },
     deleteMarker: function(thisMarker) {
 
-      var deferred = $q.defer();
-
       $ionicLoading.show({
         template: '<ion-spinner icon="ripple"></ion-spinner>'
       });
 
-      $timeout(function() {
+      return $http.delete(host + "/markers/" + thisMarker.id,{marker:thisMarker}).then(function(resolve) {
         $ionicLoading.hide();
-        console.info("<<MARKER DELETED>>");
-        console.log(thisMarker);
-        deferred.resolve();
-      }, 3000);
-
-      return deferred.promise;
+        // console.info("<<MARKER DELETED>>");
+        // console.log(thisMarker);
+      });
     }
   };
 
@@ -1012,43 +1005,13 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
   function cacheEditPlus(event) {
     if (event.counter < 9) {
-      editCache = [{
-        _capacity: event.capacity,
-        capacity: event.capacity,
-        _counter: event.counter,
-        counter: event.counter++,
-        _dictionary: event.dictionary,
-        dictionary: event.dictionary,
-        latitude: event.latitude,
-        longitude: event.longitude,
-        _points: event.points,
-        points: event.points,
-        _roads: event.roads,
-        roads: event.roads,
-        _id: event.id,
-        id: event.id
-      }];
+      editCache[0].counter++;
     }
   }
 
   function cacheEditMinus(event) {
     if (event.counter > 0) {
-      editCache = [{
-        _capacity: event.capacity,
-        capacity: event.capacity,
-        _counter: event.counter,
-        counter: event.counter--,
-        _dictionary: event.dictionary,
-        dictionary: event.dictionary,
-        latitude: event.latitude,
-        longitude: event.longitude,
-        _points: event.points,
-        points: event.points,
-        _roads: event.roads,
-        roads: event.roads,
-        _id: event.id,
-        id: event.id
-      }];
+      editCache[0].counter--;
     }
   }
 
@@ -1190,7 +1153,9 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
       if (accAdmin) {
         if(d) {
           cacheTemp(d);
-          return Markers.deleteMarker(tempCache);
+          return Markers.deleteMarker(tempCache).then(function(){
+            refreshData();
+          });
         }
       }
     },
@@ -1814,11 +1779,45 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
 // Left Menu Controllers
 
-.controller('ProfileCtrl', function($scope, $state, $ionicHistory) {
+.controller('ProfileCtrl', function($scope, $timeout) {
   // console.warn("PROFILE");
-  // $scope.goBack = function() {
-  //   $ionicHistory.goBack();
-  // }
+
+  $scope.editActive = false;
+
+  var initGet = {
+    username: "dev@spasey.com",
+    password: "zaxscdvf"
+  }
+
+  $scope.profile = {
+    username: "dev@spasey.com",
+    password: "zaxscdvf"
+  }
+
+  $scope.unchanged = function() {
+    if ($scope.profile.username === initGet.username && $scope.profile.password === initGet.password) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  $scope.$on('modal.hidden', function() {
+    $timeout(function() {
+      $scope.editActive = false;
+      $scope.profile = {
+        username: "dev@spasey.com",
+        password: "zaxscdvf"
+      }
+      $scope.click = false;
+      $scope.button = false;
+    }, 300);
+  });
+
+  $scope.update = function(profile) {
+    console.log(profile)
+  }
+
 })
 
 .controller('SettingsCtrl', function($scope) {
@@ -1827,6 +1826,17 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
 .controller('FeedbackCtrl', function($scope) {
   // console.warn("FEEDBACK");
+
+  $scope.feedback = {
+    username: "dev@spasey.com",
+    message: ""
+  }
+
+  $scope.send = function() {
+    console.log($scope.feedback.message)
+    $scope.feedback.message = "";
+  }
+
 })
 
 // Right Menu Controllers
@@ -1877,7 +1887,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 // -----------------------------------------------------------------------------
 // BACKEND
 
-// Complete tests with real endpoint ... On going [Delete is pending]
+// Complete tests with real endpoint
 
 // -----------------------------------------------------------------------------
 // TODO

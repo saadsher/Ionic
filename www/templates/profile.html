@@ -9,16 +9,17 @@
        <div class="list">
          <label class="item item-input item-floating-label">
            <ion-label>Email</ion-label>
-           <input type="email" placeholder="Email" ng-model="profile.username" required ng-minlength="3">
-           <a class="button button-light clr-input ion-ios-close-empty" ng-show="profile.username.length" ng-click="profile.username = null"></a>
+           <input type="email" placeholder="Email" ng-model="profile.username" required ng-minlength="3" ng-disabled="!editActive">
+           <a class="button button-light clr-input ion-ios-close-empty" ng-show="profile.username.length && editActive" ng-click="profile.username = null"></a>
          </label>
          <label class="item item-input item-floating-label">
            <ion-label>Password</ion-label>
-           <input type="password" placeholder="Password" ng-model="profile.password" required ng-minlength="6">
-           <a class="button button-light clr-input ion-ios-close-empty" ng-show="profile.password.length" ng-click="profile.password = null"></a>
+           <input type="password" placeholder="Password" ng-model="profile.password" required ng-minlength="6" ng-disabled="!editActive">
+           <a class="button button-light clr-input ion-ios-close-empty" ng-show="profile.password.length && editActive" ng-click="profile.password = null"></a>
          </label>
        </div>
-       <button type="submit" class="button button-block button-dark" ng-click="update(profile)" ng-disabled="formP.$invalid">Update</button>
+       <button class="button button-block" ng-click="click=true; button=true; editActive=true" ng-hide="click">EDIT</button>
+       <button type="submit" class="button button-block button-dark" ng-show="button" ng-click="update(profile)" ng-disabled="formP.$invalid || unchanged()">UPDATE</button>
      </form>
    </div>
  </ion-content>

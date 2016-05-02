@@ -368,24 +368,45 @@
   .modal-data .edit-list p {
     width: 40%; }
 
-.formA label {
+.formA label,
+.formP label {
   display: table;
   width: 100%; }
-  .formA label .input-label {
+  .formA label .input-label,
+  .formP label .input-label {
     display: table-row; }
-  .formA label input {
+  .formA label input,
+  .formP label input {
     display: table-cell; }
-  .formA label .clr-input {
+  .formA label .clr-input,
+  .formP label .clr-input {
     display: table-cell;
     min-width: 0;
     line-height: 32px;
     opacity: 1;
     transition: 1s all; }
-    .formA label .clr-input.ng-hide {
+    .formA label .clr-input.ng-hide,
+    .formP label .clr-input.ng-hide {
       opacity: 0; }
-    .formA label .clr-input:before {
+    .formA label .clr-input:before,
+    .formP label .clr-input:before {
       position: relative;
       top: 2px; }
+
+.formP input[disabled],
+.formF input[disabled] {
+  background: transparent;
+  color: darkgrey; }
+
+.formF .clear {
+  position: absolute;
+  top: 11px;
+  right: 0px;
+  padding: 0px;
+  font-size: 11px;
+  line-height: 22px;
+  min-height: auto;
+  background: transparent; }
 
 .map-icon-label .map-icon {
   width: 11px;

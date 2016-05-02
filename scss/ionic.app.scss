@@ -482,7 +482,8 @@ ion-nav-view {
   }
 }
 
-.formA {
+.formA,
+.formP {
   label {
     display: table;
     width: 100%;
@@ -509,6 +510,27 @@ ion-nav-view {
         top: 2px;
       }
     }
+  }
+}
+
+.formP,
+.formF {
+  input[disabled] {
+    background: transparent;
+    color: darkgrey;
+  }
+}
+
+.formF {
+  .clear {
+    position: absolute;
+    top: 11px;
+    right: 0px;
+    padding: 0px;
+    font-size: 11px;
+    line-height: 22px;
+    min-height: auto;
+    background: transparent;
   }
 }
 

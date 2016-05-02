@@ -3,7 +3,22 @@
 	 <h1 class="title">Feedback</h1>
 	 <a class="button button-light pull-right ion-ios-close-outline btn-close-modal" ng-click="modalFeedback.hide()"></a>
  </ion-header-bar>
- <ion-content ng-controller="FeedbackCtrl">
- 	<h3>FEEDBACK</h3>
+ <ion-content ng-controller="FeedbackCtrl" class="padding" scroll="false">
+   <div class="modal-data" data-tap-disabled="true">
+     <form name="formF" id="formF" class="formF">
+       <div class="list">
+         <label class="item item-input item-floating-label">
+           <ion-label>Email</ion-label>
+           <input type="email" ng-model="feedback.username" required disabled>
+         </label>
+         <label class="item item-input item-floating-label">
+           <ion-label>Message</ion-label>
+           <a class="button clear" ng-click="feedback.message = null" ng-show="feedback.message.length">CLEAR</a>
+           <textarea rows="5" placeholder="Tell us what you think" ng-model="feedback.message" required ng-minlength="10"></textarea>
+         </label>
+       </div>
+       <button type="submit" class="button button-block button-dark" ng-click="send(msg)" ng-disabled="formF.$invalid">SEND</button>
+     </form>
+   </div>
  </ion-content>
 </ion-modal-view>
