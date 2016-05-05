@@ -1,4 +1,4 @@
-angular.module('Spasey', ['ionic', 'ngCordova'])
+angular.module('Spasey', ['ionic', 'ngCordova', 'ngOpenFB'])
 
 // CONSTANTS
 
@@ -30,7 +30,9 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
 // RUN
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, ngFB) {
+  ngFB.init({appId: '2050092375216849'});
+
   $ionicPlatform.ready(function() {
 
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -298,20 +300,35 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
   $httpProvider.interceptors.push('AuthInterceptor');
 })
 
-.controller('LoginCtrl', function($scope, $state, $ionicPopup, AuthService) {
+.controller('LoginCtrl', function($scope, $state, $ionicPopup, AuthService, ngFB) {
   $scope.data = {};
 
-  $scope.login = function(data) {
-    AuthService.login(data.username, data.password).then(function(authenticated) {
-      $state.go('dev', {}, {reload: true});
-      $scope.setCurrentUsername(data.username);
-    }, function(err) {
-      var alertPopup = $ionicPopup.alert({
-        title: 'LOGIN FAILED',
-        template: 'Please check your credentials',
-        okType: 'button-assertive'
-      });
-    });
+  $scope.fbLogin = function() {
+    ngFB.login({scope: 'email,publish_actions'}).then(
+      function (response) {
+        if (response.status === 'connected') {
+          console.log('Facebook login succeeded: ', response);
+          ngFB.api({
+            path: '/me',
+            params: {fields: 'id,name'}
+          }).then(
+            function (user) {
+              $state.go('dev', {}, {reload: true});
+              $scope.setCurrentUsername(user.name);
+            },
+            function (error) {
+              alert('Facebook error: ' + error.error_description);
+            }
+          );
+        } else {
+          var alertPopup = $ionicPopup.alert({
+            title: 'LOGIN FAILED',
+            template: 'Please check your credentials',
+            okType: 'button-assertive'
+          });
+        }
+      }
+    );
   };
 })
 
