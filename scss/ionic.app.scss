@@ -482,6 +482,17 @@ ion-nav-view {
   }
 }
 
+.resident-list,
+.concierge-list {
+  .item-content {
+    padding-right: 16px;
+  }
+
+  .item.active.item-complex > .item-content {
+    background-color: greenyellow;
+  }
+}
+
 .formA,
 .formP {
   label {

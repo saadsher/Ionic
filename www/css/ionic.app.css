@@ -368,6 +368,14 @@
   .modal-data .edit-list p {
     width: 40%; }
 
+.resident-list .item-content,
+.concierge-list .item-content {
+  padding-right: 16px; }
+
+.resident-list .item.active.item-complex > .item-content,
+.concierge-list .item.active.item-complex > .item-content {
+  background-color: greenyellow; }
+
 .formA label,
 .formP label {
   display: table;

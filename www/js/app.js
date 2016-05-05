@@ -1246,6 +1246,20 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
       $scope.modalFeedback = modal;
     });
 
+    $ionicModal.fromTemplateUrl('templates/messages.html', {
+      scope: $scope,
+      animation: 'slide-in-right'
+    }).then(function(modal) {
+      $scope.modalMessages = modal;
+    });
+
+    $ionicModal.fromTemplateUrl('templates/inbox.html', {
+      scope: $scope,
+      animation: 'slide-in-right'
+    }).then(function(modal) {
+      $scope.modalInbox = modal;
+    });
+
     $ionicModal.fromTemplateUrl('templates/postbox.html', {
       scope: $scope,
       animation: 'slide-in-right'
@@ -1253,11 +1267,25 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
       $scope.modalPostbox = modal;
     });
 
-    $ionicModal.fromTemplateUrl('templates/messages.html', {
+    $ionicModal.fromTemplateUrl('templates/postal.html', {
       scope: $scope,
       animation: 'slide-in-right'
     }).then(function(modal) {
-      $scope.modalMessages = modal;
+      $scope.modalPostal = modal;
+    });
+
+    $ionicModal.fromTemplateUrl('templates/valet.html', {
+      scope: $scope,
+      animation: 'slide-in-right'
+    }).then(function(modal) {
+      $scope.modalValet = modal;
+    });
+
+    $ionicModal.fromTemplateUrl('templates/history.html', {
+      scope: $scope,
+      animation: 'slide-in-left'
+    }).then(function(modal) {
+      $scope.modalHistory = modal;
     });
 
     $scope.empty = true;
@@ -1431,8 +1459,17 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
     $scope.goPostbox = function() {
       $scope.modalPostbox.show();
     }
+    $scope.goInbox = function() {
+      $scope.modalInbox.show();
+    }
     $scope.goMessages = function() {
       $scope.modalMessages.show();
+    }
+    $scope.goPostal = function() {
+      $scope.modalPostal.show();
+    }
+    $scope.goValet = function() {
+      $scope.modalValet.show();
     }
 
   });
@@ -1904,8 +1941,12 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 // Profile
 // Settings
 // Feedback
-// Valet park
-// Valet out
-// Postbox
-// Messages
+// History <-- Resident / Concierge
+// Valet park <-- Resident
+// Valet out <-- Resident
+// Postbox <-- Resident
+// Messages <-- Resident / Concierge
+// Livetask <-- Concierge
+// Postal <-- Concierge
+// Search <-- Concierge
 // -----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 <ion-modal-view>
 	<div ng-repeat="new in newCache" item="new" href="#/newCache/{{newCache}}">
-	<ion-header-bar>
+	<ion-header-bar align-title="center">
 		<a class="button button-light clr-form" ng-click="new.longitude = null; new.latitude = null; new.capacity = null; new.center = null; new.dictionary = null; new.roads = null; new.points = null;">Clear</a>
 		<h1 class="title">Add Marker</h1>
 		<a class="button button-light pull-right ion-ios-close-outline btn-close-modal" ng-click="modalC.hide()"></a>

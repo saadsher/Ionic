@@ -2,44 +2,46 @@
 	<ion-side-menus>
 		<!-- Left menu -->
 		<ion-side-menu side="left">
-			<div class="list">
-				<div class="item bar bar-header bar-light">
-					<h1 class="title">Menu</h1>
+			<ion-content scroll="true">
+				<div class="list">
+					<div class="item bar bar-header bar-light">
+						<h1 class="title">Menu</h1>
+					</div>
+
+					<a class="item item-icon-left" ng-click="goProfile()">
+						<i class="icon ion-model-s"></i>
+							Account
+						<span class="item-note">
+							{{username}}
+						</span>
+					</a>
+
+					<a class="item item-icon-left" ng-click="goSettings()">
+						<i class="icon ion-ios-gear-outline"></i>
+							Settings
+					</a>
+
+					<a class="item item-icon-left" ng-click="goFeedback()">
+						<i class="icon ion-ios-checkmark-outline"></i>
+							Feedback
+					</a>
+
+					<a class="item item-icon-left" ng-click="$event.preventDefault(); logout()">
+						<i class="icon ion-log-out"></i>
+						Log out
+					</a>
 				</div>
-
-				<a class="item item-icon-left" ng-click="goProfile()">
-					<i class="icon ion-model-s"></i>
-						Account
-					<span class="item-note">
-						{{username}}
-					</span>
-				</a>
-
-				<a class="item item-icon-left" ng-click="goSettings()">
-					<i class="icon ion-ios-gear-outline"></i>
-						Settings
-				</a>
-
-				<a class="item item-icon-left" ng-click="goFeedback()">
-					<i class="icon ion-ios-checkmark-outline"></i>
-						Feedback
-				</a>
-
-				<a class="item item-icon-left" ng-click="$event.preventDefault(); logout()">
-					<i class="icon ion-log-out"></i>
-					Log out
-				</a>
-			</div>
+			</ion-content>
 		</ion-side-menu>
 
 		<ion-side-menu-content>
 			<ion-pane>
-				<ion-header-bar>
+				<ion-header-bar align-title="center">
 					<button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
 					<h1 class="title">S P &#9824; S E Y</h1>
 					<button menu-toggle="right" class="button button-icon icon ion-ios-arrow-back reverse"></button>
 				</ion-header-bar>
-				<ion-content>
+				<ion-content scroll="true">
 			    <div id="map" data-tap-disabled="true" ng-click="clickMap()"></div>
 					<!-- <div class="customLoader">L O A D I N G</div> -->
 					<ion-spinner icon="ripple" class="customLoader"></ion-spinner>
@@ -101,31 +103,118 @@
 
 		<!-- Right menu -->
 		<ion-side-menu side="right">
-			<div class="list">
-				<div class="item bar bar-header bar-light">
-					<h1 class="title">Concierge</h1>
+			<ion-content scroll="true">
+				<div class="list resident-list">
+					<div class="item bar bar-header bar-light">
+						<h1 class="title">Concierge</h1>
+					</div>
+					<div class="item item-divider">
+				    Notification
+				  </div>
+					<a class="item item-icon-left" ng-click="goMessages()">
+						<i class="icon ion-chatboxes"></i>
+						Messages
+						<span class="badge badge-assertive">{{user.messages}}0</span>
+					</a>
+					<a class="item item-icon-left" ng-click="goPostbox()">
+						<i class="icon ion-ios-email-outline"></i>
+						Postbox
+						<span class="badge badge-assertive">{{user.post}}0</span>
+					</a>
+					<div class="item item-divider">
+				    Valet
+						<span class="item-note">
+							SWIPE
+						</span>
+				  </div>
+					<ion-list>
+						<ion-item class="item item-icon-left" ng-model="vehicle">
+							<i class="icon ion-model-s"></i>
+							{{vehicle.name}}Mercedes
+
+							<ion-option-button class="button-energized" ng-click="park(vehicle)">
+		            PARK
+		          </ion-option-button>
+		          <ion-option-button class="button-assertive" ng-click="unpark(vehicle)">
+								UNPARK
+		          </ion-option-button>
+
+							<span class="item-note">
+								{{vehicle.status}}Parked
+							</span>
+						</ion-item>
+					</ion-list>
 				</div>
 
-				<a class="item item-icon-right" ng-click="valetPark()">
-					<i class="icon ion-ios-person"></i>
-					Valet Park
-				</a>
+				<div class="list concierge-list">
+					<div class="item bar bar-header bar-dark">
+						<h1 class="title">NPW</h1>
+					</div>
+					<div class="item item-divider">
+				    Notification
+				  </div>
+					<a class="item item-icon-left" ng-click="goInbox()">
+						<i class="icon ion-chatboxes"></i>
+						Inbox
+						<span class="badge badge-assertive">{{user.messages}}0</span>
+					</a>
+					<div class="item item-divider">
+				    Services
+				  </div>
+					<a class="item item-icon-left" ng-click="goPostal()">
+						<i class="icon ion-ios-email-outline"></i>
+						Postal
+					</a>
+					<a class="item item-icon-left" ng-click="goValet()">
+						<i class="icon ion-model-s"></i>
+						Valet
+					</a>
+					<div class="item item-divider">
+				    Livetask
+						<span class="item-note">
+							SWIPE
+						</span>
+				  </div>
+					<ion-list>
+						<ion-item class="item item-icon-left item-remove-animate active" ng-model="vehicle" ng-click="$event.preventDefault()">
+							<i class="icon ion-model-s"></i>
+							{{vehicle.name}}Audi
 
-				<a class="item item-icon-right" ng-click="valetOut()">
-					<i class="icon ion-ios-clock-outline"></i>
-					Valet Out
-				</a>
+							<ion-option-button class="button-energized" ng-click="">
+		            ACCEPT
+		          </ion-option-button>
+							<ion-option-button class="button-dark" ng-click="">
+		            DONE
+		          </ion-option-button>
+		          <ion-option-button class="button-assertive" ng-click="">
+								CANCEL
+		          </ion-option-button>
 
-				<a class="item item-icon-right" ng-click="goPostbox()">
-					<i class="icon ion-ios-email-outline"></i>
-					Postbox
-				</a>
+							<span class="item-note">
+								{{vehicle.status}}Accepted
+							</span>
+						</ion-item>
+						<ion-item class="item item-icon-left item-remove-animate" ng-model="vehicle" ng-click="$event.preventDefault()">
+							<i class="icon ion-model-s"></i>
+							{{vehicle.name}}BMW
 
-				<a class="item item-icon-right" ng-click="goMessages()">
-					<i class="icon ion-chatboxes"></i>
-					Messages
-				</a>
-			</div>
+							<ion-option-button class="button-energized" ng-click="">
+		            ACCEPT
+		          </ion-option-button>
+							<ion-option-button class="button-dark" ng-click="">
+		            DONE
+		          </ion-option-button>
+		          <ion-option-button class="button-assertive" ng-click="">
+								CANCEL
+		          </ion-option-button>
+
+							<span class="item-note">
+								{{vehicle.status}}Pending
+							</span>
+						</ion-item>
+					</ion-list>
+				</div>
+			</ion-content>
 		</ion-side-menu>
 	</ion-side-menus>
 </ion-view>

@@ -1,5 +1,5 @@
 <ion-modal-view>
-	<ion-header-bar>
+	<ion-header-bar align-title="center">
 		<a class="button button-light ion-ios-refresh-outline" ng-click="listMarkers()"></a>
 		<h1 class="title">Swipe Marker</h1>
 		<a class="button button-light pull-right ion-ios-close-outline btn-close-modal" ng-click="modalR.hide()"></a>
@@ -8,7 +8,10 @@
     <div class="modal-data" data-tap-disabled="true">
 			<ion-list class="marker-list">
         <ion-item ng-repeat="marker in listCache" item="marker" href="#/listCache/{{listCache}}" class="item-remove-animate" ng-click="$event.preventDefault() || basic">
-          R: {{ marker.roads }}<br />P: {{ marker.points }}<br />C: {{ marker.counter }} / {{ marker.capacity }}<br />i &nbsp;&nbsp;{{ marker.dictionary }}
+          R: {{ marker.roads }}<br />
+					P: {{ marker.points }}<br />
+					C: {{ marker.counter }} / {{ marker.capacity }}<br />
+					i &nbsp;&nbsp;{{ marker.dictionary }}
           <ion-option-button class="button-energized" ng-click="editMarker(marker)" ng-hide=basic>
             EDIT
           </ion-option-button>

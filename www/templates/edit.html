@@ -1,6 +1,6 @@
 <ion-modal-view>
 	<div ng-repeat="ed in editCache" item="ed" href="#/editCache/{{editCache}}">
-	<ion-header-bar>
+	<ion-header-bar align-title="center">
 		<a class="button button-light clr-form" ng-click="ed.capacity = null; ed.counter = null; ed.dictionary = null; ed.roads = null; ed.points = null;">Clear</a>
 		<h1 class="title">Edit Marker</h1>
 		<a class="button button-light pull-right ion-ios-close-outline btn-close-modal" ng-click="modalUD.hide()"></a>
