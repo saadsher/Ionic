@@ -1,19 +1,17 @@
 <ion-modal-view>
 	<ion-header-bar align-title="center">
 		<a class="button button-light ion-ios-refresh-outline" ng-click="listMarkers()"></a>
-		<h1 class="title">Swipe Marker</h1>
+		<h1 class="title">Around you</h1>
 		<a class="button button-light pull-right ion-ios-close-outline btn-close-modal" ng-click="modalR.hide()"></a>
 	</ion-header-bar>
 	<ion-content>
-    <div class="modal-data" data-tap-disabled="true">
-			<ion-list class="marker-list">
-        <ion-item ng-repeat="marker in listCache" item="marker" href="#/listCache/{{listCache}}">
-          R: {{ marker.roads }}<br />
-					P: {{ marker.points }}<br />
-					C: {{ marker.counter }} / {{ marker.capacity }}<br />
-					i &nbsp;&nbsp;{{ marker.dictionary }}
-        </ion-item>
-      </ion-list>
-    </div>
+		<ion-list class="marker-list">
+      <ion-item ng-repeat="marker in listCache" item="marker" href="#/listCache/{{listCache}}">
+        R: {{ marker.roads }}<br />
+				P: {{ marker.points }}<br />
+				C: {{ marker.counter }} / {{ marker.capacity }}<br />
+				i &nbsp;&nbsp;{{ marker.dictionary }}
+      </ion-item>
+    </ion-list>
 	</ion-content>
 </ion-modal-view>

@@ -448,6 +448,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
           lat: position.coords.latitude,
           lng: position.coords.longitude
       };
+
       // console.info(gLoc);
 
       var latLng = new google.maps.LatLng(npw.lat, npw.lng);
@@ -600,7 +601,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
     //   "zoom": 16,
     //   "boundingRadius": 0.4059245377416782
     // };
-
+    //
     // console.log(params)
 
     var markers = Markers.getMarkers(params).then(function(markers){
@@ -1915,6 +1916,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 // -----------------------------------------------------------------------------
 // IMPROVE
 
+// $cordovaGeolocation.getCurrentPosition() not working in ionic lab
 // Routing of paths
 // Add error popups
 // login loader
@@ -1929,7 +1931,6 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 // -----------------------------------------------------------------------------
 // TODO
 
-// Scrolling on mobile
 // Complete basic registration
 // Add social login providers
 // Add Push notification

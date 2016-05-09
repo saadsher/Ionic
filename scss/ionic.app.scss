@@ -397,7 +397,7 @@ ion-nav-view {
   opacity: 1;
   background-color: rgba(255,255,255,0.8);
 }
-.modal-data {
+.modal-wrapper .has-header {
   padding: 15px;
 
   .list {
@@ -483,7 +483,8 @@ ion-nav-view {
 }
 
 .resident-list,
-.concierge-list {
+.concierge-list,
+.providence-list {
   .item-content {
     padding-right: 16px;
   }

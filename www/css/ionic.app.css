@@ -323,13 +323,13 @@
   opacity: 1;
   background-color: rgba(255, 255, 255, 0.8); }
 
-.modal-data {
+.modal-wrapper .has-header {
   padding: 15px; }
-  .modal-data .list {
+  .modal-wrapper .has-header .list {
     overflow: auto; }
-    .modal-data .list .item {
+    .modal-wrapper .has-header .list .item {
       border: 0; }
-      .modal-data .list .item .disco {
+      .modal-wrapper .has-header .list .item .disco {
         padding: 2px 8px 3px 10px;
         background-color: #f8f8f8;
         color: #AAAAAA;
@@ -337,43 +337,45 @@
         min-height: 27px;
         display: block;
         border: 0; }
-      .modal-data .list .item.item-stacked-label {
+      .modal-wrapper .has-header .list .item.item-stacked-label {
         float: left; }
-        .modal-data .list .item.item-stacked-label input {
+        .modal-wrapper .has-header .list .item.item-stacked-label input {
           padding: 2px 8px 3px 10px;
           border-bottom: 1px solid #AAAAAA;
           border-radius: 0;
           background-color: transparent; }
-    .modal-data .list p {
+    .modal-wrapper .has-header .list p {
       float: left;
       padding-top: 10px;
       padding-left: 16px;
       width: 35%;
       color: #444;
       font-size: 16px; }
-      .modal-data .list p.ion-ios-locked:before {
+      .modal-wrapper .has-header .list p.ion-ios-locked:before {
         padding-right: 5px; }
-  .modal-data .marker-list .list .item {
+  .modal-wrapper .has-header .marker-list .list .item {
     border-top: 1px solid #ffc900; }
-    .modal-data .marker-list .list .item:first-child {
+    .modal-wrapper .has-header .marker-list .list .item:first-child {
       border-top: 0; }
-  .modal-data .edit-list .item.item-stacked-label {
+  .modal-wrapper .has-header .edit-list .item.item-stacked-label {
     width: 54%;
     margin-right: 16px; }
-    .modal-data .edit-list .item.item-stacked-label input {
+    .modal-wrapper .has-header .edit-list .item.item-stacked-label input {
       width: 78%;
       float: left; }
-  .modal-data .edit-list .item.full-wid input {
+  .modal-wrapper .has-header .edit-list .item.full-wid input {
     width: 100%; }
-  .modal-data .edit-list p {
+  .modal-wrapper .has-header .edit-list p {
     width: 40%; }
 
 .resident-list .item-content,
-.concierge-list .item-content {
+.concierge-list .item-content,
+.providence-list .item-content {
   padding-right: 16px; }
 
 .resident-list .item.active.item-complex > .item-content,
-.concierge-list .item.active.item-complex > .item-content {
+.concierge-list .item.active.item-complex > .item-content,
+.providence-list .item.active.item-complex > .item-content {
   background-color: greenyellow; }
 
 .formA label,
