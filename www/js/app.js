@@ -269,6 +269,7 @@ angular.module('Spasey', ['ionic', 'ngCordova', 'ngOpenFB'])
 })
 
 .controller('LoginCtrl', function($scope, $state, $ionicPopup, AuthService, ngFB) {
+  console.log('LoginCtrl');
   $scope.data = {};
   var user = {};
 
