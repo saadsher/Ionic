@@ -19,7 +19,8 @@
     "org.apache.cordova.geolocation",
     "cordova-plugin-whitelist",
     "cordova-plugin-geolocation",
-    "ionic-plugin-keyboard"
+    "ionic-plugin-keyboard",
+    "cordova-plugin-inappbrowser"
   ],
   "cordovaPlatforms": []
 }
