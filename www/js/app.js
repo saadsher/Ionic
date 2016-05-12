@@ -978,8 +978,8 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
         dictionary: event.dictionary,
         // latitude: eLat,
         // longitude: eLng,
-        latitude: event.latitude,
-        longitude: event.longitude,
+        latitude: event.latitude.toString(),
+        longitude: event.longitude.toString(),
         _points: event.points,
         points: event.points,
         _roads: event.roads,
@@ -1195,7 +1195,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
 // USER CONTROLLERS
 
-.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicPopup, $ionicListDelegate, GoogleMaps) {
+.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicPopup, $ionicListDelegate, $timeout, GoogleMaps) {
 
   ionic.Platform.ready(function() {
 
@@ -1209,9 +1209,9 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
     $ionicModal.fromTemplateUrl('templates/new.html', {
       scope: $scope,
+      animation: 'slide-in-down'
     }).then(function(modal) {
       $scope.modalC = modal;
-      GoogleMaps.newMarker();
     });
 
     $ionicModal.fromTemplateUrl('templates/admin-list.html', {
@@ -1221,7 +1221,8 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
     });
 
     $ionicModal.fromTemplateUrl('templates/edit.html', {
-      scope: $scope
+      scope: $scope,
+      animation: 'slide-in-down'
     }).then(function(modal) {
       $scope.modalUD = modal;
     });
@@ -1338,13 +1339,21 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
       });
     }
 
+    $scope.newMarker = function() {
+      //GoogleMaps.clickNewClose();
+      $timeout(function(){
+        $scope.modalC.show();
+      }, 300);
+    }
+
     $scope.editMarker = function(edit) {
       // console.log(edit);
       $scope.empty = false;
       GoogleMaps.editMarker(edit);
       $ionicListDelegate.closeOptionButtons();
-      $scope.modalUD.show();
-      $scope.modalR.hide();
+      $scope.modalR.hide().then(function() {
+        $scope.modalUD.show();
+      });
     }
 
     $scope.updateMarker = function(update) {
@@ -1840,6 +1849,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
     }
   }
 
+  // reset
   $scope.$on('modal.hidden', function() {
     $timeout(function() {
       $scope.editActive = false;
@@ -1934,20 +1944,20 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 // Complete basic registration
 // Add social login providers
 // Add Push notification
-// Add Dictionary information on list item click / tap
+// Add Restrictions information on list item click / tap
 
 // -----------------------------------------------------------------------------
 // IN PROGRESS
 
-// Profile
-// Settings
-// Feedback
-// History <-- Resident / Concierge
+// Profile    <-- Base
+// Settings   <-- Base
+// Feedback   <-- Base
+// History    <-- Resident / Concierge
 // Valet park <-- Resident
-// Valet out <-- Resident
-// Postbox <-- Resident
-// Messages <-- Resident / Concierge
-// Livetask <-- Concierge
-// Postal <-- Concierge
-// Search <-- Concierge
+// Valet out  <-- Resident
+// Postbox    <-- Resident
+// Messages   <-- Resident / Concierge
+// Livetask   <-- Concierge
+// Postal     <-- Concierge
+// Search     <-- Concierge
 // -----------------------------------------------------------------------------
