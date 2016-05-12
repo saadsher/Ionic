@@ -101,9 +101,8 @@
   width: 100%;
   background: rgba(68, 68, 68, 0.7);
   opacity: 0;
-  z-index: -9;
-  transition: .3s all;
-  }
+  z-index: -1;
+  transition: .3s all; }
   .actibox-new.active,
   .actibox-edit.active,
   .actibox-counter.active {

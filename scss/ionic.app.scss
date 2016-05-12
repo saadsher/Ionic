@@ -94,11 +94,8 @@ ion-nav-view {
 }
 
 .bar.bar-stable {
-  // display: none;
-  // height: 21px;
 
   .title {
-    // line-height: 55px;
     text-align: center;
   }
 }
@@ -110,11 +107,7 @@ ion-nav-view {
   position: absolute;
   transform: translateX(-50%);
 }
-// ng-map {
-//   display: block;
-//   height: 100%;
-//   width: 100%;
-// }
+
 #map {
   height: 100%;
   width: 100%;
