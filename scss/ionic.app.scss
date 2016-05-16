@@ -298,6 +298,12 @@ ion-nav-view {
   height: 100%;
 }
 
+.button.fb-login {
+  position: fixed;
+  top: 50%;
+  width: 95%;
+  transform: translateY(-50%);
+}
 .button.button-light {
   font-size: 25px;
   background-color: transparent;

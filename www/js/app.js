@@ -1,5 +1,4 @@
-angular.module('Spasey', ['ionic', 'ngCordova'])
-
+angular.module('Spasey', ['ionic', 'ngCordova', 'ngOpenFB'])
 // CONSTANTS
 
 .constant('AUTH_EVENTS', {
@@ -30,7 +29,9 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
 // RUN
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, ngFB) {
+  ngFB.init({appId: '2050092375216849'});
+
   $ionicPlatform.ready(function() {
 
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -125,6 +126,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 })
 
 .controller('AppCtrl', function($q, $scope, $state, $ionicSideMenuDelegate, $ionicPopup, $timeout, AuthService, AUTH_EVENTS) {
+  console.log('AppCtrl');
   $scope.username = AuthService.username();
 
   $scope.$on(AUTH_EVENTS.notAuthorized, function(event) {
@@ -170,7 +172,6 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 
 .run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
  $rootScope.$on('$stateChangeStart', function (event, next, nextParams, fromState) {
-
    if ('data' in next && 'authorizedRoles' in next.data) {
      var authorizedRoles = next.data.authorizedRoles;
      if (!AuthService.isAuthorized(authorizedRoles)) {
@@ -190,47 +191,30 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
 })
 
 .service('AuthService', function($q, $http, USER_ROLES) {
-  var LOCAL_TOKEN_KEY = 'yourTokenKey';
+  var CURRENT_USER = {};
   var username = '';
   var isAuthenticated = false;
   var role = '';
   var authToken;
 
   function loadUserCredentials() {
-    var token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
-    if (token) {
-      useCredentials(token);
+    var user = window.localStorage.getItem(CURRENT_USER);
+    if (user) {
+      useCredentials(user);
     }
   }
 
-  function storeUserCredentials(token) {
-    window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
-    useCredentials(token);
+  function storeUserCredentials(user) {
+    window.localStorage.setItem(CURRENT_USER, user);
+    useCredentials(user);
   }
 
-  function useCredentials(token) {
-    username = token.split('.')[0];
+  function useCredentials(user) {
     isAuthenticated = true;
-    authToken = token;
-
-    if (username == 'dev') {
-      role = USER_ROLES.dev
-    }
-    if (username == 'admin') {
-      role = USER_ROLES.admin
-    }
-    if (username == 'public') {
-      role = USER_ROLES.public
-    }
-    if (username == 'concierge') {
-      role = USER_ROLES.concierge
-    }
-    if (username == 'resident') {
-      role = USER_ROLES.resident
-    }
+    role = USER_ROLES[user.role];
 
     // Set the token as header for your requests!
-    $http.defaults.headers.common['X-Auth-Token'] = token;
+    $http.defaults.headers.common['X-Auth-Token'] = user.token;
   }
 
   function destroyUserCredentials() {
@@ -238,25 +222,11 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
     username = '';
     isAuthenticated = false;
     $http.defaults.headers.common['X-Auth-Token'] = undefined;
-    window.localStorage.removeItem(LOCAL_TOKEN_KEY);
+    window.localStorage.removeItem(CURRENT_USER);
   }
 
-  var login = function(name, pw) {
-    return $q(function(resolve, reject) {
-      if (
-        (name == 'dev' && pw == '1') ||
-        (name == 'admin' && pw == '1') ||
-        (name == 'public' && pw == '1') ||
-        (name == 'concierge' && pw == '1') ||
-        (name == 'resident' && pw == '1'))
-        {
-          // Make a request and receive your auth token from your server
-          storeUserCredentials(name + '.yourServerToken');
-          resolve('Login success.');
-        } else {
-          reject('Login Failed.');
-        }
-    });
+  var login = function(user) {
+    storeUserCredentials(user);
   };
 
   var logout = function() {
@@ -298,20 +268,28 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
   $httpProvider.interceptors.push('AuthInterceptor');
 })
 
-.controller('LoginCtrl', function($scope, $state, $ionicPopup, AuthService) {
+.controller('LoginCtrl', function($scope, $state, $ionicPopup, AuthService, ngFB) {
+  console.log('LoginCtrl');
   $scope.data = {};
+  var user = {};
 
-  $scope.login = function(data) {
-    AuthService.login(data.username, data.password).then(function(authenticated) {
-      $state.go('dev', {}, {reload: true});
-      $scope.setCurrentUsername(data.username);
-    }, function(err) {
-      var alertPopup = $ionicPopup.alert({
-        title: 'LOGIN FAILED',
-        template: 'Please check your credentials',
-        okType: 'button-assertive'
-      });
-    });
+  $scope.fbLogin = function() {
+    ngFB.login({scope: 'email,publish_actions'}).then(
+      function (response) {
+        if (response.status === 'connected') {
+          user.role = 'dev',
+          user.token = response.authResponse.accessToken;
+          AuthService.login(user);
+          $state.go('dev', {}, {reload: true});
+        } else {
+          var alertPopup = $ionicPopup.alert({
+            title: 'LOGIN FAILED',
+            template: 'Please check your credentials',
+            okType: 'button-assertive'
+          });
+        }
+      }
+    );
   };
 })
 
