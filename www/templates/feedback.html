@@ -1,9 +1,9 @@
 <ion-modal-view>
- <ion-header-bar align-title="center">
+ <ion-header-bar align-title="center" data-tap-disabled="true">
 	 <h1 class="title">Feedback</h1>
 	 <a class="button button-light pull-right ion-ios-close-outline btn-close-modal" ng-click="modalFeedback.hide()"></a>
  </ion-header-bar>
- <ion-content ng-controller="FeedbackCtrl" class="padding" scroll="false">
+ <ion-content ng-controller="FeedbackCtrl" class="padding" scroll="false" data-tap-disabled="true">
    <form name="formF" id="formF" class="formF">
      <div class="list">
        <label class="item item-input item-floating-label">

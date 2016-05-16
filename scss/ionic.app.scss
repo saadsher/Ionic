@@ -144,7 +144,7 @@ ion-nav-view {
     display: block;
     font-size: 18px;
     color: #ffc900;
-    padding-right: 25px;
+    padding-right: 22px;
     padding-bottom: 15px;
   }
 
@@ -188,15 +188,18 @@ ion-nav-view {
       }
 
       input {
-        font-size: 36px;
+        font-size: 56px;
+        font-weight: 900;
         border-radius: 50px;
         width: 100px;
         height: 100px;
-        padding: 40px;
-        color: #ffc900;
+        padding: 32px;
+        color: black;
         transform: translateX(-50%);
         margin-left: 50%;
-        background-color: #333;
+        background-color: #ffc900;
+        z-index: 1;
+        opacity: 1;
       }
     }
 
@@ -482,6 +485,9 @@ ion-nav-view {
 
       &.full-wid input {
         width: 100%;
+        font-weight: 900;
+        color: #333;
+        opacity: 1;
       }
     }
 
@@ -514,6 +520,10 @@ ion-nav-view {
     }
     input {
       display: table-cell;
+      &[disabled] {
+        opacity: 1;
+        color: #333;
+      }
     }
     .clr-input {
       display: table-cell;
@@ -538,7 +548,8 @@ ion-nav-view {
 .formF {
   input[disabled] {
     background: transparent;
-    color: darkgrey;
+    opacity: 1;
+    color: #333;
   }
 }
 

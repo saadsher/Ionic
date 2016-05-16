@@ -410,7 +410,7 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
   }
 })
 
-.factory('GoogleMaps', function($cordovaGeolocation, $ionicLoading, $rootScope, $cordovaNetwork, Markers, ConnectivityMonitor){
+.factory('GoogleMaps', function($cordovaGeolocation, $ionicLoading, $rootScope, $cordovaNetwork, $timeout, Markers, ConnectivityMonitor){
 
   var markerCache = [];
   var listCache = [];
@@ -459,7 +459,8 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
         zoomControl: false,
         fullscreenControl: true,
         disableDefaultUI: true,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        styles: [{"featureType":"all","elementType":"labels.text.fill","stylers":[{"saturation":36},{"color":"#000000"},{"lightness":40}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"visibility":"on"},{"color":"#000000"},{"lightness":16}]},{"featureType":"all","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":17},{"weight":1.2}]},{"featureType":"administrative","elementType":"labels.text","stylers":[{"gamma":"1.00"}]},{"featureType":"administrative","elementType":"labels.text.fill","stylers":[{"color":"#7d8be9"}]},{"featureType":"administrative.locality","elementType":"all","stylers":[{"visibility":"on"}]},{"featureType":"administrative.neighborhood","elementType":"all","stylers":[{"visibility":"on"}]},{"featureType":"administrative.land_parcel","elementType":"all","stylers":[{"visibility":"on"}]},{"featureType":"landscape","elementType":"all","stylers":[{"visibility":"simplified"},{"color":"#28292d"}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#28292d"},{"lightness":"0"}]},{"featureType":"landscape.man_made","elementType":"all","stylers":[{"visibility":"on"}]},{"featureType":"landscape.man_made","elementType":"geometry","stylers":[{"visibility":"off"},{"saturation":"0"}]},{"featureType":"landscape.man_made","elementType":"geometry.stroke","stylers":[{"visibility":"on"},{"saturation":"0"},{"gamma":"1"},{"color":"#c4c8de"},{"weight":"1"},{"lightness":"0"}]},{"featureType":"landscape.natural.landcover","elementType":"all","stylers":[{"visibility":"on"}]},{"featureType":"landscape.natural.terrain","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#28292d"},{"lightness":"0"},{"saturation":"0"}]},{"featureType":"road","elementType":"geometry","stylers":[{"color":"#e9d07d"},{"visibility":"on"},{"weight":"0.49"},{"gamma":"1."}]},{"featureType":"road","elementType":"labels.text.fill","stylers":[{"color":"#bcc0a7"},{"weight":"1.00"}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"weight":"1.10"}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"weight":"0.01"}]},{"featureType":"road.arterial","elementType":"geometry.fill","stylers":[{"weight":"1.00"},{"lightness":"12"},{"saturation":"-53"},{"gamma":"0.91"}]},{"featureType":"road.arterial","elementType":"geometry.stroke","stylers":[{"weight":"0.01"}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#323029"},{"lightness":"-6"},{"visibility":"on"},{"gamma":"1.98"},{"weight":"0.65"},{"saturation":"-19"}]},{"featureType":"road.local","elementType":"geometry.stroke","stylers":[{"visibility":"on"},{"weight":"0.01"}]},{"featureType":"transit","elementType":"geometry","stylers":[{"lightness":19}]},{"featureType":"water","elementType":"geometry","stylers":[{"color":"#28292d"},{"lightness":"8"},{"visibility":"on"}]}]
       };
 
       map = new google.maps.Map(document.getElementById("map"), mapOptions);
@@ -830,10 +831,12 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
   function clickNew() {
     full = false;
     if (accAdmin) {
-      markerClickToggle = false;
-      actiboxEdit.removeClass('active');
-      actiboxCounter.removeClass('active');
-      actiboxNew.addClass('active');
+      $timeout(function () {
+        markerClickToggle = false;
+        actiboxEdit.removeClass('active');
+        actiboxCounter.removeClass('active');
+        actiboxNew.addClass('active');
+      }, 300);
     }
   }
   function clickNewHide() {
@@ -855,12 +858,12 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
   }
 
   function clickCounter() {
-    if (accBasic) {
+    // if (accBasic) {
       markerClickToggle = true;
       actiboxNew.removeClass('active');
       actiboxEdit.removeClass('active');
       actiboxCounter.addClass('active');
-    }
+    // }
   }
   function clickCounterHide() {
     angular.element(document.querySelector('.map-icon-label-ticker.active')).removeClass('active');
@@ -903,16 +906,20 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
   }
 
   function addListeners(){
+
     if (accAdmin) {
       console.warn("ADMIN");
       google.maps.event.addListener(map, 'click', function(event){
         cacheNew(event);
         clickNew();
       });
-    } else if (accBasic) {
-      cacheNew();
-      console.warn("BASIC");
     }
+
+    if (accBasic) {
+      console.warn("BASIC");
+      cacheNew();
+    }
+
   }
 
   function cacheLoad() {
@@ -1337,13 +1344,6 @@ angular.module('Spasey', ['ionic', 'ngCordova'])
           }
         });
       });
-    }
-
-    $scope.newMarker = function() {
-      //GoogleMaps.clickNewClose();
-      $timeout(function(){
-        $scope.modalC.show();
-      }, 300);
     }
 
     $scope.editMarker = function(edit) {

@@ -1,6 +1,6 @@
 <ion-modal-view>
 	<div ng-repeat="ed in editCache" item="ed" href="#/editCache/{{editCache}}">
-	<ion-header-bar align-title="center">
+	<ion-header-bar align-title="center" data-tap-disabled="true">
 		<a class="button button-light clr-form" ng-click="ed.capacity = null; ed.counter = null; ed.dictionary = null; ed.roads = null; ed.points = null;">Clear</a>
 		<h1 class="title">Edit Marker</h1>
 		<a class="button button-light pull-right ion-ios-close-outline btn-close-modal" ng-click="modalUD.hide()"></a>
@@ -10,41 +10,41 @@
 			<div class="list edit-list">
 				<p class="ion-ios-locked">Longitude</p>
 			  <label class="item item-input item-stacked-label full-wid">
-			    <input name="lng" type="text" placeholder="" ng-model="ed.longitude"  ng-minlength="3" disabled class="disco">
+			    <input name="lng" type="text" placeholder="" ng-model="ed.longitude" ng-minlength="3" disabled class="disco">
 			  </label><br />
 				<p class="ion-ios-locked">Latitude</p>
 			  <label class="item item-input item-stacked-label full-wid">
-			    <input name="lat" type="text" placeholder="" ng-model="ed.latitude"  ng-minlength="3" disabled class="disco">
+			    <input name="lat" type="text" placeholder="" ng-model="ed.latitude" ng-minlength="3" disabled class="disco">
 			  </label><br />
 				<p>Capacity</p>
 			  <label class="item item-input item-stacked-label">
 					<ion-label class="disco">{{ed._capacity}}</ion-label>
 			    <input name="cap" type="text" placeholder="" ng-model="ed.capacity">
-					<a class="button button-light clr-input ion-ios-close-empty" ng-show="ed.capacity.length" ng-click="ed.capacity = null"></a>
+					<a class="button button-light clr-input ion-ios-close-empty" ng-show="ed.capacity.length" ng-click="ed.capacity = null" data-tap-disabled="true"></a>
 			  </label><br />
 				<p>Counter</p>
 			  <label class="item item-input item-stacked-label">
 					<ion-label class="disco">{{ed._counter}}</ion-label>
 			    <input name="ctr" type="text" placeholder="" ng-model="ed.counter">
-					<a class="button button-light clr-input ion-ios-close-empty" ng-show="ed.counter.length" ng-click="ed.counter = null"></a>
+					<a class="button button-light clr-input ion-ios-close-empty" ng-show="ed.counter.length" ng-click="ed.counter = null" data-tap-disabled="true"></a>
 			  </label><br />
 				<p>Dictionary</p>
 			  <label class="item item-input item-stacked-label">
 					<ion-label class="disco">{{ed._dictionary}}</ion-label>
 			    <input name="dic" type="text" placeholder="" ng-model="ed.dictionary">
-					<a class="button button-light clr-input ion-ios-close-empty" ng-show="ed.dictionary.length" ng-click="ed.dictionary = null"></a>
+					<a class="button button-light clr-input ion-ios-close-empty" ng-show="ed.dictionary.length" ng-click="ed.dictionary = null" data-tap-disabled="true"></a>
 			  </label><br />
 				<p>Road</p>
 			  <label class="item item-input item-stacked-label">
 					<ion-label class="disco">{{ed._roads}}</ion-label>
 			    <input name="rd" type="text" placeholder="" ng-model="ed.roads">
-					<a class="button button-light clr-input ion-ios-close-empty" ng-show="ed.roads.length" ng-click="ed.roads = null"></a>
+					<a class="button button-light clr-input ion-ios-close-empty" ng-show="ed.roads.length" ng-click="ed.roads = null" data-tap-disabled="true"></a>
 			  </label><br />
 				<p>Point</p>
 			  <label class="item item-input item-stacked-label">
 					<ion-label class="disco">{{ed._points}}</ion-label>
 			    <input name="pt" type="text" placeholder="" ng-model="ed.points">
-					<a class="button button-light clr-input ion-ios-close-empty" ng-show="ed.points.length" ng-click="ed.points = null"></a>
+					<a class="button button-light clr-input ion-ios-close-empty" ng-show="ed.points.length" ng-click="ed.points = null" data-tap-disabled="true"></a>
 			  </label>
 			</div>
 			<a class="button button-block button-outline button-dark" ng-click="modalUD.hide()">

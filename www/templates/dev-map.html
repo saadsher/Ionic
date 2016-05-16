@@ -1,5 +1,5 @@
 <ion-view>
-	<ion-content >
+	<ion-content>
 		<ion-side-menus>
 			<!-- Left menu -->
 			<ion-side-menu side="left">
@@ -7,7 +7,7 @@
 					<h1 class="title">Menu</h1>
 				</ion-header-bar>
 				<ion-content>
-					<ion-list>
+					<ion-list scroll="true">
 						<ion-item class="item item-icon-left" ng-click="goProfile()">
 							<i class="icon ion-model-s"></i>
 								Account
@@ -38,25 +38,25 @@
 						<h1 class="title">S P &#9824; S E Y</h1>
 						<button menu-toggle="right" class="button button-icon icon ion-ios-arrow-back reverse"></button>
 					</ion-header-bar>
-					<ion-content scroll="true">
-				    <div id="map" data-tap-disabled="true" ng-click="clickMap()"></div>
+					<ion-content scroll="false">
+				    <div id="map" ng-click="clickMap()" data-tap-disabled="true"></div>
 						<!-- <div class="customLoader">L O A D I N G</div> -->
 						<ion-spinner icon="ripple" class="customLoader"></ion-spinner>
 						<div class="actibox-new">
 							<div ng-repeat="newer in newCache" item="newer" href="#/newCache/{{newCache}}">
-								<a class="button button-energized ion-ios-close-outline" ng-click="clickNewHide(hide)"></a>
+								<a class="button button-energized ion-ios-close-outline" ng-click="clickNewHide(hide)" data-tap-disabled="true"></a>
 								<span>
 									latitude: &nbsp;&nbsp;&nbsp;{{newer.latitude}}<br />
 									longitude: {{newer.longitude}}
 								</span>
-								<button class="button button-energized button-block button-outline" ng-click="newMarker()">
+								<button class="button button-energized button-block button-outline" ng-click="modalC.show()">
 									ADD
 								</button>
 							</div>
 						</div>
 						<div class="actibox-edit">
 							<div ng-repeat="editor in editCache" item="editor" href="#/editCache/{{editCache}}">
-								<a class="button button-energized ion-ios-close-outline" ng-click="clickEditHide(hide)"></a>
+								<a class="button button-energized ion-ios-close-outline" ng-click="clickEditHide(hide)" data-tap-disabled="true"></a>
 								<span>
 									latitude: &nbsp;&nbsp;&nbsp;{{editor.latitude}}<br />
 									longitude: {{editor.longitude}}<br />
@@ -75,7 +75,7 @@
 						</div>
 						<div class="actibox-counter">
 							<div ng-repeat="counter in editCache" item="counter" href="#/editCache/{{editCache}}">
-								<a class="button button-energized ion-ios-close-outline" ng-click="clickCounterHide(hide)"></a>
+								<a class="button button-energized ion-ios-close-outline" ng-click="clickCounterHide(hide)" data-tap-disabled="true"></a>
 								<span>
 									<form name="formC" id="formC" class="formC">
 										<label class="item item-input item-stacked-label">
@@ -90,10 +90,10 @@
 							</div>
 						</div>
 						<button class="button button-block button-energized btn-ctr ion-ios-navigate-outline" ng-click="setCenter()"></button>
-						<button class="button button-block button-dark btn-add ion-ios-plus-outline" ng-click="newMarker()" ng-hide=basic></button>
+						<button class="button button-block button-dark btn-add ion-ios-plus-outline" ng-click="modalC.show()" ng-hide=basic></button>
 						<button class="button button-block button-dark btn-list ion-ios-paper-outline basic" ng-click="modalR.show()"></button>
-						<button class="button button-block button-dark btn-edit ion-ios-compose-outline" ng-click="modalUD.show()" ng-hide="basic || empty"></button>
-						<button class="button button-block button-assertive ion-ios-locked-outline set-admin" toggle-class="ion-ios-unlocked-outline" ng-click="toggleAdmin(true)"></button>
+						<button class="button button-block button-dark btn-edit ion-ios-compose-outline" ng-click="modalUD.show()" ng-hide="basic || empty" data-tap-disabled="true"></button>
+						<button class="button button-block button-assertive ion-ios-locked-outline set-admin" toggle-class="ion-ios-unlocked-outline" ng-click="toggleAdmin(true)" data-tap-disabled="true"></button>
 					</ion-content>
 				</ion-pane>
 			</ion-side-menu-content>

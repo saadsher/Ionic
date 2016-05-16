@@ -114,7 +114,7 @@
     display: block;
     font-size: 18px;
     color: #ffc900;
-    padding-right: 25px;
+    padding-right: 22px;
     padding-bottom: 15px; }
   .actibox-new .ion-ios-close-outline,
   .actibox-edit .ion-ios-close-outline,
@@ -152,15 +152,18 @@
       width: auto;
       margin-bottom: 30px; }
     .actibox-counter span label input {
-      font-size: 36px;
+      font-size: 56px;
+      font-weight: 900;
       border-radius: 50px;
       width: 100px;
       height: 100px;
-      padding: 40px;
-      color: #ffc900;
+      padding: 32px;
+      color: black;
       transform: translateX(-50%);
       margin-left: 50%;
-      background-color: #333; }
+      background-color: #ffc900;
+      z-index: 1;
+      opacity: 1; }
   .actibox-counter span .button.ion-ios-plus {
     border-radius: 50%;
     height: 78px;
@@ -380,7 +383,10 @@
       width: 78%;
       float: left; }
   .modal-wrapper .has-header .edit-list .item.full-wid input {
-    width: 100%; }
+    width: 100%;
+    font-weight: 900;
+    color: #333;
+    opacity: 1; }
   .modal-wrapper .has-header .edit-list p {
     width: 40%; }
 
@@ -404,6 +410,10 @@
   .formA label input,
   .formP label input {
     display: table-cell; }
+    .formA label input[disabled],
+    .formP label input[disabled] {
+      opacity: 1;
+      color: #333; }
   .formA label .clr-input,
   .formP label .clr-input {
     display: table-cell;
@@ -422,7 +432,8 @@
 .formP input[disabled],
 .formF input[disabled] {
   background: transparent;
-  color: darkgrey; }
+  opacity: 1;
+  color: #333; }
 
 .formF .clear {
   position: absolute;

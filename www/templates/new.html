@@ -1,6 +1,6 @@
 <ion-modal-view>
 	<div ng-repeat="new in newCache" item="new" href="#/newCache/{{newCache}}">
-	<ion-header-bar align-title="center">
+	<ion-header-bar align-title="center" data-tap-disabled="true">
 		<a class="button button-light clr-form" ng-click="new.longitude = null; new.latitude = null; new.capacity = null; new.center = null; new.dictionary = null; new.roads = null; new.points = null;">Clear</a>
 		<h1 class="title">Add Marker</h1>
 		<a class="button button-light pull-right ion-ios-close-outline btn-close-modal" ng-click="modalC.hide()"></a>
@@ -11,37 +11,37 @@
 			  <label class="item item-input item-floating-label">
 			    <ion-label>Longitude</ion-label>
 			    <input name="lng" type="text" placeholder="Longitude" ng-model="new.longitude" required ng-minlength="3">
-					<a class="button button-light clr-input ion-ios-close-empty" ng-show="new.longitude.length" ng-click="new.longitude = null"></a>
+					<a class="button button-light clr-input ion-ios-close-empty" ng-show="new.longitude.length" ng-click="new.longitude = null" data-tap-disabled="true"></a>
 			  </label>
 			  <label class="item item-input item-floating-label">
 					<ion-label>Latitude</ion-label>
 			    <input name="lat" type="text" placeholder="Latitude" ng-model="new.latitude">
-					<a class="button button-light clr-input ion-ios-close-empty" ng-show="new.latitude.length" ng-click="new.latitude = null"></a>
+					<a class="button button-light clr-input ion-ios-close-empty" ng-show="new.latitude.length" ng-click="new.latitude = null" data-tap-disabled="true"></a>
 			  </label>
 			  <label class="item item-input item-floating-label">
 					<ion-label>Capacity</ion-label>
 			    <input name="cap" type="text" placeholder="Capacity" ng-model="new.capacity">
-					<a class="button button-light clr-input ion-ios-close-empty" ng-show="new.capacity.length" ng-click="new.capacity = null"></a>
+					<a class="button button-light clr-input ion-ios-close-empty" ng-show="new.capacity.length" ng-click="new.capacity = null" data-tap-disabled="true"></a>
 			  </label>
 			  <label class="item item-input item-floating-label">
 					<ion-label>Counter</ion-label>
 			    <input name="ctr" type="text" placeholder="Counter" ng-model="new.counter">
-					<a class="button button-light clr-input ion-ios-close-empty" ng-show="new.counter.length" ng-click="new.counter = null"></a>
+					<a class="button button-light clr-input ion-ios-close-empty" ng-show="new.counter.length" ng-click="new.counter = null" data-tap-disabled="true"></a>
 			  </label>
 			  <label class="item item-input item-floating-label">
 					<ion-label>Dictionary</ion-label>
 			    <input name="dic" type="text" placeholder="Dictionary" ng-model="new.dictionary">
-					<a class="button button-light clr-input ion-ios-close-empty" ng-show="new.dictionary.length" ng-click="new.dictionary = null"></a>
+					<a class="button button-light clr-input ion-ios-close-empty" ng-show="new.dictionary.length" ng-click="new.dictionary = null" data-tap-disabled="true"></a>
 			  </label>
 			  <label class="item item-input item-floating-label">
 					<ion-label>Road</ion-label>
 			    <input name="rd" type="text" placeholder="Road" ng-model="new.roads">
-					<a class="button button-light clr-input ion-ios-close-empty" ng-show="new.roads.length" ng-click="new.roads = null"></a>
+					<a class="button button-light clr-input ion-ios-close-empty" ng-show="new.roads.length" ng-click="new.roads = null" data-tap-disabled="true"></a>
 			  </label>
 			  <label class="item item-input item-floating-label">
 					<ion-label>Point</ion-label>
 			    <input name="pt" type="text" placeholder="Point" ng-model="new.points">
-					<a class="button button-light clr-input ion-ios-close-empty" ng-show="new.points.length" ng-click="new.points = null"></a>
+					<a class="button button-light clr-input ion-ios-close-empty" ng-show="new.points.length" ng-click="new.points = null" data-tap-disabled="true"></a>
 			  </label>
 			</div>
 			<a class="button button-block button-outline button-dark" ng-click="modalC.hide()">
