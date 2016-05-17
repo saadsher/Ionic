@@ -1,5 +1,5 @@
-//var host = 'http://spasey-service.herokuapp.com';
-var host = 'http://localhost:8000';
+var host = 'http://spasey-service.herokuapp.com';
+//var host = 'http://localhost:8000';
 
 // CONSTANTS
 
