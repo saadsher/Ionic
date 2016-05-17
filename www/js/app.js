@@ -1,7 +1,9 @@
-angular.module('Spasey', ['ionic', 'ngCordova', 'ngOpenFB'])
+//var host = 'http://spasey-service.herokuapp.com';
+var host = 'http://localhost:8000';
+
 // CONSTANTS
 
-.constant('AUTH_EVENTS', {
+Spasey.constant('AUTH_EVENTS', {
   notAuthenticated: 'auth-not-authenticated',
   notAuthorized: 'auth-not-authorized'
 })
@@ -304,9 +306,6 @@ angular.module('Spasey', ['ionic', 'ngCordova', 'ngOpenFB'])
 // MAP
 
 .factory('Markers', function($q, $http, $ionicLoading) {
-
-  var host = 'http://spasey-service.herokuapp.com';
-  // var host = 'http://localhost:8000';
 
   return {
     getMarkers: function(params) {
@@ -1848,21 +1847,6 @@ angular.module('Spasey', ['ionic', 'ngCordova', 'ngOpenFB'])
 
 .controller('SettingsCtrl', function($scope) {
   // console.warn("SETTINGS");
-})
-
-.controller('FeedbackCtrl', function($scope) {
-  // console.warn("FEEDBACK");
-
-  $scope.feedback = {
-    username: "dev@spasey.com",
-    message: ""
-  }
-
-  $scope.send = function() {
-    console.log($scope.feedback.message)
-    $scope.feedback.message = "";
-  }
-
 })
 
 // Right Menu Controllers
