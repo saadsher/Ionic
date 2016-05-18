@@ -1,1 +1,0 @@
-var Spasey = angular.module('Spasey', ['ionic', 'ngCordova', 'ngOpenFB']);
