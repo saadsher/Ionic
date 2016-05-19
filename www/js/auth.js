@@ -40,9 +40,10 @@ Spasey.run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
   function useCredentials(user) {
     isAuthenticated = true;
     role = USER_ROLES[user.role];
+  }
 
-    // Set the token as header for your requests!
-    $http.defaults.headers.common['X-Auth-Token'] = user.token;
+  function setupDefaultHeader(token) {
+    $http.defaults.headers.common['X-Auth-Token'] = token;
   }
 
   function destroyUserCredentials() {
@@ -74,6 +75,7 @@ Spasey.run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
     login: login,
     logout: logout,
     isAuthorized: isAuthorized,
+    setupDefaultHeader: setupDefaultHeader,
     isAuthenticated: function() {return isAuthenticated;},
     username: function() {return username;},
     role: function() {return role;}
@@ -96,7 +98,7 @@ Spasey.run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
   $httpProvider.interceptors.push('AuthInterceptor');
 })
 
-.controller('LoginCtrl', function($scope, $state, $ionicPopup, AuthService, ngFB) {
+.controller('LoginCtrl', function($scope, $state, $ionicPopup, AuthService, ngFB, $http) {
   console.log('LoginCtrl');
   $scope.data = {};
   var user = {};
@@ -105,10 +107,12 @@ Spasey.run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
     ngFB.login({scope: 'email,publish_actions'}).then(
       function (response) {
         if (response.status === 'connected') {
-          user.role = 'dev',
-          user.token = response.authResponse.accessToken;
-          AuthService.login(user);
-          $state.go('dev', {}, {reload: true});
+          AuthService.setupDefaultHeader(response.authResponse.accessToken)
+          return $http.get(host + "/users").then(function(response) {
+            user.role = response.data.role;
+            AuthService.login(user);
+            $state.go('dev', {}, {reload: true});
+          });
         } else {
           var alertPopup = $ionicPopup.alert({
             title: 'LOGIN FAILED',
