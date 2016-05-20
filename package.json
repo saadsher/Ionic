@@ -21,7 +21,10 @@
     "cordova-plugin-geolocation",
     "ionic-plugin-keyboard",
     "cordova-plugin-inappbrowser",
-    "cordova-plugin-network-information"
+    "cordova-plugin-network-information",
+    "cordova-plugin-console",
+    "cordova-plugin-splashscreen",
+    "cordova-plugin-statusbar"
   ],
   "cordovaPlatforms": []
 }
