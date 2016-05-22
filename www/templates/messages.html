@@ -4,6 +4,22 @@
 	 <a class="button button-light pull-right ion-ios-close-outline btn-close-modal" ng-click="modalMessages.hide()"></a>
  </ion-header-bar>
  <ion-content ng-controller="MessagesCtrl">
-   <h3>MESSAGES</h3>
+   <div class="list older-list">
+     <div class="item item-avatar" ng-repeat="msg in older">
+       <img src="http://placehold.it/40x40">
+       <p>
+         {{msg.message}}
+       </p>
+     </div>
+   </div>
  </ion-content>
+ <ion-footer-bar class="item-input-inset">
+   <label class="item-input-wrapper">
+     <i class="icon ion-ios-paperplane-outline"></i>
+     <textarea placeholder="Message" class="msgArea" ng-keyup="expandText()" ng-keydown="expandText()" ng-model="now.message"></textarea>
+   </label>
+   <button class="button button-energized" ng-click="send()" data-tap-disabled="true">
+     Send
+   </button>
+ </ion-footer-bar>
 </ion-modal-view>

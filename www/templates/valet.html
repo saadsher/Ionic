@@ -4,6 +4,14 @@
 	 <a class="button button-light pull-right ion-ios-close-outline btn-close-modal" ng-click="modalValet.hide()"></a>
  </ion-header-bar>
  <ion-content ng-controller="ValetCtrl">
- 	 <h3>VALET</h3>
+   <ion-list class="list list-inset valet-list">
+     <ion-item class="item item-avatar" ng-repeat="res in residents | orderBy:'-res.valet.date'" ng-if="res.valet.status">
+       <img ng-src="{{res.img}}">
+       <h2>{{res.apartment}} - {{res.user}}</h2>
+       <span class="item-note">
+         {{res.valet.date}}
+       </span>
+     </ion-item>
+   </ion-list>
  </ion-content>
 </ion-modal-view>

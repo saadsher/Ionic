@@ -4,6 +4,18 @@
 	 <a class="button button-light pull-right ion-ios-close-outline btn-close-modal" ng-click="modalInbox.hide()"></a>
  </ion-header-bar>
  <ion-content ng-controller="MessagesCtrl">
-   <h3>INBOX</h3>
+   <div class="list list-inset inbox-list">
+    <label class="item-input search">
+      <i class="icon ion-search placeholder-icon"></i>
+      <input type="text" placeholder="Search">
+    </label>
+    <a class="item item-avatar" ng-repeat="msg in recent" ng-click="goMessages()">
+      <img src="http://placehold.it/40x40">
+      <h2>{{msg.apartment}} - {{msg.user}}</h2>
+      <p>
+        {{msg.message}}
+      </p>
+    </a>
+   </div>
  </ion-content>
 </ion-modal-view>

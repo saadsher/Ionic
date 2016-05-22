@@ -3,7 +3,42 @@
 	 <h1 class="title">Postal</h1>
 	 <a class="button button-light pull-right ion-ios-close-outline btn-close-modal" ng-click="modalPostal.hide()"></a>
  </ion-header-bar>
- <ion-content ng-controller="PostboxCtrl">
- 	<h3>POSTAL</h3>
- </ion-content>
+ <ion-tabs class="tabs-energized postal-tabs" ng-controller="PostboxCtrl">
+    <ion-tab title="Residents">
+      <ion-content>
+        <ion-list class="list list-inset postal-list">
+          <label class="item-input search">
+            <i class="icon ion-search placeholder-icon"></i>
+            <input type="text" placeholder="Search">
+          </label>
+          <ion-item class="item item-avatar" ng-repeat="res in residents">
+            <img ng-src="{{res.img}}">
+            <h2>{{res.apartment}} - {{res.user}}</h2>
+            <span class="item-note" ng-if="res.parcel.alert">
+              ALERTED
+            </span>
+            <ion-option-button class="button-energized" ng-if="!res.parcel.alert">
+              NOTIFY
+            </ion-option-button>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ion-tab>
+    <ion-tab title="Alerts">
+      <ion-content>
+        <ion-list class="list list-inset postal-list">
+          <ion-item class="item item-avatar" ng-repeat="res in residents" ng-if="res.parcel.alert">
+            <img ng-src="{{res.img}}">
+            <h2>{{res.apartment}} - {{res.user}}</h2>
+            <span class="item-note">
+              {{res.parcel.date}}
+            </span>
+            <ion-option-button class="button-energized">
+              UNDO
+            </ion-option-button>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ion-tab>
+ </ion-tabs>
 </ion-modal-view>

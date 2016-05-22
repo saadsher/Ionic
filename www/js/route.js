@@ -1,4 +1,6 @@
-Spasey.config(function($stateProvider, $urlRouterProvider, USER_ROLES) {
+Spasey.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, USER_ROLES) {
+
+  $ionicConfigProvider.tabs.position('top');
 
   $stateProvider.state('login', {
     url: '/login',

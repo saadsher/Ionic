@@ -498,3 +498,75 @@
     top: 0;
     left: 50%;
     transform: translateX(-50%); }
+
+.modal-wrapper .older-list.list .item {
+  border-bottom: 1px solid #eee;
+  box-shadow: 0px 2px 10px #eee;
+  margin-bottom: 5px;
+  width: 100%; }
+  .modal-wrapper .older-list.list .item p {
+    float: none;
+    padding-top: 10px;
+    padding-left: 0;
+    width: auto;
+    color: #666;
+    font-size: 14px;
+    white-space: normal; }
+
+.msgArea {
+  padding-left: 8px;
+  width: 94%;
+  height: 28px;
+  background: 0 0;
+  line-height: 22px; }
+
+.modal-wrapper .inbox-list.list {
+  margin-top: 0; }
+  .modal-wrapper .inbox-list.list .search {
+    border: 1px solid #ffc900;
+    margin-bottom: 5px;
+    border-radius: 2px; }
+  .modal-wrapper .inbox-list.list .item {
+    border-bottom: 1px solid #eee;
+    box-shadow: 0px 2px 10px #eee;
+    margin-bottom: 5px; }
+    .modal-wrapper .inbox-list.list .item p {
+      float: none;
+      padding-top: 0;
+      padding-left: 0;
+      width: auto;
+      color: #666;
+      font-size: 14px; }
+
+.modal-wrapper .postal-tabs .pane {
+  top: 93px; }
+
+.modal-wrapper .postal-list.list .search,
+.modal-wrapper .valet-list.list .search {
+  border: 1px solid #ffc900;
+  margin-bottom: 5px;
+  border-radius: 2px; }
+
+.modal-wrapper .postal-list.list .item,
+.modal-wrapper .valet-list.list .item {
+  border-bottom: 1px solid #eee;
+  box-shadow: 0px 2px 10px #eee;
+  margin-bottom: 5px;
+  width: 100%; }
+
+.modal-wrapper .postal-list.list .mt,
+.modal-wrapper .valet-list.list .mt {
+  margin-top: 20px; }
+
+.modal-wrapper .postal-list.list h2,
+.modal-wrapper .valet-list.list h2 {
+  margin-top: 10px; }
+
+.modal-wrapper .postal-list.list p,
+.modal-wrapper .valet-list.list p {
+  float: none;
+  padding-top: 10px;
+  padding-left: 0;
+  width: auto;
+  color: #666;
+  font-size: 14px; }
