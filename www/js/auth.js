@@ -39,7 +39,6 @@ Spasey.run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
   }
 
   function useCredentials(user) {
-    console.log(user);
     isAuthenticated = true;
     role = USER_ROLES[user.role];
   }
