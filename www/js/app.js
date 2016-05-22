@@ -1,4 +1,4 @@
-var Spasey = angular.module('Spasey', ['ionic', 'ngCordova', 'ngOpenFB']);
+var Spasey = angular.module('Spasey', ['ionic', 'ngCordova', 'ngOpenFB', 'monospaced.elastic']);
 var host = 'http://spasey-service.herokuapp.com';
 
 // CONSTANTS

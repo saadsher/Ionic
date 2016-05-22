@@ -13,10 +13,10 @@
      </div>
    </div>
  </ion-content>
- <ion-footer-bar class="item-input-inset">
+ <ion-footer-bar class="item-input-inset footer-msg">
    <label class="item-input-wrapper">
      <i class="icon ion-ios-paperplane-outline"></i>
-     <textarea placeholder="Message" class="msgArea" ng-keyup="expandText()" ng-keydown="expandText()" ng-model="now.message"></textarea>
+     <textarea placeholder="Message" class="msgArea" msd-elastic="\n" rows="1" ng-model="now.message"></textarea>
    </label>
    <button class="button button-energized" ng-click="send()" data-tap-disabled="true">
      Send

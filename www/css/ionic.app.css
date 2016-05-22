@@ -513,12 +513,16 @@
     font-size: 14px;
     white-space: normal; }
 
+.footer-msg {
+  overflow: visible !important;
+  height: auto; }
+
 .msgArea {
+  resize: none;
+  padding-top: 7px;
   padding-left: 8px;
   width: 94%;
-  height: 28px;
-  background: 0 0;
-  line-height: 22px; }
+  background: 0 0; }
 
 .modal-wrapper .inbox-list.list {
   margin-top: 0; }
