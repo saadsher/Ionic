@@ -3,8 +3,11 @@ Spasey.service('MessagingService', function($http) {
     create: function(content) {
       return $http.post(
         host + "/messages",
-        { messages: { content: content } }
+        { message: { content: content } }
       )
+    },
+    getAll: function() {
+      return $http.get(host + "/messages")
     }
   }
 });
