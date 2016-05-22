@@ -26,20 +26,23 @@ Spasey.run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
   var authToken;
 
   function loadUserCredentials() {
-    var user = window.localStorage.getItem(CURRENT_USER);
-    if (user) {
-      useCredentials(user);
+    var userToken = window.localStorage.getItem('userToken'),
+        userRole = window.localStorage.getItem('userRole');
+    if(userToken && userRole){
+      useCredentials({ token: userToken, role: userRole });
     }
   }
 
   function storeUserCredentials(user) {
-    window.localStorage.setItem(CURRENT_USER, user);
-    useCredentials(user);
+    window.localStorage.setItem('userToken', user.token);
+    window.localStorage.setItem('userRole', user.role);
   }
 
   function useCredentials(user) {
+    console.log(user);
     isAuthenticated = true;
     role = USER_ROLES[user.role];
+    console.log(user);
 
     // Set the token as header for your requests!
     $http.defaults.headers.common['X-Auth-Token'] = user.token;
@@ -50,11 +53,12 @@ Spasey.run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
     username = '';
     isAuthenticated = false;
     $http.defaults.headers.common['X-Auth-Token'] = undefined;
-    window.localStorage.removeItem(CURRENT_USER);
+    window.localStorage.removeItem('userToken');
   }
 
   var login = function(user) {
     storeUserCredentials(user);
+    useCredentials(user);
   };
 
   var logout = function() {
