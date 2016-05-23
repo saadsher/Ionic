@@ -649,7 +649,7 @@ ion-nav-view {
   height: auto;
 }
 .msgArea {
-  resize: none;
+  resize: none!important;
   padding-top: 7px;
   padding-left: 8px;
   width: 94%;
