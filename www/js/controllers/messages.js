@@ -1,4 +1,5 @@
 Spasey.controller('MessagesCtrl', function($scope, MessagingService, MessagesPollingService) {
+
   $scope.$on('messagesUpdate', function(event, messages) {
     $scope.messages = messages;
   });

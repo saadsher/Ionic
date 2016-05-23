@@ -1,5 +1,4 @@
 Spasey.controller('PostboxCtrl', function($scope, Concierge) {
-  // console.warn("POSTBOX");
 
   $scope.residents = [{
     id: 001,

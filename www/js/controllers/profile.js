@@ -1,5 +1,4 @@
 Spasey.controller('ProfileCtrl', function($scope, $timeout) {
-  // console.warn("PROFILE");
 
   $scope.editActive = false;
 

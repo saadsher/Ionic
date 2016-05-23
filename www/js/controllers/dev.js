@@ -1,4 +1,5 @@
 Spasey.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicPopup, $ionicListDelegate, $timeout, GoogleMaps, MessagesPollingService) {
+
   $scope.messagesCount = 0;
 
   $scope.$on('messagesUpdate', function(event, messages) {
@@ -18,7 +19,7 @@ Spasey.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $i
     // $scope.toggleLeft = function() {
     //   $ionicSideMenuDelegate.toggleLeft();
     // };
-    
+
     MessagesPollingService.run();
 
     GoogleMaps.init("AIzaSyDt1Hn4Nag4LRzZY-b6Jn0leKDc2ZMwXns");
