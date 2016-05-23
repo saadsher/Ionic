@@ -1,4 +1,15 @@
 Spasey.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicPopup, $ionicListDelegate, $timeout, GoogleMaps, MessagesPollingService) {
+  $scope.messagesCount = 0;
+
+  $scope.$on('messagesUpdate', function(event, messages) {
+    var count = 0
+    angular.forEach(messages, function(v, i) {
+      if(!v.read_at) {
+        count += 1;
+      }
+    })
+    $scope.messagesCount = count;
+  });
 
   ionic.Platform.ready(function() {
 

@@ -7,3 +7,4 @@ plugins/
 temp/
 server/*.txt
 .editorconfig
+*.sublime*
