@@ -1,4 +1,4 @@
-Spasey.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicPopup, $ionicListDelegate, $timeout, GoogleMaps) {
+Spasey.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicPopup, $ionicListDelegate, $timeout, GoogleMaps, MessagesPollingService) {
 
   ionic.Platform.ready(function() {
 
@@ -7,6 +7,8 @@ Spasey.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $i
     // $scope.toggleLeft = function() {
     //   $ionicSideMenuDelegate.toggleLeft();
     // };
+    
+    MessagesPollingService.run();
 
     GoogleMaps.init("AIzaSyDt1Hn4Nag4LRzZY-b6Jn0leKDc2ZMwXns");
 

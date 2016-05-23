@@ -1,6 +1,6 @@
 var Spasey = angular.module('Spasey', ['ionic', 'ngCordova', 'ngOpenFB', 'monospaced.elastic']);
-var host = 'http://spasey-service.herokuapp.com';
-//var host = 'http://localhost:3000';
+//var host = 'http://spasey-service.herokuapp.com';
+var host = 'http://localhost:3000';
 
 // CONSTANTS
 
