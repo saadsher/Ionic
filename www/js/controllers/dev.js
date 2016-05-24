@@ -1,4 +1,6 @@
-Spasey.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicPopup, $ionicListDelegate, $timeout, GoogleMaps, MessagesPollingService) {
+Spasey.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicContentBanner, $ionicPopup, $ionicListDelegate, $timeout, GoogleMaps, MessagesPollingService) {
+
+  var contentBannerInstance;
 
   $scope.messagesCount = 0;
 
@@ -139,19 +141,31 @@ Spasey.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $i
     }
 
     $scope.addMarker = function(add) {
-      GoogleMaps.newMarker(add).then(function() {
-        var alertAdd = $ionicPopup.alert({
-          title: 'Thank you',
-          template: 'Marker added',
-          okType: 'button-dark'
-        });
 
-        alertAdd.then(function(res) {
-          if(res) {
-            GoogleMaps.clickNewClose();
-            $scope.modalC.hide();
-            GoogleMaps.newMarker();
-          }
+      GoogleMaps.clickNewClose();
+      $scope.modalC.hide();
+      GoogleMaps.newMarker();
+
+      if (contentBannerInstance) {
+        contentBannerInstance();
+        contentBannerInstance = null;
+      }
+
+      contentBannerInstance = $ionicContentBanner.show({
+        text: ["CREATING"],
+        icon: null
+      });
+
+      GoogleMaps.newMarker(add).then(function() {
+
+        if (contentBannerInstance) {
+          contentBannerInstance();
+          contentBannerInstance = null;
+        }
+
+        contentBannerInstance = $ionicContentBanner.show({
+          text: ["MARKER CREATED"],
+          autoClose: 7000
         });
       });
     }
@@ -165,27 +179,40 @@ Spasey.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $i
         $scope.modalUD.show();
       });
     }
-
     $scope.updateMarker = function(update) {
-      $scope.empty = true;
-      GoogleMaps.updateMarker(update).then(function() {
-        var alertUpdate = $ionicPopup.alert({
-          title: 'Thank you',
-          template: 'Marker updated',
-          okType: 'button-dark'
-        });
 
-        alertUpdate.then(function(res) {
-          if(res) {
-            GoogleMaps.clickEditClose();
-            $scope.modalUD.hide();
-            GoogleMaps.editMarker();
-          }
+      $scope.empty = true;
+
+      GoogleMaps.clickEditClose();
+      $scope.modalUD.hide();
+      GoogleMaps.editMarker();
+
+      if (contentBannerInstance) {
+        contentBannerInstance();
+        contentBannerInstance = null;
+      }
+
+      contentBannerInstance = $ionicContentBanner.show({
+        text: ["UPDATING"],
+        icon: null
+      });
+
+      GoogleMaps.updateMarker(update).then(function() {
+
+        if (contentBannerInstance) {
+          contentBannerInstance();
+          contentBannerInstance = null;
+        }
+
+        contentBannerInstance = $ionicContentBanner.show({
+          text: ["MARKER UPDATED"],
+          icon: null
         });
       })
     }
 
     $scope.deleteMarker = function(del) {
+
       var alertDelete = $ionicPopup.confirm({
         title: 'Confirm',
         template: 'Are you sure you want to delete this marker?',
@@ -194,20 +221,33 @@ Spasey.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $i
       });
 
       alertDelete.then(function(res) {
-        if(res) {
-          GoogleMaps.deleteMarker(del).then(function() {
-            var alertDeleted = $ionicPopup.alert({
-              title: 'Thank you',
-              template: 'Marker deleted',
-              okType: 'button-dark'
-            });
 
-            alertDeleted.then(function(res) {
-              if(res) {
-                GoogleMaps.clickEditClose();
-                $ionicListDelegate.closeOptionButtons();
-                $scope.modalR.hide();
-              }
+        if(res) {
+
+          GoogleMaps.clickEditClose();
+          $ionicListDelegate.closeOptionButtons();
+          $scope.modalR.hide();
+
+          if (contentBannerInstance) {
+            contentBannerInstance();
+            contentBannerInstance = null;
+          }
+
+          contentBannerInstance = $ionicContentBanner.show({
+            text: ["DELETING"],
+            icon: null
+          });
+
+          GoogleMaps.deleteMarker(del).then(function() {
+
+            if (contentBannerInstance) {
+              contentBannerInstance();
+              contentBannerInstance = null;
+            }
+
+            contentBannerInstance = $ionicContentBanner.show({
+              text: ["MARKER DELETED"],
+              autoClose: 7000
             });
           });
         }
@@ -215,18 +255,30 @@ Spasey.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $i
     }
 
     $scope.updateCounter = function(update) {
-      $scope.empty = true;
-      GoogleMaps.updateCounter(update).then(function() {
-        var confirmPopup = $ionicPopup.alert({
-          title: 'Thank you',
-          template: 'Counter updated',
-          okType: 'button-dark'
-        });
 
-        confirmPopup.then(function(res) {
-          if(res) {
-            GoogleMaps.clickCounterClose();
-          }
+      $scope.empty = true;
+      GoogleMaps.clickCounterClose();
+
+      if (contentBannerInstance) {
+        contentBannerInstance();
+        contentBannerInstance = null;
+      }
+
+      contentBannerInstance = $ionicContentBanner.show({
+        text: ["MODIFYING"],
+        icon: null
+      });
+
+      GoogleMaps.updateCounter(update).then(function() {
+
+        if (contentBannerInstance) {
+          contentBannerInstance();
+          contentBannerInstance = null;
+        }
+
+        contentBannerInstance = $ionicContentBanner.show({
+          text: ["COUNTER MODIFIED"],
+          autoClose: 7000
         });
       });
     }

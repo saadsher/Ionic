@@ -78,7 +78,7 @@ Spasey.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider,
 })
 
 .controller('AppCtrl', function($q, $scope, $state, $ionicSideMenuDelegate, $ionicPopup, $timeout, AuthService, AUTH_EVENTS) {
-  console.log('AppCtrl');
+
   $scope.username = AuthService.username();
 
   $scope.$on(AUTH_EVENTS.notAuthorized, function(event) {

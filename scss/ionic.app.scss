@@ -7,7 +7,9 @@ $ionicons-font-path: '../lib/ionic/fonts' !default;
 $mapicons-font-path: '../lib/map-icons-master/dist/fonts';
 
 // Include all of Ionic
-// @import "www/lib/ionic/scss/ionic.scss";
+@import
+ '../www/lib/ionic/scss/ionic',
+ '../www/lib/ionic-content-banner/scss/ionic.content.banner';
 
 // Helpers
 .text-center {
@@ -395,6 +397,19 @@ ion-nav-view {
   }
 }
 
+.content-banner.info {
+  background-color: #ffc900;
+  color: black;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+.content-banner-transition-vertical {
+  transform: translate3d(0,-240%,0);
+}
+.content-banner-in {
+  transform: translate3d(0,150%,0);
+}
+
 .modal {
   background-color: rgba(255,255,255,0.8);
 
@@ -654,6 +669,12 @@ ion-nav-view {
   padding-left: 8px;
   width: 94%;
   background: 0 0;
+}
+.chat-loader {
+  opacity: 0;
+  display: block;
+  text-align: center;
+  transition: .3s opacity;
 }
 
 .modal-wrapper .inbox-list.list {

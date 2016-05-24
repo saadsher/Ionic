@@ -101,7 +101,7 @@ Spasey.run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
 })
 
 .controller('LoginCtrl', function($scope, $state, $ionicPopup, AuthService, ngFB, $http) {
-  console.log('LoginCtrl');
+  
   $scope.data = {};
   var user = {};
 

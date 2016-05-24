@@ -1,4 +1,4 @@
-Spasey.factory('Markers', function($q, $http, $ionicLoading) {
+Spasey.factory('Markers', function($q, $http, $ionicLoading, $ionicContentBanner) {
 
   return {
     getMarkers: function(params) {
@@ -14,36 +14,21 @@ Spasey.factory('Markers', function($q, $http, $ionicLoading) {
     },
     createMarker: function(newMarker) {
 
-      $ionicLoading.show({
-        template: '<ion-spinner icon="ripple"></ion-spinner>'
-      });
-
       return $http.post(host + "/markers", {marker:newMarker}).then(function(resolve) {
-        $ionicLoading.hide();
         // console.info("<<NEW MARKER ADDED>>");
         // console.log(newMarker);
       });
     },
     updateMarker: function(thisMarker) {
 
-      $ionicLoading.show({
-        template: '<ion-spinner icon="ripple"></ion-spinner>'
-      });
-
       return $http.put(host + "/markers/" + thisMarker.id,{marker:thisMarker}).then(function(resolve) {
-        $ionicLoading.hide();
         // console.info("<<MARKER UPDATED>>");
         // console.log(thismarker);
       });
     },
     deleteMarker: function(thisMarker) {
 
-      $ionicLoading.show({
-        template: '<ion-spinner icon="ripple"></ion-spinner>'
-      });
-
       return $http.delete(host + "/markers/" + thisMarker.id,{marker:thisMarker}).then(function(resolve) {
-        $ionicLoading.hide();
         // console.info("<<MARKER DELETED>>");
         // console.log(thisMarker);
       });

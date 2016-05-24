@@ -11,6 +11,13 @@
             <i class="icon ion-search placeholder-icon"></i>
             <input type="text" placeholder="Search">
           </label>
+          <br>
+          <ion-item class="item item-divider">
+            NOTIFY RESIDENTS
+            <span class="item-note">
+              SWIPE
+            </span>
+          </ion-item>
           <ion-item class="item item-avatar" ng-repeat="res in residents">
             <img ng-src="{{res.img}}">
             <h2>{{res.apartment}} - {{res.user}}</h2>
@@ -27,6 +34,12 @@
     <ion-tab title="Alerts">
       <ion-content>
         <ion-list class="list list-inset postal-list">
+          <ion-item class="item item-divider">
+            NOTIFIED RESIDENTS
+            <span class="item-note">
+              SWIPE
+            </span>
+          </ion-item>
           <ion-item class="item item-avatar" ng-repeat="res in residents" ng-if="res.parcel.alert">
             <img ng-src="{{res.img}}">
             <h2>{{res.apartment}} - {{res.user}}</h2>
