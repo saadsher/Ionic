@@ -112,7 +112,7 @@
 						<ion-item class="item item-icon-left" ng-click="goMessages()">
 							<i class="icon ion-chatboxes"></i>
 							Messages
-							<span class="badge badge-assertive">{{ messagesCount }}</span>
+							<span class="badge badge-assertive">{{ resident.newMessagesCount }}</span>
 						</ion-item>
 						<ion-item class="item item-icon-left" ng-click="goPostbox()">
 							<i class="icon ion-ios-email-outline"></i>
@@ -153,7 +153,7 @@
 						<ion-item class="item item-icon-left" ng-click="goInbox()">
 							<i class="icon ion-chatboxes"></i>
 							Inbox
-							<span class="badge badge-assertive">{{user.messages}}3</span>
+							<span class="badge badge-assertive">{{ concierge.newMessagesCount }}</span>
 						</ion-item>
 						<ion-item class="item item-divider">
 					    Services

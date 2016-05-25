@@ -1,17 +1,13 @@
-Spasey.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicContentBanner, $ionicPopup, $ionicListDelegate, $timeout, GoogleMaps, MessagesPollingService) {
+Spasey.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicContentBanner, $ionicPopup, $ionicListDelegate, $timeout, GoogleMaps, SyncService) {
 
   var contentBannerInstance;
 
-  $scope.messagesCount = 0;
+  $scope.resident = {};
+  $scope.concierge = {};
 
-  $scope.$on('messagesUpdate', function(event, messages) {
-    var count = 0
-    angular.forEach(messages, function(v, i) {
-      if(!v.read_at) {
-        count += 1;
-      }
-    })
-    $scope.messagesCount = count;
+  $scope.$on('sync', function(event, syncData) {
+    $scope.resident.newMessagesCount = syncData.resident.newMessagesCount;
+    $scope.concierge.newMessagesCount = syncData.concierge.newMessagesCount;
   });
 
   ionic.Platform.ready(function() {
@@ -22,7 +18,7 @@ Spasey.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $i
     //   $ionicSideMenuDelegate.toggleLeft();
     // };
 
-    MessagesPollingService.run();
+    SyncService.run();
 
     GoogleMaps.init("AIzaSyDt1Hn4Nag4LRzZY-b6Jn0leKDc2ZMwXns");
 
@@ -335,6 +331,7 @@ Spasey.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $i
       $scope.modalInbox.show();
     }
     $scope.goMessages = function() {
+      $scope.$broadcast('messagesUpdate');
       $scope.modalMessages.show();
     }
     $scope.goPostal = function() {
