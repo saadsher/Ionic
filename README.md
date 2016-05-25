@@ -51,7 +51,7 @@ Messaging service
 ### USAGE
 
 #### Serve
-`ionic serve`
+`ionic serve --lab -c -s -b`
 
 #### iOS
 `ionic build ios`
