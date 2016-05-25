@@ -1,64 +1,106 @@
-# SPASEY
+### SPASEY
 
-Street Parking Map
+###### Advanced Street Parking App
 
-## Specs
+---
 
-- Create markers freely
-- Edit existing markers
-- Delete existing markers
-- Restrict user to just append counter
-- Load markers relative to scroll-position on map
-- Marker detail info page
-- Custom google map style
+### FEATURES
 
-## Installation
+###### App
 
-ionic add platform ios
-ionic add platform android
+Login with Facebook via web
 
-## Usage
+Feedback: Integrated into the app
 
-- ionic serve
+Settings: Day / Night modes
 
-- ionic build ios
-- ionic emulate ios   
+Push notifications based on events
 
-- ionic build android
-- ionic emulate android
+###### Map
 
-## Contributing
+Create, Read, Update & Delete markers freely
 
-1. Fork it!
-2. Create your feature branch: `git checkout -b my-new-feature`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request :D
+Restrict user to modify counters only
 
-## History
+Load markers relative to scroll-position on map
+
+Show parking restrictions
+
+Custom google map styles
+
+Custom alerts
+
+###### Concierge
+
+Valet service
+
+Postal service
+
+Messaging service
+
+---
+
+### INSTALLATION
+
+`ionic add platform ios`
+
+`ionic add platform android`
+
+---
+
+### USAGE
+
+#### Serve
+`ionic serve`
+
+#### iOS
+`ionic build ios`
+
+`ionic emulate ios`
+
+#### Android
+`ionic build android`
+
+`ionic emulate android`
+
+---
+
+### CONTRIBUTE
+
+Fork it
+
+Create your feature branch: `git checkout -b my-new-feature`
+
+Commit your changes: `git commit -am 'Add some feature'`
+
+Push to the branch: `git push origin my-new-feature`
+
+Submit a pull request
+
+---
+
+### HISTORY
 
 TODO: Write history
 
-## Credits
+---
 
-@Artur Małecki
+### CREDITS
 
-@Saad Sher
+[Artur Małecki](https://gitlab.com/u/seeweer)
 
-## License
+[Saad Sher](https://gitlab.com/u/saadsher)
+
+---
+
+### LICENSE
 
 TODO: Write license
 
-# To do
-- [ ] Add a new infoWindow popup to map on tap that:
-  - [ ] Detail maker.
-  - [ ] Add marker.
-  - [ ] Else edit / delete a marker if tapped on an existing one.
-- [ ] Style the map.
-- [ ] Add authentication.
-- [ ] Marker creator only allowed to delete marker
+---
 
-## Next
-- [ ] Test new API.
-- [ ] Implement it.
-- [ ] Add Feedback.
+### ROADMAP
+
+Switch to [Auth0](http://auth0.com/) to handle authentication
+
+Switch to [Leaflet](http://leafletjs.com/) or [Mapbox](http://mapbox.com/) for advanced map features
