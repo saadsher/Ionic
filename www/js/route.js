@@ -113,7 +113,7 @@ Spasey.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider,
       AuthService.logout();
       $state.go('login');
       deferred.resolve();
-    }, 300);
+    }, 1800);
 
     return deferred.promise;
   };

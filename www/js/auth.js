@@ -29,7 +29,8 @@ Spasey.run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
     var userToken = window.localStorage.getItem('userToken'),
         userRole = window.localStorage.getItem('userRole');
     if(userToken && userRole){
-      useCredentials({ token: userToken, role: userRole });
+      login({ token: userToken, role: userRole });
+      setupDefaultHeader(userToken);
     }
   }
 
@@ -110,6 +111,7 @@ Spasey.run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
       function (response) {
         if (response.status === 'connected') {
           AuthService.setupDefaultHeader(response.authResponse.accessToken)
+          user.token = response.authResponse.accessToken;
           return $http.get(host + "/users").then(function(response) {
             user.role = response.data.role;
             AuthService.login(user);
