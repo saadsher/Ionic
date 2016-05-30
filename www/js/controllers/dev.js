@@ -14,10 +14,6 @@ Spasey.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $i
 
     // console.warn("Developer CTRL");
 
-    // $scope.toggleLeft = function() {
-    //   $ionicSideMenuDelegate.toggleLeft();
-    // };
-
     SyncService.run();
 
     GoogleMaps.init("AIzaSyDt1Hn4Nag4LRzZY-b6Jn0leKDc2ZMwXns");
@@ -301,16 +297,39 @@ Spasey.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $i
 
     var toggle = false;
     $scope.basic = true;
+
     $scope.toggleAdmin = function(option) {
       if(toggle) {
         toggle = false;
         $scope.basic = true;
         angular.element(document.querySelector('.btn-list')).addClass('basic');
+
+        if (contentBannerInstance) {
+          contentBannerInstance();
+          contentBannerInstance = null;
+        }
+
+        contentBannerInstance = $ionicContentBanner.show({
+          text: ["BASIC MODE"],
+          autoClose: 7000
+        });
+
         return $scope.setAdmin();
       }
       $scope.setAdmin(option);
       toggle = true;
       angular.element(document.querySelector('.btn-list')).removeClass('basic');
+
+      if (contentBannerInstance) {
+        contentBannerInstance();
+        contentBannerInstance = null;
+      }
+
+      contentBannerInstance = $ionicContentBanner.show({
+        text: ["ADMIN MODE"],
+        autoClose: 7000
+      });
+
       $scope.basic = false;
     };
 
@@ -366,45 +385,17 @@ Spasey.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $i
 
 // User: Counters, Leftside
 // Admin: CRUD, Toggle views, Leftside
-// Concierge: Counters, Leftside, Rightside
-// Resident: Counters, Leftside, Rightside
+// Providence: Counters, Leftside, Rightside[Providence]
+// Concierge: Counters, Leftside, Rightside[Concierge]
+// Resident: Counters, Leftside, Rightside[Residential]
 // Dev: *
 
 // -----------------------------------------------------------------------------
-// IMPROVE
+// TODO
 
 // $cordovaGeolocation.getCurrentPosition() not working in ionic lab
 // Routing of paths
 // Add error popups
 // login loader
-// Complete form validations
 // GET call single marker for edits
-
-// -----------------------------------------------------------------------------
-// BACKEND
-
-// Complete tests with real endpoint
-
-// -----------------------------------------------------------------------------
-// TODO
-
-// Complete basic registration
-// Add social login providers
-// Add Push notification
-// Add Restrictions information on list item click / tap
-
-// -----------------------------------------------------------------------------
-// IN PROGRESS
-
-// Profile    <-- Base
-// Settings   <-- Base
-// Feedback   <-- Base
-// History    <-- Resident / Concierge
-// Valet park <-- Resident
-// Valet out  <-- Resident
-// Postbox    <-- Resident
-// Messages   <-- Resident / Concierge
-// Livetask   <-- Concierge
-// Postal     <-- Concierge
-// Search     <-- Concierge
-// -----------------------------------------------------------------------------
+// Show Edit / Delete / Add notifications

@@ -30,7 +30,7 @@ angular.module('jett.ionic.content.banner', ['ionic']);
           },
           template:
           '<div class="content-banner-text-wrapper">' +
-            '<div ng-repeat="item in text track by $index" ng-class="{active: $index === currentIndex}" class="content-banner-text" ng-bind="item"></div>' +
+          '<div ng-repeat="item in text track by $index" ng-class="{active: $index === currentIndex}" class="content-banner-text" ng-bind="item"></div>' +
           '</div>' +
           '<button class="content-banner-close button button-icon icon {{::icon}}" ng-click="close()"></button>'
         };
@@ -73,8 +73,17 @@ angular.module('jett.ionic.content.banner', ['ionic']);
         }
 
         function getActiveView (body) {
+          // check if there is an active modal
+          var modal = body.querySelector('ion-modal-view[class*="ng-enter-active"]');
+          if (modal != null) {
+            // check if modal is not leaving
+            if (modal.getAttribute('class').indexOf('ng-leave') == -1) {
+              return modal;
+            }
+          }
+
           // get the candidate active views
-          var views = body.querySelectorAll('ion-view[nav-view="active"]');
+          var views = body.querySelectorAll('ion-side-menu-content');
 
           // only one candidate, so we just take it
           if (views.length === 1) {
@@ -146,7 +155,11 @@ angular.module('jett.ionic.content.banner', ['ionic']);
               return;
             }
 
-            getActiveView(body).querySelector('.scroll-content').appendChild(element[0]);
+            var scrollContents = getActiveView(body).querySelectorAll('.scroll-content')
+            var activeScrollContent = Array.prototype.slice.call(scrollContents).filter(function (content) {
+              return isActiveView(content)
+            })[0]
+            activeScrollContent.parentNode.appendChild(element[0])
 
             ionic.requestAnimationFrame(function () {
               $timeout(function () {

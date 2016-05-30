@@ -1,5 +1,4 @@
 <ion-view>
-	<ion-content>
 		<ion-side-menus>
 			<!-- Left menu -->
 			<ion-side-menu side="left">
@@ -32,11 +31,11 @@
 			</ion-side-menu>
 
 			<ion-side-menu-content>
-				<ion-pane>
+				<!-- <ion-pane> -->
 					<ion-header-bar align-title="center">
 						<button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
 						<h1 class="title">S P &#9824; S E Y</h1>
-						<button menu-toggle="right" class="button button-icon icon ion-ios-arrow-back reverse"></button>
+						<button menu-toggle="right" class="button button-icon icon ion-ios-arrow-back reverse"><span class="ion-ios-circle-filled"></span></button>
 					</ion-header-bar>
 					<ion-content scroll="false">
 				    <div id="map" ng-click="clickMap()" data-tap-disabled="true"></div>
@@ -49,7 +48,7 @@
 									latitude: &nbsp;&nbsp;&nbsp;{{newer.latitude}}<br />
 									longitude: {{newer.longitude}}
 								</span>
-								<button class="button button-energized button-block button-outline" ng-click="modalC.show()">
+								<button class="button button-energized button-block" ng-click="modalC.show()">
 									ADD
 								</button>
 							</div>
@@ -65,10 +64,10 @@
 									counter: {{editor.counter}}<br />
 									information: {{editor.dictionary}}
 								</span>
-								<button class="button button-energized button-block button-outline" ng-click="modalUD.show()">
+								<button class="button button-energized button-block" ng-click="modalUD.show()">
 									EDIT
 								</button>
-								<button class="button button-assertive button-block button-outline" ng-click="deleteMarker(editor)" loading>
+								<button class="button button-assertive button-block" ng-click="deleteMarker(editor)" loading>
 									DELETE
 								</button>
 							</div>
@@ -79,23 +78,24 @@
 								<span>
 									<form name="formC" id="formC" class="formC">
 										<label class="item item-input item-stacked-label">
-											<ion-label>Counter<br />{{counter._counter}}</ion-label>
+											<ion-label><br />{{counter._counter}}</ion-label>
 									    <input name="counter" type="text" ng-model="counter.counter" disabled>
 									  </label>
-										<button type="button" name="button" class="button button-energized ion-ios-minus" ng-click="counterDown(counter)"></button>
-										<button type="submit" name="button" class="button button-energized ion-happy" ng-click="updateCounter(counter)"></button>
-										<button type="button" name="button" class="button button-energized ion-ios-plus" ng-click="counterUp(counter)"></button>
+										<hr>
+										<button type="button" name="button" class="button button-dark ion-ios-minus" ng-click="counterDown(counter)"></button>
+										<button type="button" name="button" class="button button-dark ion-ios-plus" ng-click="counterUp(counter)"></button>
+										<button type="submit" name="button" class="button button-energized button-block ion-happy" ng-click="updateCounter(counter)"> MODIFY</button>
 									</form>
 								</span>
 							</div>
 						</div>
 						<button class="button button-block button-energized btn-ctr ion-ios-navigate-outline" ng-click="setCenter()"></button>
 						<button class="button button-block button-dark btn-add ion-ios-plus-outline" ng-click="modalC.show()" ng-hide=basic></button>
-						<button class="button button-block button-dark btn-list ion-ios-paper-outline basic" ng-click="modalR.show()"></button>
-						<button class="button button-block button-dark btn-edit ion-ios-compose-outline" ng-click="modalUD.show()" ng-hide="basic || empty" data-tap-disabled="true"></button>
+						<button class="button button-block button-energized btn-list ion-ios-paper-outline basic" ng-click="modalR.show()">LIST</button>
+						<!-- <button class="button button-block button-dark btn-edit ion-ios-compose-outline" ng-click="modalUD.show()" ng-hide="basic || empty" data-tap-disabled="true"></button> -->
 						<button class="button button-block button-assertive ion-ios-locked-outline set-admin" toggle-class="ion-ios-unlocked-outline" ng-click="toggleAdmin(true)" data-tap-disabled="true"></button>
 					</ion-content>
-				</ion-pane>
+				<!-- </ion-pane> -->
 			</ion-side-menu-content>
 
 			<!-- Right menu -->
@@ -219,5 +219,4 @@
 				</ion-content>
 			</ion-side-menu>
 		</ion-side-menus>
-	</ion-content>
 </ion-view>

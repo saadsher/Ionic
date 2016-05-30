@@ -9778,8 +9778,8 @@ a.button {
   color: white;
   height: 30px;
   line-height: 30px;
-  position: absolute;
-  top: 0;
+  position: fixed;
+  top: 40px;
   opacity: 0.7; }
   .content-banner.error {
     background-color: red; }
@@ -9808,6 +9808,9 @@ a.button {
     color: white; }
     .content-banner .content-banner-close:before {
       line-height: 30px; }
+
+.platform-ios .content-banner {
+  top: 44px; }
 
 .content-banner-transition-vertical {
   -webkit-transition: -webkit-transform linear 250ms;
@@ -9918,22 +9921,25 @@ a.button {
 .menu-open .ion-ios-arrow-back.reverse:before {
   transform: rotate(180deg); }
 
+.ion-ios-arrow-back .ion-ios-circle-filled {
+  float: left;
+  font-size: 11px;
+  margin-right: 5px;
+  color: #ffc900; }
+
 .actibox-new,
 .actibox-edit,
 .actibox-counter {
   display: block;
   position: absolute;
-  padding: 15px;
-  top: 0;
+  bottom: 0;
   width: 100%;
-  background: rgba(68, 68, 68, 0.7);
-  opacity: 0;
-  z-index: -1;
-  transition: .3s all; }
+  background: #333;
+  transition: .5s all;
+  box-shadow: 0 0 20px #000; }
   .actibox-new.active,
   .actibox-edit.active,
   .actibox-counter.active {
-    opacity: 1;
     z-index: 1; }
   .actibox-new span,
   .actibox-edit span,
@@ -9941,8 +9947,8 @@ a.button {
     display: block;
     font-size: 18px;
     color: #ffc900;
-    padding-right: 22px;
-    padding-bottom: 15px; }
+    padding: 15px;
+    padding-right: 22px; }
   .actibox-new .ion-ios-close-outline,
   .actibox-edit .ion-ios-close-outline,
   .actibox-counter .ion-ios-close-outline {
@@ -9951,7 +9957,8 @@ a.button {
     font-size: 27px;
     position: absolute;
     right: 0;
-    top: 0; }
+    top: 0;
+    z-index: 3; }
     .actibox-new .ion-ios-close-outline.activated,
     .actibox-edit .ion-ios-close-outline.activated,
     .actibox-counter .ion-ios-close-outline.activated {
@@ -9964,64 +9971,110 @@ a.button {
       left: 50%;
       transform: translateX(-50%); } }
 
-.actibox-counter span {
-  padding: 0;
-  margin-top: 25px; }
-  .actibox-counter span label {
-    border: 0;
-    padding: 0; }
-    .actibox-counter span label .input-label {
-      font-size: 26px;
+.actibox-new {
+  transform: translate3d(0px, 150px, 0px); }
+  .actibox-new.active {
+    transform: translate3d(0px, 0px, 0px); }
+  .actibox-new .button.button-energized.button-block {
+    border-radius: 0;
+    color: black;
+    margin: 0; }
+
+.actibox-edit {
+  transform: translate3d(0px, 285px, 0px); }
+  .actibox-edit.active {
+    transform: translate3d(0px, 0px, 0px); }
+  .actibox-edit .button.button-energized.button-block,
+  .actibox-edit .button.button-assertive {
+    width: 50%;
+    border-radius: 0;
+    margin: 0;
+    float: left;
+    clear: right; }
+  .actibox-edit .button.button-energized.button-block {
+    color: black; }
+
+.actibox-counter {
+  transform: translate3d(0px, 170px, 0px);
+  background: white; }
+  .actibox-counter.active {
+    transform: translate3d(0px, 0px, 0px); }
+  .actibox-counter span {
+    padding: 0;
+    margin-top: 40px; }
+    .actibox-counter span label {
+      border: 0;
+      padding: 0;
+      overflow: visible; }
+      .actibox-counter span label .input-label {
+        font-size: 20px;
+        color: grey;
+        text-align: center;
+        display: block;
+        max-width: none;
+        width: 30%;
+        height: 85px;
+        border-radius: 50%;
+        background: white;
+        transform: translate(115%, 28%);
+        margin-top: -85px; }
+        .actibox-counter span label .input-label:before {
+          content: "COUNTER";
+          font-size: 12px; }
+      .actibox-counter span label input {
+        font-size: 56px;
+        font-weight: 900;
+        border-radius: 50%;
+        width: 100px;
+        padding: 25px 35px;
+        color: #000;
+        transform: translateX(-50%);
+        bottom: -53px;
+        left: 50%;
+        position: absolute;
+        background-color: white; }
+    .actibox-counter span hr {
+      margin: 30px 20px; }
+    .actibox-counter span .button.ion-ios-plus {
+      border-radius: 50%;
+      border: 1px solid black;
+      min-height: 0;
+      min-width: 0;
+      width: 29px;
+      height: 29px;
+      padding: 0;
       color: #ffc900;
-      text-align: center;
-      display: block;
-      max-width: none;
-      width: auto;
-      margin-bottom: 30px; }
-    .actibox-counter span label input {
-      font-size: 56px;
-      font-weight: 900;
-      border-radius: 50px;
-      width: 100px;
-      height: 100px;
-      padding: 32px;
-      color: black;
-      transform: translateX(-50%);
-      margin-left: 50%;
-      background-color: #ffc900;
-      z-index: 1;
-      opacity: 1; }
-  .actibox-counter span .button.ion-ios-plus {
-    border-radius: 50%;
-    height: 78px;
-    width: 78px;
-    font-size: 56px;
-    padding: 0;
-    line-height: 0;
-    color: #333;
-    position: absolute;
-    bottom: 79px;
-    right: 60px; }
-  .actibox-counter span .button.ion-ios-minus {
-    border-radius: 50%;
-    height: 58px;
-    width: 58px;
-    font-size: 46px;
-    padding: 0;
-    line-height: 0;
-    color: #333;
-    position: absolute;
-    bottom: 90px;
-    left: 85px; }
-  .actibox-counter span .button.ion-happy {
-    border-radius: 50%;
-    color: #333;
-    width: 105px;
-    height: 105px;
-    font-size: 86px;
-    margin-top: 25px;
-    margin-left: 50%;
-    transform: translateX(-50%); }
+      position: absolute;
+      bottom: 65px;
+      right: 15px;
+      background: black; }
+      .actibox-counter span .button.ion-ios-plus:before {
+        font-size: 33px;
+        position: absolute;
+        top: -2px;
+        right: 0; }
+    .actibox-counter span .button.ion-ios-minus {
+      border-radius: 50%;
+      border: 1px solid black;
+      min-height: 0;
+      min-width: 0;
+      width: 29px;
+      height: 29px;
+      padding: 0;
+      color: #ffc900;
+      position: absolute;
+      bottom: 65px;
+      left: 15px;
+      background: black; }
+      .actibox-counter span .button.ion-ios-minus:before {
+        font-size: 33px;
+        position: absolute;
+        top: -2px;
+        left: 0; }
+    .actibox-counter span .button.button-energized {
+      border-radius: 0;
+      color: #333;
+      margin: 0; }
 
 .custom-marker {
   padding: 0px;
@@ -10071,11 +10124,22 @@ a.button {
 .scroll {
   height: 100%; }
 
+.fb-login-msg {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  top: 40%; }
+
 .button.fb-login {
   position: fixed;
   top: 50%;
   width: 95%;
-  transform: translateY(-50%); }
+  transform: translateY(-50%);
+  font-weight: bold; }
+  .button.fb-login .ion-social-facebook-outline {
+    position: absolute;
+    transform: translateX(-14px);
+    font-size: 33px; }
 
 .button.button-light {
   font-size: 25px;
@@ -10110,16 +10174,19 @@ a.button {
 
 .btn-list.button.button-block {
   position: absolute;
-  left: 51%;
   bottom: 0;
-  width: 20px;
-  height: 20px;
+  padding: 0;
   margin: 0;
-  opacity: .8;
-  font-size: 33px; }
-  .btn-list.button.button-block.basic {
-    left: 50%;
-    transform: translateX(-50%); }
+  border-radius: 0;
+  box-shadow: 0 0 20px black;
+  color: black;
+  transition: .3s background, color; }
+  .btn-list.button.button-block:before {
+    font-size: 33px;
+    transform: translate(-50%, 5px); }
+  .btn-list.button.button-block.activated {
+    background: black;
+    color: #ffc900; }
 
 .btn-edit.button.button-block {
   position: absolute;
@@ -10161,13 +10228,10 @@ a.button {
   background-color: #ffc900;
   color: black;
   font-weight: 900;
-  letter-spacing: 1px; }
-
-.content-banner-transition-vertical {
-  transform: translate3d(0, -240%, 0); }
-
-.content-banner-in {
-  transform: translate3d(0, 150%, 0); }
+  letter-spacing: 1px;
+  left: 0; }
+  .content-banner.info .content-banner-close {
+    color: black; }
 
 .modal {
   background-color: rgba(255, 255, 255, 0.8); }
@@ -10310,12 +10374,7 @@ a.button {
   position: relative;
   top: -15px; }
   .map-icon-label-ticker.active {
-    background-color: #ffc900;
-    color: #333;
-    border-radius: 50%;
-    padding: 12px;
-    left: -12px;
-    top: -10px; }
+    color: transparent; }
 
 .loading-container .loading {
   background-color: rgba(0, 0, 0, 0.3); }

@@ -123,22 +123,25 @@ ion-nav-view {
     transform: rotate(180deg);
   }
 }
+.ion-ios-arrow-back .ion-ios-circle-filled {
+  float: left;
+  font-size: 11px;
+  margin-right: 5px;
+  color: #ffc900;
+}
 
 .actibox-new,
 .actibox-edit,
 .actibox-counter {
   display: block;
   position: absolute;
-  padding: 15px;
-  top: 0;
+  bottom: 0;
   width: 100%;
-  background: rgba(68, 68, 68, .7);
-  opacity: 0;
-  z-index: -1;
-  transition: .3s all;
+  background: #333;
+  transition: .5s all;
+  box-shadow: 0 0 20px #000;
 
   &.active {
-    opacity: 1;
     z-index: 1;
   }
 
@@ -146,8 +149,8 @@ ion-nav-view {
     display: block;
     font-size: 18px;
     color: #ffc900;
+    padding: 15px;
     padding-right: 22px;
-    padding-bottom: 15px;
   }
 
   .ion-ios-close-outline {
@@ -157,6 +160,7 @@ ion-nav-view {
     position: absolute;
     right: 0;
     top: 0;
+    z-index: 3;
 
     &.activated {
       background: transparent;
@@ -169,77 +173,142 @@ ion-nav-view {
     transform: translateX(-50%);
   }
 }
+.actibox-new {
+  transform: translate3d(0px,150px,0px);
+
+  &.active {
+    transform: translate3d(0px,0px,0px);
+  }
+
+  .button.button-energized.button-block {
+    border-radius: 0;
+    color: black;
+    margin: 0;
+  }
+}
+.actibox-edit {
+  transform: translate3d(0px,285px,0px);
+
+  &.active {
+    transform: translate3d(0px,0px,0px);
+  }
+
+  .button.button-energized.button-block,
+  .button.button-assertive {
+    width: 50%;
+    border-radius: 0;
+    margin: 0;
+    float: left;
+    clear: right;
+  }
+
+  .button.button-energized.button-block{
+    color: black;
+  }
+}
 .actibox-counter {
+  transform: translate3d(0px,170px,0px);
+  background: white;
+
+  &.active {
+    transform: translate3d(0px,0px,0px);
+  }
 
   span {
     padding: 0;
-    margin-top: 25px;
+    margin-top: 40px;
 
     label {
       border: 0;
       padding: 0;
+      overflow: visible;
 
       .input-label {
-        font-size: 26px;
-        color: #ffc900;
+        font-size: 20px;
+        color: grey;
         text-align: center;
         display: block;
         max-width: none;
-        width: auto;
-        margin-bottom: 30px;
+        width: 30%;
+        height: 85px;
+        border-radius: 50%;
+        background: white;
+        transform: translate(115%, 28%);
+        margin-top: -85px;
+
+        &:before {
+          content: "COUNTER";
+          font-size: 12px;
+        }
       }
 
       input {
         font-size: 56px;
         font-weight: 900;
-        border-radius: 50px;
+        border-radius: 50%;
         width: 100px;
-        height: 100px;
-        padding: 32px;
-        color: black;
+        padding: 25px 35px;
+        color: #000;
         transform: translateX(-50%);
-        margin-left: 50%;
-        background-color: #ffc900;
-        z-index: 1;
-        opacity: 1;
+        bottom: -53px;
+        left: 50%;
+        position: absolute;
+        background-color: white;
       }
+    }
+
+    hr {
+      margin: 30px 20px;
     }
 
     .button.ion-ios-plus {
       border-radius: 50%;
-      height: 78px;
-      width: 78px;
-      font-size: 56px;
+      border: 1px solid black;
+      min-height: 0;
+      min-width: 0;
+      width: 29px;
+      height: 29px;
       padding: 0;
-      line-height: 0;
-      color: #333;
+      color: #ffc900;
       position: absolute;
-      bottom: 79px;
-      right: 60px;
+      bottom: 65px;
+      right: 15px;
+      background: black;
+
+      &:before {
+        font-size: 33px;
+        position: absolute;
+        top: -2px;
+        right: 0;
+      }
     }
 
     .button.ion-ios-minus {
       border-radius: 50%;
-      height: 58px;
-      width: 58px;
-      font-size: 46px;
+      border: 1px solid black;
+      min-height: 0;
+      min-width: 0;
+      width: 29px;
+      height: 29px;
       padding: 0;
-      line-height: 0;
-      color: #333;
+      color: #ffc900;
       position: absolute;
-      bottom: 90px;
-      left: 85px;
+      bottom: 65px;
+      left: 15px;
+      background: black;
+
+      &:before {
+        font-size: 33px;
+        position: absolute;
+        top: -2px;
+        left: 0;
+      }
     }
 
-    .button.ion-happy {
-      border-radius: 50%;
+    .button.button-energized {
+      border-radius: 0;
       color: #333;
-      width: 105px;
-      height: 105px;
-      font-size: 86px;
-      margin-top: 25px;
-      margin-left: 50%;
-      transform: translateX(-50%);
+      margin: 0;
     }
   }
 }
@@ -300,11 +369,24 @@ ion-nav-view {
   height: 100%;
 }
 
+.fb-login-msg {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  top: 40%;
+}
 .button.fb-login {
   position: fixed;
   top: 50%;
   width: 95%;
   transform: translateY(-50%);
+  font-weight: bold;
+
+  .ion-social-facebook-outline {
+    position: absolute;
+    transform: translateX(-14px);
+    font-size: 33px;
+  }
 }
 .button.button-light {
   font-size: 25px;
@@ -343,17 +425,30 @@ ion-nav-view {
 }
 .btn-list.button.button-block {
   position: absolute;
-  left: 51%;
+  // left: 51%;
   bottom: 0;
-  width: 20px;
-  height: 20px;
+  // width: 20px;
+  // height: 20px;
+  padding: 0;
   margin: 0;
-  opacity: .8;
-  font-size: 33px;
+  border-radius: 0;
+  box-shadow: 0 0 20px black;
+  color: black;
+  transition: .3s background, color;
+
+  &:before {
+    font-size: 33px;
+    transform: translate(-50%, 5px);
+  }
+
+  &.activated {
+    background: black;
+    color: #ffc900;
+  }
 
   &.basic {
-    left: 50%;
-    transform: translateX(-50%);
+    // left: 50%;
+    // transform: translateX(-50%);
   }
 }
 .btn-edit.button.button-block {
@@ -402,12 +497,17 @@ ion-nav-view {
   color: black;
   font-weight: 900;
   letter-spacing: 1px;
+  left: 0;
+
+  .content-banner-close {
+    color: black;
+  }
 }
 .content-banner-transition-vertical {
-  transform: translate3d(0,-240%,0);
+  // transform: translate3d(0,-240%,0);
 }
 .content-banner-in {
-  transform: translate3d(0,150%,0);
+  // transform: translate3d(0,150%,0);
 }
 
 .modal {
@@ -608,12 +708,12 @@ ion-nav-view {
   top: -15px;
 
   &.active {
-    background-color: #ffc900;
-    color: #333;
-    border-radius: 50%;
-    padding: 12px;
-    left: -12px;
-    top: -10px;
+    // background-color: #ffc900;
+    color: transparent;
+    // border-radius: 50%;
+    // padding: 12px;
+    // left: -12px;
+    // top: -10px;
   }
 }
 
