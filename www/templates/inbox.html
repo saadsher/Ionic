@@ -3,17 +3,17 @@
 	 <h1 class="title">Inbox</h1>
 	 <a class="button button-light pull-right ion-ios-close-outline btn-close-modal" ng-click="modalInbox.hide()"></a>
  </ion-header-bar>
- <ion-content ng-controller="MessagesCtrl">
+ <ion-content ng-controller="InboxCtrl">
    <div class="list list-inset inbox-list">
     <label class="item-input search">
       <i class="icon ion-search placeholder-icon"></i>
       <input type="text" placeholder="Search">
     </label>
-    <a class="item item-avatar" ng-repeat="msg in recent" ng-click="goMessages()">
+    <a class="item item-avatar" ng-repeat="conversation in conversations" ng-click="goConciergeMessages(conversation.user.id)">
       <img src="http://placehold.it/40x40">
-      <h2>{{msg.apartment}} - {{msg.user}}</h2>
+      <h2>{{conversation.user.apartament}} - {{conversation.user.name}}</h2>
       <p>
-        {{msg.message}}
+        {{conversation.message.content}}
       </p>
     </a>
    </div>

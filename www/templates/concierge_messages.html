@@ -1,0 +1,26 @@
+<ion-modal-view>
+  <ion-header-bar align-title="center" data-tap-disabled="true">
+    <h1 class="title">[Concierge] Messages</h1>
+    <a class="button button-light pull-right ion-ios-close-outline btn-close-modal" ng-click="modalConciergeMessages.hide()"></a>
+  </ion-header-bar>
+  <ion-content ng-controller="conciergeMessagesCtrl">
+    <div class="list older-list">
+      <div class="item item-avatar" ng-repeat="message in messages">
+        <img src="http://placehold.it/40x40">
+        <p>
+          {{ message.content }}
+        </p>
+      </div>
+      <ion-spinner icon="dots" class="spinner-dark chat-loader"></ion-spinner>
+    </div>
+    <ion-footer-bar class="item-input-inset footer-msg">
+      <label class="item-input-wrapper">
+        <i class="icon ion-ios-paperplane-outline"></i>
+        <textarea placeholder="Message" class="msgArea" msd-elastic="\n" rows="1" ng-model="now.message"></textarea>
+      </label>
+      <button class="button button-energized" ng-click="send()" ng-disabled="!now.message.length" data-tap-disabled="true">
+        Send
+      </button>
+    </ion-footer-bar>
+  </ion-content>
+</ion-modal-view>
