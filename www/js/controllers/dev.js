@@ -66,6 +66,13 @@ Spasey.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $i
       $scope.modalMessages = modal;
     });
 
+    $ionicModal.fromTemplateUrl('templates/concierge_messages.html', {
+      scope: $scope,
+      animation: 'slide-in-right'
+    }).then(function(modal) {
+      $scope.modalConciergeMessages = modal;
+    });
+
     $ionicModal.fromTemplateUrl('templates/inbox.html', {
       scope: $scope,
       animation: 'slide-in-right'
@@ -347,11 +354,17 @@ Spasey.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $i
       $scope.modalPostbox.show();
     }
     $scope.goInbox = function() {
+      $scope.$broadcast('conciergeConversationsUpdate');
       $scope.modalInbox.show();
     }
     $scope.goMessages = function() {
       $scope.$broadcast('messagesUpdate');
       $scope.modalMessages.show();
+    }
+    $scope.goConciergeMessages = function(user_id) {
+      $scope.$broadcast('conciergeMessagesUpdate', { user_id: user_id });
+      $scope.concierge.inboxUserId = user_id;
+      $scope.modalConciergeMessages.show();
     }
     $scope.goPostal = function() {
       $scope.modalPostal.show();
