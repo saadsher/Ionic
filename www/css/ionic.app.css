@@ -10449,6 +10449,12 @@ a.button {
 .modal-wrapper .postal-tabs .pane {
   top: 93px; }
 
+.modal-wrapper .postal-tabs .tab-item .icon {
+  display: none; }
+
+.modal-wrapper .postal-tabs .tab-item .tab-title {
+  font-weight: 900; }
+
 .modal-wrapper .postal-list.list .search,
 .modal-wrapper .valet-list.list .search {
   border: 1px solid #ffc900;

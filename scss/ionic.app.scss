@@ -804,8 +804,20 @@ ion-nav-view {
 
 .modal-wrapper {
 
-  .postal-tabs .pane {
-    top: 93px;
+  .postal-tabs {
+    .pane {
+      top: 93px;
+    }
+
+    .tab-item {
+      .icon {
+        display: none;
+      }
+
+      .tab-title {
+        font-weight: 900;
+      }
+    }
   }
 
   .postal-list.list,
