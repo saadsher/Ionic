@@ -1,5 +1,4 @@
-Spasey.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicContentBanner, $ionicPopup, $ionicListDelegate, $timeout, GoogleMaps, SyncService) {
-
+Spasey.controller('DevCtrl', function($scope, $state, $ionicSideMenuDelegate, $ionicModal, $ionicContentBanner, $ionicPopup, $ionicListDelegate, $timeout, GoogleMaps, SyncService, store) {
   var contentBannerInstance;
 
   $scope.resident = {};

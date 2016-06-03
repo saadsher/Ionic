@@ -8,3 +8,4 @@ temp/
 server/*.txt
 .editorconfig
 *.sublime*
+*.log

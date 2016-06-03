@@ -1,6 +1,6 @@
-var Spasey = angular.module('Spasey', ['ionic', 'ngCordova', 'ngOpenFB', 'jett.ionic.content.banner', 'monospaced.elastic']);
-var host = 'http://spasey-service.herokuapp.com';
-//var host = 'http://localhost:3000';
+var Spasey = angular.module('Spasey', ['ionic', 'ngCordova', 'ngOpenFB', 'jett.ionic.content.banner', 'monospaced.elastic', 'auth0', 'angular-storage', 'angular-jwt']);
+//var host = 'http://spasey-service.herokuapp.com';
+var host = 'http://localhost:3000';
 
 // CONSTANTS
 
@@ -19,9 +19,7 @@ Spasey.constant('AUTH_EVENTS', {
 
 // RUN
 
-.run(function($ionicPlatform, ngFB) {
-  ngFB.init({appId: '2050092375216849'});
-
+.run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
 
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
