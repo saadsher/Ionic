@@ -13,8 +13,8 @@ var Spasey = angular.module('Spasey', [
 ]);
 
 // API
-// var host = 'http://spasey-service.herokuapp.com';
-var host = 'http://localhost:3000';
+var host = 'http://spasey-service.herokuapp.com';
+// var host = 'http://localhost:3000';
 
 // CONSTANTS
 
