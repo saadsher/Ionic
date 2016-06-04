@@ -12,8 +12,8 @@ Spasey.controller('DevCtrl', function(
   $timeout,
   GoogleMaps,
   SyncService,
-  store){
-
+  store,
+  auth){
   var contentBannerInstance;
 
   $scope.resident = {};
@@ -437,22 +437,14 @@ Spasey.controller('DevCtrl', function(
       $scope.modalValet.show();
     }
 
+    $scope.logout = function() {
+      auth.signout();
+      store.remove('profile');
+      store.remove('token');
+      $state.go("login");
+    };
   });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // -----------------------------------------------------------------------------
 // NOTE

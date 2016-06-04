@@ -16,7 +16,7 @@ Spasey
     }, function() {
       // Error callback
     });
-  }
+  };
 })
 
 .controller('UserInfoCtrl', function($scope, auth) {

@@ -1,4 +1,6 @@
-Spasey.config(function($stateProvider, $ionicConfigProvider, authProvider, $httpProvider, jwtInterceptorProvider) {
+Spasey.config(function($stateProvider, $ionicConfigProvider, authProvider, $httpProvider, jwtInterceptorProvider, $urlRouterProvider) {
+
+  $urlRouterProvider.when('', '/dev');
 
   $ionicConfigProvider.tabs.position('top');
 
@@ -52,7 +54,7 @@ Spasey.config(function($stateProvider, $ionicConfigProvider, authProvider, $http
   $httpProvider.interceptors.push('jwtInterceptor');
 })
 
-.controller('AppCtrl', function($q, $scope, $state, $ionicSideMenuDelegate, $ionicPopup, $timeout, AUTH_EVENTS) {
+.controller('AppCtrl', function($q, $scope) {
 })
 .run(function(auth) {
   // This hooks all auth events to check everything as soon as the app starts
