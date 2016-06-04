@@ -11,7 +11,8 @@ Spasey.controller('DevCtrl', function(
   $ionicPush, //
   $timeout,
   GoogleMaps,
-  SyncService){
+  SyncService,
+  store){
 
   var contentBannerInstance;
 

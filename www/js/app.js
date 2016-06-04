@@ -7,11 +7,14 @@ var Spasey = angular.module('Spasey', [
   'ionic.service.push',
   'jett.ionic.content.banner', // banner notifications
   'monospaced.elastic', // auto expanding of the chat textbox
+  'auth0',
+  'angular-storage',
+  'angular-jwt'
 ]);
 
 // API
-var host = 'http://spasey-service.herokuapp.com';
-//var host = 'http://localhost:3000';
+// var host = 'http://spasey-service.herokuapp.com';
+var host = 'http://localhost:3000';
 
 // CONSTANTS
 
@@ -30,9 +33,7 @@ Spasey.constant('AUTH_EVENTS', {
 
 // RUN
 
-.run(function($ionicPlatform, ngFB) {
-  ngFB.init({appId: '2050092375216849'});
-
+.run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
 
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
