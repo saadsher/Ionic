@@ -93,6 +93,15 @@
 						<button class="button button-block button-dark btn-add ion-ios-plus-outline" ng-click="modalC.show()" ng-hide=basic></button>
 						<button class="button button-block button-energized btn-list ion-ios-paper-outline basic" ng-click="modalR.show()">LIST</button>
 						<!-- <button class="button button-block button-dark btn-edit ion-ios-compose-outline" ng-click="modalUD.show()" ng-hide="basic || empty" data-tap-disabled="true"></button> -->
+
+						<button class="button button-block button-positive pushey" ng-click="identifyUser()">
+							 Identify a user
+						</button>
+
+					 	<button class="button button-block button-balanced pushey" ng-if="identified" ng-click="pushRegister()">
+						 	 Register for Push
+					 	</button>
+
 						<button class="button button-block button-assertive ion-ios-locked-outline set-admin" toggle-class="ion-ios-unlocked-outline" ng-click="toggleAdmin(true)" data-tap-disabled="true"></button>
 					</ion-content>
 				<!-- </ion-pane> -->

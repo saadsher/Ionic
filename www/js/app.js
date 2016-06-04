@@ -1,4 +1,15 @@
-var Spasey = angular.module('Spasey', ['ionic', 'ngCordova', 'ngOpenFB', 'jett.ionic.content.banner', 'monospaced.elastic']);
+// MODULES
+var Spasey = angular.module('Spasey', [
+  'ionic',
+  'ngOpenFB',
+  'ngCordova',
+  'ionic.service.core',
+  'ionic.service.push',
+  'jett.ionic.content.banner', // banner notifications
+  'monospaced.elastic', // auto expanding of the chat textbox
+]);
+
+// API
 var host = 'http://spasey-service.herokuapp.com';
 //var host = 'http://localhost:3000';
 
@@ -35,6 +46,14 @@ Spasey.constant('AUTH_EVENTS', {
 
   });
 })
+
+.config(['$ionicAppProvider', function($ionicAppProvider) {
+  $ionicAppProvider.identify({
+    app_id: 'a839f0c4',
+    api_key: '710ee48c4d4a9fd7bd0d6a5b3fd6b740d527cba82a98e405',
+    dev_push: true
+  });
+}])
 
 // DIRECTIVES
 
